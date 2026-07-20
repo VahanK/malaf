@@ -115,7 +115,21 @@
       "Read(//c/Users/vahan/.claude/projects/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/subagents/workflows/wf_e9de07bc-5d2/**)",
       "WebFetch(domain:biosites.com)",
       "WebFetch(domain:stan.store)",
-      "WebFetch(domain:help.hellobonsai.com)"
+      "WebFetch(domain:help.hellobonsai.com)",
+      "WebFetch(domain:help.withmoxie.com)",
+      "WebFetch(domain:www.hopp.co)",
+      "WebFetch(domain:support.wix.com)",
+      "WebFetch(domain:stripe.com)",
+      "WebFetch(domain:www.trustpilot.com)",
+      "WebFetch(domain:help.stan.store)",
+      "WebFetch(domain:help.bloom.io)",
+      "WebFetch(domain:help.agiled.app)",
+      "WebFetch(domain:support.squarespace.com)",
+      "WebFetch(domain:millo.co)",
+      "WebFetch(domain:pillar.io)",
+      "WebFetch(domain:linke.ro)",
+      "WebFetch(domain:taplink.at)",
+      "WebFetch(domain:help.pillar.io)"
     ]
   }
 }

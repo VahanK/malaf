@@ -82,7 +82,19 @@
       "mcp__2e35224c-c10e-42a8-a539-281e90c3e821__get_publishable_keys",
       "mcp__2e35224c-c10e-42a8-a539-281e90c3e821__apply_migration",
       "mcp__2e35224c-c10e-42a8-a539-281e90c3e821__get_advisors",
-      "mcp__2e35224c-c10e-42a8-a539-281e90c3e821__execute_sql"
+      "mcp__2e35224c-c10e-42a8-a539-281e90c3e821__execute_sql",
+      "Read(//c/Users/vahan/Documents/**)",
+      "Bash(mkdir -p malaf/lib/supabase malaf/components/ui)",
+      "Bash(cp khedme/lib/supabase/client.ts khedme/lib/supabase/middleware.ts khedme/lib/supabase/server.ts malaf/lib/supabase/)",
+      "Bash(cp khedme/middleware.ts malaf/)",
+      "Bash(cp khedme/components/FileUpload.tsx malaf/components/)",
+      "Bash(mkdir -p malaf/app/api/upload/avatar)",
+      "Bash(cp khedme/app/api/upload/avatar/route.ts malaf/app/api/upload/avatar/route.ts)",
+      "Bash(npx tsc *)",
+      "Bash(mkdir -p malaf/components/_khedme-staging)",
+      "Bash(cp khedme/components/freelancer/ProfileEditForm.tsx malaf/components/_khedme-staging/)",
+      "Bash(cp -r khedme/components/notifications malaf/components/_khedme-staging/)",
+      "Bash(cp khedme/supabase/migrations/006_notifications_system.sql malaf/components/_khedme-staging/)"
     ]
   }
 }

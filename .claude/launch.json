@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "malaf-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
       "name": "research-dashboard",
       "runtimeExecutable": "node",
       "runtimeArgs": ["C:/Users/vahan/AppData/Local/Temp/claude/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/scratchpad/serve.js"],

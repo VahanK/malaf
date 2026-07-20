@@ -1,0 +1,22 @@
+# Raw research data contains personal info (names, phone numbers) — never commit
+research/*.csv
+research/*.json
+
+# env
+.env
+.env.*
+!.env.example
+
+# next / node
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+_bridge_test.txt

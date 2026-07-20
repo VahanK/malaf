@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "research-dashboard",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Users/vahan/AppData/Local/Temp/claude/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/scratchpad/serve.js"],
+      "port": 4173
+    }
+  ]
+}

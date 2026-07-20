@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malaf — Card Visuals</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0f13; --panel:#16181f; --ink:#f4f2ec; --muted:#9aa0ae;
+    --accent:#c9a45c; --green:#3ddc84;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter','Segoe UI',system-ui,sans-serif;padding:40px 20px}
+  .ar{font-family:'Tajawal',sans-serif}
+  .stage{max-width:1200px;margin:0 auto}
+  h1{font-weight:900;font-size:26px;margin-bottom:6px}
+  .sub{color:var(--muted);margin-bottom:36px;font-size:14px}
+  .row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;justify-content:center}
+  .label{font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin:0 0 12px;text-align:center}
+
+  /* ============ PHONE MOCK ============ */
+  .phone{width:340px;background:#000;border-radius:44px;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 0 0 2px #2a2d36}
+  .screen{background:linear-gradient(180deg,#101218 0%,#0c0d11 100%);border-radius:34px;overflow:hidden}
+  .page{padding:26px 20px 0}
+  .avatar-wrap{display:flex;align-items:center;gap:14px}
+  .avatar{width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#e8cf9a,#b5883f 70%);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#141414;border:3px solid var(--accent)}
+  .who h2{font-size:22px;font-weight:900;line-height:1.15}
+  .who p{color:var(--accent);font-size:13px;font-weight:700;margin-top:2px}
+  .status{display:inline-flex;align-items:center;gap:6px;background:rgba(61,220,132,.1);border:1px solid rgba(61,220,132,.35);color:var(--green);font-size:11px;border-radius:99px;padding:3px 10px;margin-top:6px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+  .voice{margin:16px 0 14px;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid #262a35;border-radius:16px;padding:10px 14px}
+  .play{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#141414;font-size:14px;flex-shrink:0}
+  .wave{display:flex;align-items:center;gap:2.5px;height:22px;flex:1}
+  .wave i{width:3px;border-radius:2px;background:#4c5262;display:block}
+  .wave i:nth-child(odd){background:#6b7284}
+  .voice small{color:var(--muted);font-size:11px;white-space:nowrap}
+
+  .services{margin:8px 0 14px}
+  .srv{display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px dashed #262a35;font-size:14px}
+  .srv b{font-weight:700}
+  .srv span{color:var(--accent);font-weight:900}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+  .ph{aspect-ratio:1;border-radius:10px;background:#2b2417}
+  .g1{background:linear-gradient(135deg,#42351d,#8a6f39)}
+  .g2{background:linear-gradient(160deg,#232733,#3d4152)} .g3{background:linear-gradient(135deg,#1f2b26,#3c5a4c)}
+  .g4{background:linear-gradient(150deg,#33222b,#5e3c4e)} .g5{background:linear-gradient(140deg,#20242e,#49506b)}
+  .g6{background:linear-gradient(150deg,#3d2f1c,#77602f)}
+
+  .wa{background:#0d1f17;border:1px solid #1b3a2b;border-radius:14px;padding:12px 14px;position:relative;margin-bottom:16px}
+  .wa p{font-size:13.5px;line-height:1.5}
+  .wa small{display:block;color:#7fae95;font-size:11px;margin-top:6px}
+  .wa:after{content:"✓✓";position:absolute;right:12px;bottom:8px;color:#53bdeb;font-size:10px}
+
+  .cta{display:block;width:100%;background:var(--accent);color:#141414;font-weight:900;font-size:16px;text-align:center;border:none;border-radius:16px;padding:15px;font-family:inherit;margin-bottom:8px}
+  .cta2{display:flex;gap:8px;margin-bottom:14px}
+  .cta2 button{flex:1;background:transparent;border:1.5px solid #2c313d;color:var(--ink);border-radius:13px;padding:10px;font-family:inherit;font-size:12.5px;font-weight:700}
+  .reply{color:var(--muted);text-align:center;font-size:11px;margin-bottom:12px}
+  .foot{border-top:1px solid #20242e;padding:12px 0 18px;text-align:center;font-size:11.5px;color:var(--muted)}
+  .foot b{color:var(--ink)}
+
+  /* ============ LOCKSCREEN ============ */
+  .lock{width:300px;background:#000;border-radius:40px;padding:11px;box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 0 0 2px #2a2d36}
+  .lock .screen{background:linear-gradient(180deg,#1a1d29,#0b0c11);border-radius:30px;padding:34px 20px 30px;text-align:center;overflow:hidden}
+  .time{font-size:56px;font-weight:200;letter-spacing:1px}
+  .date{color:var(--muted);font-size:13px;margin-bottom:26px}
+  .widget{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;text-align:left}
+  .widget .qr{width:74px;height:74px;background:#fff;border-radius:12px;padding:6px;flex-shrink:0}
+  .widget h3{font-size:15px;font-weight:900}
+  .widget p{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .widget .m{color:var(--accent);font-size:10.5px;font-weight:700;margin-top:5px}
+
+  /* ============ PRINT CARD ============ */
+  .cards{display:flex;flex-direction:column;gap:22px}
+  .pcard{width:336px;height:196px;border-radius:18px;position:relative;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+  .pcard.front{background:linear-gradient(120deg,#14161d 0%,#1b1e28 60%,#232112 100%)}
+  .pcard.front:before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at -10% -20%,rgba(201,164,92,.22),transparent 60%)}
+  .pf{position:relative;height:100%;display:flex;justify-content:space-between;align-items:center;padding:22px 24px}
+  .pf .txt h3{font-size:21px;font-weight:900}
+  .pf .txt p{color:var(--accent);font-size:12.5px;font-weight:700;margin-top:3px}
+  .pf .txt .url{margin-top:26px;font-size:11.5px;color:var(--muted)}
+  .pf .qr{width:92px;height:92px;background:#fff;border-radius:14px;padding:8px}
+  .brand{position:absolute;bottom:14px;left:24px;font-size:11px;color:#6b7284;font-weight:700}
+  .pcard.back{background:#f4f2ec;color:#141414;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+  .pcard.back h3{font-size:17px;font-weight:900}
+  .pcard.back p{font-size:12px;color:#666}
+  .mlogo{font-size:26px;font-weight:900}
+  .mlogo .arm{font-family:'Tajawal',sans-serif;color:var(--accent)}
+  .pcard.back .mlogo{color:#141414}
+
+  /* ============ VARIANTS + PRICING ============ */
+  .variants{margin-top:48px}
+  .vrow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:stretch}
+  .v{width:180px;border-radius:18px;background:var(--panel);border:1px solid #23262f;padding:16px;text-align:center}
+  .v .va{width:46px;height:46px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#131313}
+  .v h4{font-size:13.5px;font-weight:900}
+  .v p{font-size:10.5px;color:var(--muted);margin-top:3px}
+  .v .chip{margin-top:9px;display:inline-block;font-size:9.5px;border-radius:99px;padding:3px 9px;font-weight:700}
+  .price{width:250px;border-radius:22px;padding:24px;text-align:center;display:flex;flex-direction:column}
+  .price ul{list-style:none;font-size:12.5px;text-align:left;line-height:2.1;color:#c8cbd4;flex:1}
+  .price button{width:100%;border-radius:14px;padding:12px;font-family:inherit;font-weight:900;font-size:13px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="stage">
+  <h1>Malaf <span class="ar" style="color:var(--accent)">ملف</span> — the personal card, made real</h1>
+  <p class="sub">English-first for Lebanon. Arabic lives in the brand, the flavor, and the documents when a client needs it — not in your way. Placeholder QR + photos.</p>
+
+  <div class="row">
+    <!-- PHONE -->
+    <div>
+      <p class="label">malaf.me/rami — the page</p>
+      <div class="phone"><div class="screen"><div class="page">
+        <div class="avatar-wrap">
+          <div class="avatar">R</div>
+          <div class="who">
+            <h2>Rami Haddad</h2>
+            <p>Wedding &amp; Events Photographer · Beirut</p>
+            <span class="status"><span class="dot"></span> Available — booking for Sept</span>
+          </div>
+        </div>
+
+        <div class="voice">
+          <div class="play">▶</div>
+          <div class="wave">
+            <i style="height:8px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:11px"></i><i style="height:17px"></i><i style="height:7px"></i><i style="height:13px"></i><i style="height:21px"></i><i style="height:9px"></i><i style="height:15px"></i><i style="height:18px"></i><i style="height:8px"></i><i style="height:12px"></i><i style="height:19px"></i><i style="height:10px"></i><i style="height:16px"></i><i style="height:7px"></i><i style="height:14px"></i>
+          </div>
+          <small>Hear from me · 0:21</small>
+        </div>
+
+        <div class="services">
+          <div class="srv"><b>Full wedding coverage</b><span>$600+</span></div>
+          <div class="srv"><b>Engagement session</b><span>$150</span></div>
+          <div class="srv"><b>Events</b><span>$250</span></div>
+        </div>
+
+        <div class="grid">
+          <div class="ph g1"></div><div class="ph g2"></div><div class="ph g3"></div>
+          <div class="ph g4"></div><div class="ph g5"></div><div class="ph g6"></div>
+        </div>
+
+        <div class="wa">
+          <p>The photos are UNREAL 😍 yeslamo Rami, everyone's asking who shot it!!</p>
+          <small>Bride's mom — Mia &amp; Jad's wedding, June 2026</small>
+        </div>
+
+        <button class="cta">Request a quote</button>
+        <div class="cta2">
+          <button>📇 Save contact</button>
+          <button>💬 WhatsApp</button>
+        </div>
+        <p class="reply">Usually replies within 2h</p>
+        <div class="foot">Make your <b>free card</b> on <b>Malaf</b> ✦ malaf.me</div>
+      </div></div></div>
+    </div>
+
+    <!-- LOCKSCREEN -->
+    <div>
+      <p class="label">the lockscreen widget</p>
+      <div class="lock"><div class="screen">
+        <div class="time">9:41</div>
+        <div class="date">Saturday, July 19</div>
+        <div class="widget">
+          <svg class="qr" viewBox="0 0 33 33"><rect width="33" height="33" fill="#fff"/><g fill="#111"><rect x="2" y="2" width="7" height="7"/><rect x="4" y="4" width="3" height="3" fill="#fff"/><rect x="24" y="2" width="7" height="7"/><rect x="26" y="4" width="3" height="3" fill="#fff"/><rect x="2" y="24" width="7" height="7"/><rect x="4" y="26" width="3" height="3" fill="#fff"/><rect x="12" y="2" width="2" height="2"/><rect x="16" y="3" width="2" height="2"/><rect x="20" y="2" width="2" height="2"/><rect x="11" y="6" width="2" height="2"/><rect x="15" y="7" width="2" height="2"/><rect x="19" y="6" width="2" height="2"/><rect x="12" y="11" width="2" height="2"/><rect x="2" y="12" width="2" height="2"/><rect x="6" y="13" width="2" height="2"/><rect x="9" y="15" width="2" height="2"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="12" width="2" height="2"/><rect x="23" y="13" width="2" height="2"/><rect x="27" y="12" width="2" height="2"/><rect x="3" y="17" width="2" height="2"/><rect x="7" y="19" width="2" height="2"/><rect x="12" y="18" width="2" height="2"/><rect x="17" y="19" width="2" height="2"/><rect x="21" y="17" width="2" height="2"/><rect x="25" y="19" width="2" height="2"/><rect x="29" y="18" width="2" height="2"/><rect x="12" y="24" width="2" height="2"/><rect x="16" y="25" width="2" height="2"/><rect x="20" y="23" width="2" height="2"/><rect x="24" y="25" width="2" height="2"/><rect x="28" y="24" width="2" height="2"/><rect x="13" y="29" width="2" height="2"/><rect x="18" y="28" width="2" height="2"/><rect x="23" y="29" width="2" height="2"/><rect x="27" y="28" width="2" height="2"/></g></svg>
+          <div>
+            <h3>Rami Haddad · Photographer</h3>
+            <p>Scan to see my work or get a quote</p>
+            <div class="m">malaf.me/rami</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- PRINT CARDS -->
+    <div class="cards">
+      <div>
+        <p class="label">print card — front</p>
+        <div class="pcard front"><div class="pf">
+          <div class="txt">
+            <h3>Rami Haddad</h3>
+            <p>Wedding &amp; Events Photographer</p>
+            <div class="url">malaf.me/rami</div>
+          </div>
+          <svg class="qr" viewBox="0 0 33 33"><rect width="33" height="33" fill="#fff"/><g fill="#111"><rect x="2" y="2" width="7" height="7"/><rect x="4" y="4" width="3" height="3" fill="#fff"/><rect x="24" y="2" width="7" height="7"/><rect x="26" y="4" width="3" height="3" fill="#fff"/><rect x="2" y="24" width="7" height="7"/><rect x="4" y="26" width="3" height="3" fill="#fff"/><rect x="12" y="2" width="2" height="2"/><rect x="16" y="3" width="2" height="2"/><rect x="20" y="2" width="2" height="2"/><rect x="11" y="6" width="2" height="2"/><rect x="15" y="7" width="2" height="2"/><rect x="19" y="6" width="2" height="2"/><rect x="12" y="11" width="2" height="2"/><rect x="2" y="12" width="2" height="2"/><rect x="6" y="13" width="2" height="2"/><rect x="9" y="15" width="2" height="2"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="12" width="2" height="2"/><rect x="23" y="13" width="2" height="2"/><rect x="27" y="12" width="2" height="2"/><rect x="3" y="17" width="2" height="2"/><rect x="7" y="19" width="2" height="2"/><rect x="12" y="18" width="2" height="2"/><rect x="17" y="19" width="2" height="2"/><rect x="21" y="17" width="2" height="2"/><rect x="25" y="19" width="2" height="2"/><rect x="29" y="18" width="2" height="2"/><rect x="12" y="24" width="2" height="2"/><rect x="16" y="25" width="2" height="2"/><rect x="20" y="23" width="2" height="2"/><rect x="24" y="25" width="2" height="2"/><rect x="28" y="24" width="2" height="2"/><rect x="13" y="29" width="2" height="2"/><rect x="18" y="28" width="2" height="2"/><rect x="23" y="29" width="2" height="2"/><rect x="27" y="28" width="2" height="2"/></g></svg>
+          <div class="brand">Malaf <span class="ar">ملف</span> ✦ malaf.me</div>
+        </div></div>
+      </div>
+      <div>
+        <p class="label">print card — back</p>
+        <div class="pcard back">
+          <div class="mlogo">Malaf <span class="arm">ملف</span></div>
+          <h3>Scan. See the work. Get a quote.</h3>
+          <p>No app · no signup · straight to WhatsApp</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VARIANTS -->
+  <div class="variants">
+    <p class="label">same card, different trades — accent per type</p>
+    <div class="vrow">
+      <div class="v"><div class="va" style="background:#c9a45c">R</div><h4>Photographer</h4><p>Warm gold · light &amp; frames</p><span class="chip" style="background:rgba(201,164,92,.15);color:#c9a45c">Photo</span></div>
+      <div class="v"><div class="va" style="background:#e08bb1">N</div><h4>Makeup Artist</h4><p>Velvet pink · before/after</p><span class="chip" style="background:rgba(224,139,177,.15);color:#e08bb1">MUA</span></div>
+      <div class="v"><div class="va" style="background:#7fb4e8">M</div><h4>Tutor</h4><p>Calm blue · student results</p><span class="chip" style="background:rgba(127,180,232,.15);color:#7fb4e8">Lessons</span></div>
+      <div class="v"><div class="va" style="background:#8fd4a8">D</div><h4>Designer</h4><p>Clean green · work grid</p><span class="chip" style="background:rgba(143,212,168,.15);color:#8fd4a8">Design</span></div>
+      <div class="v"><div class="va" style="background:#e8a87f">K</div><h4>Trainer</h4><p>Energy orange · transformations</p><span class="chip" style="background:rgba(232,168,127,.15);color:#e8a87f">Fitness</span></div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="variants">
+    <p class="label">pricing — easy on the eye, built for a deal culture</p>
+    <div class="vrow">
+      <div class="price" style="background:var(--panel);border:1px solid #23262f">
+        <h4 style="font-size:15px;font-weight:900">The Card</h4>
+        <p style="color:var(--muted);font-size:11.5px;margin-top:2px">For every freelancer, forever</p>
+        <div style="font-size:40px;font-weight:900;margin:16px 0 2px">Free</div>
+        <p style="color:var(--muted);font-size:11px;margin-bottom:16px">No credit card · no strings</p>
+        <ul>
+          <li>✓ Your personal page + portfolio</li>
+          <li>✓ Voice intro</li>
+          <li>✓ QR business card</li>
+          <li>✓ 3 documents / month</li>
+        </ul>
+        <button style="background:transparent;border:1.5px solid #2c313d;color:var(--ink)">Start free</button>
+      </div>
+      <div class="price" style="background:linear-gradient(170deg,#1c1a12,#16181f 55%);border:1.5px solid var(--accent);position:relative">
+        <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#141414;font-size:10px;font-weight:900;border-radius:99px;padding:4px 12px;white-space:nowrap">FOUNDER DEAL · FIRST 100 ONLY</div>
+        <h4 style="font-size:15px;font-weight:900;margin-top:6px">The Office</h4>
+        <p style="color:var(--muted);font-size:11.5px;margin-top:2px">The card + the collector</p>
+        <div style="margin:14px 0 2px"><span style="font-size:40px;font-weight:900;color:var(--accent)">$2.4</span><span style="font-size:13px;color:var(--muted)"> / month</span></div>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:2px">Billed yearly: <s style="color:#666">$49</s> <b style="color:var(--ink)">$29/yr</b> — your price never changes</p>
+        <p style="font-size:10.5px;color:#7fae95;margin-bottom:12px">💸 One chased invoice pays for it 5×</p>
+        <ul>
+          <li>✓ Everything in Free, plus:</li>
+          <li>✓ <b>The collector</b> — ready-made payment reminders</li>
+          <li>✓ Unlimited quotes, invoices &amp; receipts</li>
+          <li>✓ Auto USDT payment detection</li>
+          <li>✓ Your branding — no Malaf logo</li>
+        </ul>
+        <button style="background:var(--accent);border:none;color:#141414">Grab the founder deal</button>
+        <p style="font-size:10px;color:var(--muted);margin-top:8px">Pay by Whish or USDT · Not happy? Money back within 30 days</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

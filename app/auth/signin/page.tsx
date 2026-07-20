@@ -75,6 +75,12 @@ export default function SignInPage() {
             Create an account
           </Link>
         </p>
+        <p className="mt-2 text-center text-sm text-dash-muted">
+          Prefer your phone?{' '}
+          <Link href="/auth/phone" className="font-medium text-dash-ink underline">
+            Sign in with WhatsApp number
+          </Link>
+        </p>
       </form>
     </main>
   )

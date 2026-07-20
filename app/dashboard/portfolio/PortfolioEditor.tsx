@@ -28,9 +28,10 @@ export function PortfolioEditor({ initialBlocks, profileId }: { initialBlocks: B
   const supabase = createClient()
 
   const addBlock = async (type: BlockType) => {
+    const nextPosition = blocks.length ? Math.max(...blocks.map(b => b.position)) + 1 : 0
     const { data, error } = await supabase
       .from('portfolio_blocks')
-      .insert({ profile_id: profileId, type, position: blocks.length, data: {}, active: false })
+      .insert({ profile_id: profileId, type, position: nextPosition, data: {}, active: false })
       .select()
       .single()
     if (!error && data) setBlocks([...blocks, data])
@@ -46,6 +47,27 @@ export function PortfolioEditor({ initialBlocks, profileId }: { initialBlocks: B
     setBlocks(blocks.map(b => (b.id === id ? { ...b, active } : b)))
   }
 
+  const moveBlock = async (id: string, direction: -1 | 1) => {
+    const sorted = [...blocks].sort((a, b) => a.position - b.position)
+    const i = sorted.findIndex(b => b.id === id)
+    const j = i + direction
+    if (i < 0 || j < 0 || j >= sorted.length) return
+
+    const a = sorted[i]
+    const b = sorted[j]
+    const swapped = sorted.map(block => {
+      if (block.id === a.id) return { ...block, position: b.position }
+      if (block.id === b.id) return { ...block, position: a.position }
+      return block
+    })
+    setBlocks(swapped)
+
+    await Promise.all([
+      supabase.from('portfolio_blocks').update({ position: b.position }).eq('id', a.id),
+      supabase.from('portfolio_blocks').update({ position: a.position }).eq('id', b.id),
+    ])
+  }
+
   const removeBlock = async (id: string) => {
     await supabase.from('portfolio_blocks').delete().eq('id', id)
     setBlocks(blocks.filter(b => b.id !== id))
@@ -59,12 +81,37 @@ export function PortfolioEditor({ initialBlocks, profileId }: { initialBlocks: B
     return json.path ?? null
   }
 
+  const ordered = [...blocks].sort((a, b) => a.position - b.position)
+
   return (
     <div className="mt-6 max-w-lg space-y-3">
-      {blocks.map(block => (
+      <p className="text-xs text-dash-muted">
+        Order here is the order clients see on your page.
+      </p>
+      {ordered.map((block, i) => (
         <div key={block.id} className="rounded-lg border border-dash-border bg-dash-surface p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-dash-ink">{TYPE_LABEL[block.type]}</span>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col">
+                <button
+                  onClick={() => moveBlock(block.id, -1)}
+                  disabled={i === 0}
+                  aria-label="Move up"
+                  className="leading-none text-dash-muted disabled:opacity-30"
+                >
+                  ▲
+                </button>
+                <button
+                  onClick={() => moveBlock(block.id, 1)}
+                  disabled={i === ordered.length - 1}
+                  aria-label="Move down"
+                  className="leading-none text-dash-muted disabled:opacity-30"
+                >
+                  ▼
+                </button>
+              </div>
+              <span className="text-sm font-medium text-dash-ink">{TYPE_LABEL[block.type]}</span>
+            </div>
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-1.5 text-xs text-dash-muted">
                 <input type="checkbox" checked={block.active} onChange={e => toggleActive(block.id, e.target.checked)} />

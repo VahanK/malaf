@@ -116,14 +116,6 @@ export function PublicCard({ page }: { page: PublicPage }) {
             Usually replies within {p.reply_hours}h
           </p>
         ) : null}
-
-        {/* viral footer (CLAUDE.md §1) */}
-        <div className="mt-5 border-t border-[#20242e] pt-3 text-center text-[11.5px] text-[#9aa0ae]">
-          Make your <b className="text-[#f4f2ec]">free card</b> on{' '}
-          <a href="/" className="font-black text-[#f4f2ec]">
-            Malaf <span style={{ color: accent, fontFamily: 'var(--font-tajawal), sans-serif' }}>ملف</span>
-          </a>
-        </div>
       </div>
     </main>
   )

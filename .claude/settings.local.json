@@ -150,7 +150,27 @@
       "Bash(curl -s -o /dev/null -w \"http_code=%{http_code}\\\\n\" -L https://www.malaf.work/rami)",
       "WebFetch(domain:skillscoreapp.com)",
       "Bash(powershell -NoProfile -Command \"Test-Path 'C:\\\\Users\\\\vahan\\\\.claude\\\\plans'\")",
-      "Bash(mkdir -p \"/c/Users/vahan/.claude/plans\" 2>/dev/null; echo done)"
+      "Bash(mkdir -p \"/c/Users/vahan/.claude/plans\" 2>/dev/null; echo done)",
+      "Skill(deep-research)",
+      "Skill(deep-research:*)",
+      "WebFetch(domain:www.twilio.com)",
+      "WebFetch(domain:www.unimtx.com)",
+      "WebFetch(domain:www.vonage.com)",
+      "WebFetch(domain:www.sent.dm)",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:bird.com)",
+      "WebFetch(domain:help.twilio.com)",
+      "WebFetch(domain:docs.unifonic.com)",
+      "WebFetch(domain:www.pranavkhandelwal.com)",
+      "WebFetch(domain:api.support.vonage.com)",
+      "WebFetch(domain:developers.messagebird.com)",
+      "WebFetch(domain:apidog.com)",
+      "WebFetch(domain:www.buildmvpfast.com)",
+      "WebFetch(domain:www.smscomparison.com)",
+      "Bash([ -f \"$j\" ])",
+      "WebFetch(domain:nexmo1700665158.zendesk.com)",
+      "WebFetch(domain:docs.bird.com)"
     ]
   }
 }

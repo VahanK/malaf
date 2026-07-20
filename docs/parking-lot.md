@@ -10,3 +10,4 @@
 - **Phase 2 directory/marketplace (Khedme resurrection)**: locked behind $2k MRR or month 12.
 - **Supplier/shipping/fulfillment directory** (Jul 20, demand data): ~560 requests in Wolf of Bey channel — company directory, not freelancer front-office; marketplace-adjacent.
 - **Cross-referrals between Malaf freelancers** (Jul 20, demand data): buyers ask for bundles (logo+site+ads); marketplace-adjacent, post-validation only.
+- **Client-initiated proposal/estimate request** (vahan, Jul 20): a client on the public page requests a scoped proposal/estimate from the freelancer (not just a generic quote-request CTA), freelancer responds with an estimate the client can review. Needs scoping vs the existing quote flow — could be a variant of quote_requests, not necessarily a marketplace feature. Watch for it explicitly in founder conversations before building.

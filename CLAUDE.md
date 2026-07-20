@@ -63,9 +63,9 @@ Next.js + Supabase (Khedme's stack — keep), Vercel deploy. Domain: **malaf.wor
 
 ## Sequencing & gates (outrank enthusiasm)
 
-- **Now allowed:** reuse audit (analysis only) → AUDIT.md. Optionally: rebrand/polish ONE profile page as demo material for validation conversations.
-- **Build v1 (3 weekend sprints target):** ONLY after the validation gate passes — ≥20 real conversations AND ≥15 paid founder deals ($29/yr via Whish/USDT). Kit-of-record: phase1-validation-kit-v2.md (Cowork session).
-- **Post-launch tripwire:** ≥10 founders send a real document to a real client in week one. Watch activation, not signups.
+- **GATE OVERRIDDEN (vahan, 2026-07-20):** the validation gate below (≥20 conversations + ≥15 paid founder deals before building v1) is explicitly waived by founder decision. v1 build (documents engine, payments ladder, chaser, USDT watcher) is authorized to start now, pre-validation. This was a deliberate, confirmed call — not an accidental scope creep — made mid-session after reviewing brand/ad creative. The risk being knowingly accepted: building the money-collection machinery before confirming anyone will pay for it. Record any consequences (build churn, wasted sprints, pivots) here or in project memory so future sessions have the full picture.
+- ~~**Build v1 (3 weekend sprints target):** ONLY after the validation gate passes — ≥20 real conversations AND ≥15 paid founder deals ($29/yr via Whish/USDT). Kit-of-record: phase1-validation-kit-v2.md (Cowork session).~~ (superseded by override above)
+- **Post-launch tripwire:** ≥10 founders send a real document to a real client in week one. Watch activation, not signups. (Still the metric to watch — now watched from week one instead of after a validation phase.)
 - Weekly four numbers: conversations, founder deals, activation, MRR.
 
 ## Context (why these decisions — for the curious agent)

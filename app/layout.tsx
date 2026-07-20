@@ -17,9 +17,9 @@ const tajawal = Tajawal({
 });
 
 export const metadata: Metadata = {
-  title: "Malaf ملف — your professional card",
+  title: "malaf — the price and the proof, in one place",
   description:
-    "A professional page in seconds. Portfolio, prices, and quote requests — straight to WhatsApp.",
+    "Whatever you do, malaf gives you one place for your prices, your proof, and quote requests straight to WhatsApp.",
 };
 
 export default function RootLayout({

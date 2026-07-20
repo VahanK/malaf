@@ -94,7 +94,28 @@
       "Bash(mkdir -p malaf/components/_khedme-staging)",
       "Bash(cp khedme/components/freelancer/ProfileEditForm.tsx malaf/components/_khedme-staging/)",
       "Bash(cp -r khedme/components/notifications malaf/components/_khedme-staging/)",
-      "Bash(cp khedme/supabase/migrations/006_notifications_system.sql malaf/components/_khedme-staging/)"
+      "Bash(cp khedme/supabase/migrations/006_notifications_system.sql malaf/components/_khedme-staging/)",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__deploy_to_vercel",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__get_deployment",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__list_teams",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__get_deployment_build_logs",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__list_deployments",
+      "Bash(curl -sI https://malaf-vahanks-projects.vercel.app/rami)",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__get_access_to_vercel_url",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__web_fetch_vercel_url",
+      "mcp__4911891f-1318-489c-9e01-666151d3459a__get_project",
+      "Read(//c/Users/vahan/Downloads/WhatsApp Chat - Dev Discussion//**)",
+      "Read(//c/Users/vahan/Downloads/WhatsApp Chat - Dev Discussion/**)",
+      "Bash(node wa-prep.js)",
+      "Bash(sed -i 's|\\\\\\\\\\\\[\\(\\\\\\\\d{2}\\\\\\\\/\\\\\\\\d{2}\\\\\\\\/\\\\\\\\d{4}\\)|\\\\\\\\[\\(\\\\\\\\d{1,2}\\\\\\\\/\\\\\\\\d{1,2}\\\\\\\\/\\\\\\\\d{4}\\)|' wa-prep.js)",
+      "Bash(sed -i \"s|\\\\.replace\\(/‎/g, ''\\)|.replace\\(/[\\\\\\\\\\\\\\\\u200e\\\\\\\\\\\\\\\\u200f\\\\\\\\\\\\\\\\ufeff]/g, ''\\)|\" wa-prep.js)",
+      "Bash(cp \"/c/Users/vahan/Downloads/WhatsApp Chat - Dev Discussion/_chat.txt\" \"/c/Users/vahan/Documents/malaf/research/whatsapp/dev-discussion_chat.txt\")",
+      "Read(//c/Users/vahan/AppData/Local/Temp/claude/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/tasks//**)",
+      "Bash(head -c 3000 \"/c/Users/vahan/AppData/Local/Temp/claude/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/tasks/w7ru5y58s.output\")",
+      "Read(//c/Users/vahan/.claude/projects/C--Users-vahan-Documents-malaf/f0ac0c86-4640-4b60-aca9-b838002114b8/subagents/workflows/wf_e9de07bc-5d2/**)",
+      "WebFetch(domain:biosites.com)",
+      "WebFetch(domain:stan.store)",
+      "WebFetch(domain:help.hellobonsai.com)"
     ]
   }
 }

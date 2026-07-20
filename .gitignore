@@ -1,6 +1,7 @@
 # Raw research data contains personal info (names, phone numbers) — never commit
 research/*.csv
 research/*.json
+research/whatsapp/
 
 # env
 .env

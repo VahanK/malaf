@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Malaf card palette (docs/card-visuals.html)
+        // Malaf card palette (docs/card-visuals.html) — client-facing public card pages
         card: {
           bg: "#0e0f13",
           panel: "#16181f",
@@ -19,6 +19,21 @@ module.exports = {
           muted: "#9aa0ae",
           accent: "#c9a45c",
           green: "#3ddc84",
+        },
+        // Dashboard palette (own daily-use back office) — coral accent on light neutral,
+        // a family resemblance to the homepage brand without reusing it wholesale
+        dash: {
+          bg: "#fafaf9",
+          surface: "#ffffff",
+          border: "#e7e4de",
+          ink: "#1c1a17",
+          muted: "#7a766c",
+          accent: "#e8623d",
+          "accent-ink": "#ffffff",
+          success: "#1f9254",
+          warning: "#c98500",
+          danger: "#d1453b",
+          info: "#2a78d6",
         },
       },
     },

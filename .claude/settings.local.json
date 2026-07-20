@@ -129,7 +129,28 @@
       "WebFetch(domain:pillar.io)",
       "WebFetch(domain:linke.ro)",
       "WebFetch(domain:taplink.at)",
-      "WebFetch(domain:help.pillar.io)"
+      "WebFetch(domain:help.pillar.io)",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__account_balance",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__images_models_list",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__images_generate",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__creations_show",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__images_generate_svg",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__video_models_list",
+      "mcp__e9426a84-4c5b-4dbb-9f60-1f40e111338a__video_generate",
+      "Bash(curl -s -o /dev/null -w \"malaf.work root: %{http_code}\\\\n\" https://malaf.work)",
+      "Bash(curl -s -o /dev/null -w \"malaf.work/rami: %{http_code}\\\\n\" https://malaf.work/rami)",
+      "Bash(curl -s https://malaf.work)",
+      "Bash(curl -sI https://malaf.work)",
+      "Bash(curl -s -o /dev/null -w \"http_code=%{http_code} redirect=%{redirect_url}\\\\n\" https://malaf.work)",
+      "Bash(curl -s -o /dev/null -w \"http_code=%{http_code}\\\\n\" https://www.malaf.work)",
+      "Bash(curl -s https://www.malaf.work)",
+      "Bash(curl -sI https://www.malaf.work)",
+      "Bash(curl -s -o /dev/null -w \"http_code=%{http_code}\\\\n\" https://malaf-two.vercel.app)",
+      "Bash(curl -s -o /dev/null -w \"http_code=%{http_code}\\\\n\" https://malaf-two.vercel.app/rami)",
+      "Bash(curl -s -o /dev/null -w \"http_code=%{http_code}\\\\n\" -L https://www.malaf.work/rami)",
+      "WebFetch(domain:skillscoreapp.com)",
+      "Bash(powershell -NoProfile -Command \"Test-Path 'C:\\\\Users\\\\vahan\\\\.claude\\\\plans'\")",
+      "Bash(mkdir -p \"/c/Users/vahan/.claude/plans\" 2>/dev/null; echo done)"
     ]
   }
 }

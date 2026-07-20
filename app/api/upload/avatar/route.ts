@@ -20,11 +20,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    // Validate file type — must match the avatars bucket's allowed_mime_types (migration 004)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' },
+        { error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' },
         { status: 400 }
       )
     }
@@ -111,7 +111,7 @@ export async function DELETE(request: Request) {
 
     // Update profile to remove avatar_url
     const { error: profileError } = await supabase
-      .from('freelancer_profiles')
+      .from('profiles')
       .update({ avatar_url: null })
       .eq('id', user.id)
 

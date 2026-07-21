@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/usdt-watch",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

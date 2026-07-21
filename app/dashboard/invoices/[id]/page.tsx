@@ -45,13 +45,15 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const invoiceToken = tokens?.invoice ?? null
   const payToken = tokens?.pay ?? null
 
-  const { data: template } = await supabase
+  const { data: templates } = await supabase
     .from('message_templates')
-    .select('body')
+    .select('kind, body')
     .is('profile_id', null)
-    .eq('kind', 'invoice_share')
     .eq('language', doc.language)
-    .single()
+    .in('kind', ['invoice_share', 'reminder_tier1', 'reminder_tier2', 'reminder_tier3'])
+
+  const templateMap: Record<string, string> = {}
+  for (const t of templates ?? []) templateMap[t.kind] = t.body
 
   return (
     <InvoiceDetail
@@ -60,7 +62,12 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       payToken={payToken}
       events={eventsWithUrls}
       freelancerName={profile?.full_name ?? ''}
-      shareTemplate={template?.body ?? "Hi {{client_name}}, here's your invoice for {{amount}}: {{doc_link}}"}
+      shareTemplate={templateMap.invoice_share ?? "Hi {{client_name}}, here's your invoice for {{amount}}: {{doc_link}}"}
+      reminderTemplates={{
+        1: templateMap.reminder_tier1 ?? '',
+        2: templateMap.reminder_tier2 ?? '',
+        3: templateMap.reminder_tier3 ?? '',
+      }}
     />
   )
 }

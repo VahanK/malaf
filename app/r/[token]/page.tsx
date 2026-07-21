@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { unitLabel } from '@/lib/public-page'
+import { DOC_COPY } from '@/lib/i18n-docs'
 
 // Receipts are immutable once created — safe to ISR, unlike q/i/p.
 export const revalidate = 3600
@@ -22,6 +23,7 @@ export default async function ReceiptTokenPage({ params }: { params: Promise<{ t
   const profile = data.profile
   const accent = profile.accent_color ?? '#c9a45c'
   const isRtl = doc.language === 'ar'
+  const t = DOC_COPY[doc.language as 'en' | 'ar']
   const money = (n: number) => (doc.currency === 'USD' ? '$' : 'LBP ') + n.toLocaleString('en-US')
 
   return (
@@ -29,10 +31,10 @@ export default async function ReceiptTokenPage({ params }: { params: Promise<{ t
       <div className="mx-auto max-w-md px-5 py-8">
         <div className="text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#1b3a2b] bg-[#0d1f17] px-3 py-1 text-[11px] font-bold text-[#3ddc84]">
-            ✓ Paid
+            ✓ {t.paid}
           </span>
         </div>
-        <h1 className="mt-3 text-center text-xl font-black">Receipt from {profile.full_name}</h1>
+        <h1 className="mt-3 text-center text-xl font-black">{t.receiptFrom} {profile.full_name}</h1>
         <p className="mt-1 text-center text-xs text-[#9aa0ae]">
           {doc.paid_at ? new Date(doc.paid_at).toLocaleDateString() : ''}
         </p>
@@ -50,7 +52,7 @@ export default async function ReceiptTokenPage({ params }: { params: Promise<{ t
             </div>
           ))}
           <div className="mt-2.5 flex justify-between text-[15px] font-black">
-            <span>Total paid</span>
+            <span>{t.totalPaid}</span>
             <span style={{ color: accent }}>{money(doc.total)}</span>
           </div>
         </div>

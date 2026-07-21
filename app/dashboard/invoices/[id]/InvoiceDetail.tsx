@@ -1,16 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { formatMoney, docPrefix, STATUS_LABEL, type DocumentRow } from '@/lib/documents'
+import {
+  formatMoney, docPrefix, STATUS_LABEL, currentReminderTier, lastSentTier, daysOverdue,
+  type DocumentRow,
+} from '@/lib/documents'
 import { buildWaLink, fillTemplate } from '@/lib/wa-link'
 
 interface PaymentEvent {
   id: number
   actor: 'client' | 'owner' | 'system'
   event: string
-  detail: Record<string, unknown>
+  detail: { tier?: number; proof_path?: string } | null
   created_at: string
   proof_url: string | null
 }
@@ -22,6 +24,7 @@ export function InvoiceDetail({
   events,
   freelancerName,
   shareTemplate,
+  reminderTemplates,
 }: {
   doc: DocumentRow
   invoiceToken: string | null
@@ -29,12 +32,15 @@ export function InvoiceDetail({
   events: PaymentEvent[]
   freelancerName: string
   shareTemplate: string
+  reminderTemplates: Record<1 | 2 | 3, string>
 }) {
   const [status, setStatus] = useState(doc.status)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [receiptToken, setReceiptToken] = useState<string | null>(null)
-  const router = useRouter()
+  const [eventLog, setEventLog] = useState(events)
+  const [composerOpen, setComposerOpen] = useState(false)
+  const [composerText, setComposerText] = useState('')
   const supabase = createClient()
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
@@ -76,6 +82,46 @@ export function InvoiceDetail({
       }))
     : null
 
+  // Escalation: the next tier unlocks only once it differs from the last one
+  // actually sent, so tapping "Remind" repeatedly the same day is a no-op
+  // (plan §4) — this is an app-layer guard, not a DB constraint.
+  const days = daysOverdue(doc.due_at)
+  const eligibleTier = currentReminderTier(doc.due_at)
+  const sentTier = lastSentTier(eventLog)
+  const nextTier = eligibleTier > sentTier ? eligibleTier : 0
+  const canRemind = nextTier > 0 && (status === 'sent' || status === 'approved') && !!doc.due_at
+
+  const openComposer = () => {
+    if (!nextTier) return
+    const body = reminderTemplates[nextTier as 1 | 2 | 3] || ''
+    setComposerText(fillTemplate(body, {
+      client_name: doc.client_name,
+      amount: formatMoney(doc.total, doc.currency),
+      doc_link: payLink || invoiceLink,
+      freelancer_name: freelancerName,
+    }))
+    setComposerOpen(true)
+  }
+
+  const sendReminder = async () => {
+    const waLink = buildWaLink(doc.client_phone, composerText)
+    // Log first — "reminder composed and WhatsApp opened," never claims
+    // delivery Malaf doesn't have (plan §4 honesty note).
+    const { data: logged } = await supabase.rpc('log_reminder_sent', {
+      p_document_id: doc.id,
+      p_tier: nextTier,
+      p_language: doc.language,
+    })
+    if (logged) {
+      setEventLog([
+        { id: Date.now(), actor: 'owner', event: 'reminder_sent', detail: { tier: nextTier }, created_at: new Date().toISOString(), proof_url: null },
+        ...eventLog,
+      ])
+    }
+    setComposerOpen(false)
+    window.open(waLink, '_blank')
+  }
+
   return (
     <div className="max-w-lg">
       <div className="flex items-center justify-between">
@@ -108,6 +154,12 @@ export function InvoiceDetail({
         </p>
       )}
 
+      {(status === 'sent' || status === 'approved') && doc.due_at && days >= 0 && (
+        <p className="mt-3 text-xs text-dash-muted">
+          {days === 0 ? 'Due today' : `${days} day${days === 1 ? '' : 's'} overdue`}
+        </p>
+      )}
+
       <div className="mt-4 flex flex-wrap gap-2">
         {status === 'draft' && (
           <button onClick={send} disabled={!!busy} className="rounded-lg bg-dash-accent px-4 py-2 text-sm font-semibold text-dash-accent-ink">
@@ -128,6 +180,11 @@ export function InvoiceDetail({
             Download as image
           </a>
         )}
+        {canRemind && (
+          <button onClick={openComposer} className="rounded-lg border border-dash-warning px-4 py-2 text-sm text-dash-warning">
+            Remind (tier {nextTier})
+          </button>
+        )}
         {(status === 'sent' || status === 'approved') && (
           <button onClick={confirmPayment} disabled={!!busy} className="rounded-lg border border-dash-border px-4 py-2 text-sm">
             {busy === 'confirm' ? 'Confirming…' : 'Confirm payment'}
@@ -140,19 +197,42 @@ export function InvoiceDetail({
         )}
       </div>
 
+      {composerOpen && (
+        <div className="mt-4 rounded-lg border border-dash-warning bg-dash-surface p-4">
+          <p className="text-xs font-medium text-dash-muted">
+            Review before sending — you can edit the tone.
+          </p>
+          <textarea
+            rows={4}
+            value={composerText}
+            onChange={e => setComposerText(e.target.value)}
+            dir={doc.language === 'ar' ? 'rtl' : 'ltr'}
+            className="mt-2 w-full resize-none rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm outline-none focus:border-dash-accent"
+          />
+          <div className="mt-2 flex gap-2">
+            <button onClick={() => setComposerOpen(false)} className="rounded-lg border border-dash-border px-3 py-1.5 text-xs">
+              Cancel
+            </button>
+            <button onClick={sendReminder} className="rounded-lg bg-dash-accent px-3 py-1.5 text-xs font-semibold text-dash-accent-ink">
+              Open in WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
+
       {payLink && (
         <p className="mt-3 text-xs text-dash-muted">
           Pay link: <span className="text-dash-ink">{payLink}</span>
         </p>
       )}
 
-      {events.length > 0 && (
+      {eventLog.length > 0 && (
         <div className="mt-6">
           <h2 className="text-sm font-medium text-dash-ink">Activity</h2>
           <div className="mt-2 space-y-2">
-            {events.map(e => (
+            {eventLog.map(e => (
               <div key={e.id} className="rounded-lg border border-dash-border bg-dash-surface px-3 py-2 text-xs text-dash-muted">
-                <span className="font-medium text-dash-ink">{eventLabel(e.event)}</span>
+                <span className="font-medium text-dash-ink">{eventLabel(e)}</span>
                 {' · '}
                 {new Date(e.created_at).toLocaleString()}
                 {e.proof_url && (
@@ -169,13 +249,15 @@ export function InvoiceDetail({
   )
 }
 
-function eventLabel(event: string) {
-  switch (event) {
+function eventLabel(e: PaymentEvent) {
+  switch (e.event) {
     case 'proof_submitted': return 'Client said "I paid"'
     case 'confirmed': return 'You confirmed payment'
-    case 'reminder_sent': return 'Reminder sent'
+    // Honest granularity (plan §4): this means "composed and WhatsApp
+    // opened," never "delivered" — Malaf has no visibility past this point.
+    case 'reminder_sent': return `Reminder opened in WhatsApp (tier ${e.detail?.tier ?? '?'})`
     case 'usdt_matched': return 'USDT payment matched'
     case 'voided': return 'Voided'
-    default: return event
+    default: return e.event
   }
 }

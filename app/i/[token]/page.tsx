@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { unitLabel } from '@/lib/public-page'
+import { DOC_COPY } from '@/lib/i18n-docs'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +22,7 @@ export default async function InvoiceTokenPage({ params }: { params: Promise<{ t
   const profile = data.profile
   const accent = profile.accent_color ?? '#c9a45c'
   const isRtl = doc.language === 'ar'
+  const t = DOC_COPY[doc.language as 'en' | 'ar']
   const money = (n: number) => (doc.currency === 'USD' ? '$' : 'LBP ') + n.toLocaleString('en-US')
 
   // The invoice-view token and pay token are deliberately separate tokens
@@ -34,7 +36,7 @@ export default async function InvoiceTokenPage({ params }: { params: Promise<{ t
   return (
     <main dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-[#0e0f13] text-[#f4f2ec]">
       <div className="mx-auto max-w-md px-5 py-8">
-        <p className="text-xs text-[#9aa0ae]">Invoice from</p>
+        <p className="text-xs text-[#9aa0ae]">{t.invoiceFrom}</p>
         <h1 className="text-xl font-black">{profile.full_name}</h1>
 
         <div className="mt-5 rounded-2xl border border-[#262a35] bg-[#16181f] p-4">
@@ -50,7 +52,7 @@ export default async function InvoiceTokenPage({ params }: { params: Promise<{ t
             </div>
           ))}
           <div className="mt-2.5 flex justify-between text-[15px] font-black">
-            <span>Total</span>
+            <span>{t.total}</span>
             <span style={{ color: accent }}>{money(doc.total)}</span>
           </div>
         </div>
@@ -58,7 +60,7 @@ export default async function InvoiceTokenPage({ params }: { params: Promise<{ t
         <div className="mt-5">
           {doc.status === 'paid' ? (
             <div className="rounded-2xl border border-[#1b3a2b] bg-[#0d1f17] px-4 py-4 text-center">
-              <p className="text-[14px] font-bold text-[#3ddc84]">Paid — thank you!</p>
+              <p className="text-[14px] font-bold text-[#3ddc84]">{t.paidThanks}</p>
             </div>
           ) : payToken ? (
             <a
@@ -66,7 +68,7 @@ export default async function InvoiceTokenPage({ params }: { params: Promise<{ t
               className="block w-full rounded-2xl py-[15px] text-center text-base font-black text-[#141414]"
               style={{ background: accent }}
             >
-              Pay this invoice
+              {t.payButton}
             </a>
           ) : null}
         </div>

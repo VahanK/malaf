@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import QRCode from 'react-qr-code'
+import { DOC_COPY, type DocLang } from '@/lib/i18n-docs'
 
 const KIND_FIELD: Record<string, string> = {
   whish: 'number', omt: 'reference', bob: 'number', cashunited: 'number',
@@ -31,6 +32,7 @@ interface PayData {
     currency: 'USD' | 'LBP'
     total: number
     usdt_reference: string | null
+    usdt_amount: number | null
   }
   profile: { handle: string; full_name: string; accent_color: string | null }
   payment_methods: PaymentMethod[]
@@ -40,6 +42,7 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
   const { document: doc, profile, payment_methods } = data
   const accent = profile.accent_color ?? '#c9a45c'
   const isRtl = doc.language === 'ar'
+  const t = DOC_COPY[doc.language]
   const [claimed, setClaimed] = useState(doc.status === 'paid')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -67,10 +70,10 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
         <div className="mx-auto max-w-md px-5 py-16 text-center">
           <div className="rounded-2xl border border-[#1b3a2b] bg-[#0d1f17] px-4 py-6">
             <p className="text-[15px] font-bold text-[#3ddc84]">
-              {doc.status === 'paid' ? 'Paid — thank you!' : "Got it — we'll confirm shortly."}
+              {doc.status === 'paid' ? t.paidThanks : t.gotIt}
             </p>
             {doc.status !== 'paid' && (
-              <p className="mt-1 text-[12px] text-[#9aa0ae]">{profile.full_name} will confirm once they see it.</p>
+              <p className="mt-1 text-[12px] text-[#9aa0ae]">{t.willConfirm(profile.full_name)}</p>
             )}
           </div>
         </div>
@@ -81,7 +84,7 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
   return (
     <main dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-[#0e0f13] text-[#f4f2ec]">
       <div className="mx-auto max-w-md px-5 py-8">
-        <p className="text-xs text-[#9aa0ae]">Pay {profile.full_name}</p>
+        <p className="text-xs text-[#9aa0ae]">{t.payTitle(profile.full_name)}</p>
         <h1 className="text-3xl font-black" style={{ color: accent }}>{money(doc.total)}</h1>
 
         <div className="mt-5 space-y-3">
@@ -92,18 +95,29 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
               <div key={i} className="rounded-2xl border border-[#262a35] bg-[#16181f] p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] font-bold">{KIND_LABEL[m.kind] ?? m.label}</span>
-                  {m.fresh_usd && <span className="text-[10px] text-[#9aa0ae]">Fresh USD</span>}
+                  {m.fresh_usd && <span className="text-[10px] text-[#9aa0ae]">{t.freshUsd}</span>}
                 </div>
                 {value && (
                   <div className="mt-2 flex items-center justify-between rounded-xl bg-[#0e0f13] px-3 py-2">
                     <span className="text-[13px] text-[#f4f2ec]">{value}</span>
-                    <CopyButton value={value} />
+                    <CopyButton value={value} lang={doc.language} />
                   </div>
                 )}
                 {m.kind === 'usdt' && value && (
-                  <div className="mt-3 flex justify-center rounded-xl bg-white p-3">
-                    <QRCode value={value} size={140} />
-                  </div>
+                  <>
+                    <div className="mt-3 flex justify-center rounded-xl bg-white p-3">
+                      <QRCode value={value} size={140} />
+                    </div>
+                    {doc.usdt_amount != null && (
+                      <div className="mt-3 rounded-xl bg-[#0e0f13] px-3 py-2 text-center">
+                        <p className="text-[11px] text-[#9aa0ae]">{t.sendExactly}</p>
+                        <p className="text-lg font-black" style={{ color: accent }}>
+                          {doc.usdt_amount.toFixed(2)} USDT
+                        </p>
+                        <p className="mt-1 text-[10px] text-[#6b7284]">{t.exactAmountNote}</p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )
@@ -111,8 +125,8 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
         </div>
 
         <div className="mt-6 rounded-2xl border border-[#262a35] bg-[#16181f] p-4">
-          <p className="text-[13px] font-bold">I paid</p>
-          <p className="mt-1 text-[11px] text-[#9aa0ae]">Optional — attach a screenshot as proof.</p>
+          <p className="text-[13px] font-bold">{t.iPaid}</p>
+          <p className="mt-1 text-[11px] text-[#9aa0ae]">{t.proofOptional}</p>
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"
@@ -121,7 +135,7 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
           />
           <textarea
             rows={2}
-            placeholder="Note (optional)"
+            placeholder={t.notePlaceholder}
             value={note}
             onChange={e => setNote(e.target.value)}
             className="mt-2 w-full resize-none rounded-lg border border-[#2c313d] bg-transparent px-3 py-2 text-[13px] outline-none placeholder:text-[#6b7284]"
@@ -133,7 +147,7 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
             className="mt-3 w-full rounded-xl py-3 text-[14px] font-black text-[#141414] disabled:opacity-60"
             style={{ background: accent }}
           >
-            {busy ? 'Sending…' : "I've paid"}
+            {busy ? t.sending : t.submitPaid}
           </button>
         </div>
       </div>
@@ -141,7 +155,8 @@ export function PayView({ data, token }: { data: PayData; token: string }) {
   )
 }
 
-function CopyButton({ value }: { value: string }) {
+function CopyButton({ value, lang }: { value: string; lang: DocLang }) {
+  const t = DOC_COPY[lang]
   const [copied, setCopied] = useState(false)
   return (
     <button
@@ -152,7 +167,7 @@ function CopyButton({ value }: { value: string }) {
       }}
       className="text-[11px] font-bold text-[#c9a45c]"
     >
-      {copied ? 'Copied' : 'Copy'}
+      {copied ? t.copied : t.copy}
     </button>
   )
 }

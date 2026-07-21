@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { NotificationBell } from '@/components/dashboard/NotificationBell'
 
 const NAV = [
   { href: '/dashboard', label: 'Overview' },
@@ -21,7 +22,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-dash-bg text-dash-ink">
       <div className="mx-auto flex max-w-5xl gap-8 px-6 py-8">
         <nav className="w-44 shrink-0 space-y-1">
-          <div className="mb-6 text-lg font-semibold lowercase">malaf</div>
+          <div className="mb-6 flex items-center justify-between">
+            <span className="text-lg font-semibold lowercase">malaf</span>
+            <NotificationBell />
+          </div>
           {NAV.map(item => (
             <Link
               key={item.href}

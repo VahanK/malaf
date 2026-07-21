@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { unitLabel } from '@/lib/pricing-format'
+import { DOC_COPY } from '@/lib/i18n-docs'
 
 interface LineItem {
   title: string
@@ -37,6 +38,7 @@ export function QuoteView({ data, token }: { data: TokenDoc; token: string }) {
   const { document: doc, profile } = data
   const accent = profile.accent_color ?? '#c9a45c'
   const isRtl = doc.language === 'ar'
+  const t = DOC_COPY[doc.language]
   const [status, setStatus] = useState(doc.status)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -56,7 +58,7 @@ export function QuoteView({ data, token }: { data: TokenDoc; token: string }) {
   return (
     <main dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-[#0e0f13] text-[#f4f2ec]">
       <div className="mx-auto max-w-md px-5 py-8">
-        <p className="text-xs text-[#9aa0ae]">Quote from</p>
+        <p className="text-xs text-[#9aa0ae]">{t.quoteFrom}</p>
         <h1 className="text-xl font-black">{profile.full_name}</h1>
 
         <div className="mt-5 rounded-2xl border border-[#262a35] bg-[#16181f] p-4">
@@ -72,7 +74,7 @@ export function QuoteView({ data, token }: { data: TokenDoc; token: string }) {
             </div>
           ))}
           <div className="mt-2.5 flex justify-between text-[15px] font-black">
-            <span>Total</span>
+            <span>{t.total}</span>
             <span style={{ color: accent }}>{money(doc.total)}</span>
           </div>
         </div>
@@ -82,9 +84,9 @@ export function QuoteView({ data, token }: { data: TokenDoc; token: string }) {
         <div className="mt-5">
           {status === 'approved' ? (
             <div className="rounded-2xl border border-[#1b3a2b] bg-[#0d1f17] px-4 py-4 text-center">
-              <p className="text-[14px] font-bold text-[#3ddc84]">Approved ✓</p>
+              <p className="text-[14px] font-bold text-[#3ddc84]">{t.approved}</p>
               {doc.approved_via === 'whatsapp_manual' && (
-                <p className="mt-1 text-[12px] text-[#9aa0ae]">Confirmed via WhatsApp</p>
+                <p className="mt-1 text-[12px] text-[#9aa0ae]">{t.approvedViaWhatsapp}</p>
               )}
             </div>
           ) : status === 'sent' ? (
@@ -94,10 +96,10 @@ export function QuoteView({ data, token }: { data: TokenDoc; token: string }) {
               className="block w-full rounded-2xl py-[15px] text-center text-base font-black text-[#141414] disabled:opacity-60"
               style={{ background: accent }}
             >
-              {busy ? 'Approving…' : 'Approve this quote'}
+              {busy ? t.approving : t.approveButton}
             </button>
           ) : (
-            <p className="text-center text-sm text-[#9aa0ae]">This quote is {status}.</p>
+            <p className="text-center text-sm text-[#9aa0ae]">{t.statusPrefix} {status}.</p>
           )}
         </div>
       </div>

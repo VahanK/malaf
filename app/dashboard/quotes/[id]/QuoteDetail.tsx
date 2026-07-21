@@ -20,6 +20,9 @@ export function QuoteDetail({
   const [status, setStatus] = useState(doc.status)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showDueDatePicker, setShowDueDatePicker] = useState(false)
+  const defaultDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  const [dueDate, setDueDate] = useState(defaultDueDate)
   const router = useRouter()
   const supabase = createClient()
 
@@ -47,7 +50,10 @@ export function QuoteDetail({
 
   const convertToInvoice = async () => {
     setBusy('convert')
-    const { data, error: rpcError } = await supabase.rpc('convert_quote_to_invoice', { p_document_id: doc.id })
+    const { data, error: rpcError } = await supabase.rpc('convert_quote_to_invoice', {
+      p_document_id: doc.id,
+      p_due_at: new Date(`${dueDate}T23:59:59`).toISOString(),
+    })
     setBusy(null)
     if (rpcError || !data) { setError(rpcError?.message ?? 'Could not convert'); return }
     router.push(`/dashboard/invoices/${data.invoice_id}`)
@@ -120,9 +126,9 @@ export function QuoteDetail({
             {busy === 'approve' ? 'Marking…' : 'Approved on WhatsApp'}
           </button>
         )}
-        {status === 'approved' && (
-          <button onClick={convertToInvoice} disabled={!!busy} className="rounded-lg bg-dash-accent px-4 py-2 text-sm font-semibold text-dash-accent-ink">
-            {busy === 'convert' ? 'Converting…' : 'Convert to invoice'}
+        {status === 'approved' && !showDueDatePicker && (
+          <button onClick={() => setShowDueDatePicker(true)} className="rounded-lg bg-dash-accent px-4 py-2 text-sm font-semibold text-dash-accent-ink">
+            Convert to invoice
           </button>
         )}
         {!['void', 'paid'].includes(status) && (
@@ -131,6 +137,21 @@ export function QuoteDetail({
           </button>
         )}
       </div>
+
+      {showDueDatePicker && (
+        <div className="mt-3 flex items-center gap-2 rounded-lg border border-dash-border bg-dash-surface p-3">
+          <label className="text-sm text-dash-muted">Due date</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+            className="rounded-lg border border-dash-border bg-dash-bg px-2 py-1 text-sm outline-none focus:border-dash-accent"
+          />
+          <button onClick={convertToInvoice} disabled={!!busy} className="rounded-lg bg-dash-accent px-3 py-1.5 text-sm font-semibold text-dash-accent-ink">
+            {busy === 'convert' ? 'Converting…' : 'Confirm'}
+          </button>
+        </div>
+      )}
 
       {docLink && (
         <p className="mt-3 text-xs text-dash-muted">

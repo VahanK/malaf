@@ -1,0 +1,66 @@
+// Minimal client-facing copy for the tokenized document pages (q/i/p/r).
+// Per-CLIENT document language (CLAUDE.md Language policy) — this is
+// distinct from the dashboard's page_language, which is the freelancer's
+// own UI preference. Dialect-leaning, not corporate MSA, per CLAUDE.md's
+// copy rules — kept short since these are labels, not the reminder
+// templates (those are DB-stored and need founder review separately).
+export const DOC_COPY = {
+  en: {
+    quoteFrom: 'Quote from',
+    invoiceFrom: 'Invoice from',
+    receiptFrom: 'Receipt from',
+    payTitle: (name: string) => `Pay ${name}`,
+    total: 'Total',
+    totalPaid: 'Total paid',
+    approveButton: 'Approve this quote',
+    approving: 'Approving…',
+    approved: 'Approved ✓',
+    approvedViaWhatsapp: 'Confirmed via WhatsApp',
+    payButton: 'Pay this invoice',
+    paidThanks: 'Paid — thank you!',
+    statusPrefix: 'This quote is',
+    paid: 'Paid',
+    iPaid: 'I paid',
+    proofOptional: 'Optional — attach a screenshot as proof.',
+    notePlaceholder: 'Note (optional)',
+    sending: 'Sending…',
+    submitPaid: "I've paid",
+    gotIt: "Got it — we'll confirm shortly.",
+    willConfirm: (name: string) => `${name} will confirm once they see it.`,
+    copy: 'Copy',
+    copied: 'Copied',
+    freshUsd: 'Fresh USD',
+    sendExactly: 'Send exactly',
+    exactAmountNote: 'The exact amount (down to the cents) helps us match your payment automatically.',
+  },
+  ar: {
+    quoteFrom: 'عرض سعر من',
+    invoiceFrom: 'فاتورة من',
+    receiptFrom: 'إيصال من',
+    payTitle: (name: string) => `دفع لـ ${name}`,
+    total: 'الإجمالي',
+    totalPaid: 'المبلغ المدفوع',
+    approveButton: 'موافقة على العرض',
+    approving: 'جاري الموافقة…',
+    approved: 'تمت الموافقة ✓',
+    approvedViaWhatsapp: 'تم التأكيد عبر واتساب',
+    payButton: 'دفع الفاتورة',
+    paidThanks: 'تم الدفع — شكرا!',
+    statusPrefix: 'حالة هذا العرض:',
+    paid: 'مدفوعة',
+    iPaid: 'دفعت',
+    proofOptional: 'اختياري — أرفق صورة كإثبات.',
+    notePlaceholder: 'ملاحظة (اختياري)',
+    sending: 'جاري الإرسال…',
+    submitPaid: 'لقد دفعت',
+    gotIt: 'تم — سنؤكد قريبا.',
+    willConfirm: (name: string) => `${name} سيؤكد عند رؤيته.`,
+    copy: 'نسخ',
+    copied: 'تم النسخ',
+    freshUsd: 'دولار فريش',
+    sendExactly: 'أرسل بالضبط',
+    exactAmountNote: 'المبلغ الدقيق (حتى السنتات) بيساعدنا نأكد الدفعة أوتوماتيكياً.',
+  },
+} as const
+
+export type DocLang = keyof typeof DOC_COPY

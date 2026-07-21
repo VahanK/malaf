@@ -19,7 +19,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/signin')
 
-  const { data: me } = await supabase.from('profiles').select('is_founder').eq('id', user.id).single()
+  const { data: me } = await supabase.from('profiles').select('is_founder, handle').eq('id', user.id).single()
+  // No handle yet = never finished onboarding — send them through the launch flow first.
+  if (me && !me.handle) redirect('/onboarding')
   const nav = me?.is_founder ? [...NAV, { href: '/dashboard/founder', label: 'Founder' }] : NAV
 
   return (

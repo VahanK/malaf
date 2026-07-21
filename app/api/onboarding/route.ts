@@ -13,8 +13,11 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null)
   const handle = (body?.handle ?? '').trim().toLowerCase()
   const presetKey = body?.preset ?? ''
-  if (!handle || !presetKey) {
-    return NextResponse.json({ ok: false, error: 'missing handle or preset' }, { status: 400 })
+  const fullName = (body?.full_name ?? '').trim()
+  const title = (body?.title ?? '').trim()
+  const whatsapp = (body?.whatsapp_number ?? '').trim()
+  if (!handle || !presetKey || fullName.length < 2) {
+    return NextResponse.json({ ok: false, error: 'missing handle, preset, or name' }, { status: 400 })
   }
 
   const { data: available } = await supabase.rpc('is_handle_available', { candidate: handle })
@@ -24,14 +27,21 @@ export async function POST(request: Request) {
 
   const { data: preset } = await supabase
     .from('presets')
-    .select('key, accent_color, config')
+    .select('key, label, accent_color, config')
     .eq('key', presetKey)
     .single()
   if (!preset) return NextResponse.json({ ok: false, error: 'unknown preset' }, { status: 400 })
 
   const { error: profileError } = await supabase
     .from('profiles')
-    .update({ handle, preset: preset.key, accent_color: preset.accent_color })
+    .update({
+      handle,
+      preset: preset.key,
+      accent_color: preset.accent_color,
+      full_name: fullName,
+      title: title || preset.label,
+      whatsapp_number: whatsapp,
+    })
     .eq('id', user.id)
   if (profileError) return NextResponse.json({ ok: false, error: profileError.message }, { status: 400 })
 

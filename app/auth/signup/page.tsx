@@ -43,7 +43,7 @@ export default function SignUpPage() {
       return
     }
 
-    router.push('/dashboard/onboarding')
+    router.push('/onboarding')
   }
 
   if (sent) {

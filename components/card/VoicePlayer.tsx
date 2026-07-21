@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const BARS = [8, 14, 20, 11, 17, 7, 13, 21, 9, 15, 18, 8, 12, 19, 10, 16, 7, 14]
 
-export function VoicePlayer({ src, label }: { src: string | null; label: string }) {
+export function VoicePlayer({ src, label, accent }: { src: string | null; label: string; accent: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -36,18 +36,20 @@ export function VoicePlayer({ src, label }: { src: string | null; label: string 
       <button
         onClick={toggle}
         aria-label={playing ? 'Pause voice intro' : 'Play voice intro'}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c9a45c] text-sm text-[#141414]"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm text-[#141414] transition-transform active:scale-90"
+        style={{ background: accent }}
       >
         {playing ? '❚❚' : '▶'}
       </button>
-      <div className="flex h-[22px] flex-1 items-center gap-[2.5px]" aria-hidden>
+      <div className={`flex h-[22px] flex-1 items-center gap-[2.5px] ${playing ? 'wave-playing' : ''}`} aria-hidden>
         {BARS.map((h, i) => (
           <i
             key={i}
             className="block w-[3px] rounded-sm transition-colors"
             style={{
               height: h,
-              background: i / BARS.length <= progress ? '#c9a45c' : i % 2 ? '#4c5262' : '#6b7284',
+              background: i / BARS.length <= progress ? accent : i % 2 ? '#4c5262' : '#6b7284',
+              animationDelay: playing ? `${(i % 6) * 0.12}s` : undefined,
             }}
           />
         ))}

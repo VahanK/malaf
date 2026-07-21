@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 
 const BARS = [8, 14, 20, 11, 17, 7, 13, 21, 9, 15, 18, 8, 12, 19, 10, 16, 7, 14]
 
-export function VoicePlayer({ src, label, accent }: { src: string | null; label: string; accent: string }) {
+export function VoicePlayer({
+  src, label, accent, radiusClass = 'rounded-2xl',
+}: { src: string | null; label: string; accent: string; radiusClass?: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -32,11 +34,11 @@ export function VoicePlayer({ src, label, accent }: { src: string | null; label:
   const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
 
   return (
-    <div className="flex items-center gap-2.5 rounded-2xl border border-[#262a35] bg-[#16181f] px-3.5 py-2.5">
+    <div className={`flex items-center gap-2.5 border border-[var(--card-border)] bg-[var(--card-surface)] px-3.5 py-2.5 ${radiusClass}`}>
       <button
         onClick={toggle}
         aria-label={playing ? 'Pause voice intro' : 'Play voice intro'}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm text-[#141414] transition-transform active:scale-90"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm text-[var(--card-accent-ink)] transition-transform active:scale-90"
         style={{ background: accent }}
       >
         {playing ? '❚❚' : '▶'}
@@ -48,13 +50,14 @@ export function VoicePlayer({ src, label, accent }: { src: string | null; label:
             className="block w-[3px] rounded-sm transition-colors"
             style={{
               height: h,
-              background: i / BARS.length <= progress ? accent : i % 2 ? '#4c5262' : '#6b7284',
+              background: i / BARS.length <= progress ? accent : 'var(--card-muted-2)',
+              opacity: i / BARS.length <= progress ? 1 : (i % 2 ? 0.55 : 0.4),
               animationDelay: playing ? `${(i % 6) * 0.12}s` : undefined,
             }}
           />
         ))}
       </div>
-      <small className="whitespace-nowrap text-[11px] text-[#9aa0ae]">
+      <small className="whitespace-nowrap text-[11px] text-[var(--card-muted)]">
         {label}{duration ? ` · ${fmt(duration)}` : ''}
       </small>
     </div>

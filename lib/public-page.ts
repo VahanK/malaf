@@ -30,6 +30,7 @@ export interface PublicProfile {
   voice_intro_url: string | null
   accent_color: string | null
   preset: string | null
+  card_template: string
   availability_status: 'available' | 'busy' | 'away'
   availability_note: string
   whatsapp_number: string | null

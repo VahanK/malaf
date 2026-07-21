@@ -41,14 +41,17 @@ function Img({ url, alt, index, className }: { url?: string; alt?: string; index
   )
 }
 
+interface BlockProps { data: Record<string, unknown>; accent: string; radiusClass: string }
+
 /* ---------- image grid: editorial layout + full-screen lightbox ---------- */
 
 interface GridImage { url?: string; alt?: string }
 
-export function ImageGrid({ data }: { data: Record<string, unknown> }) {
+export function ImageGrid({ data, radiusClass }: Pick<BlockProps, 'data' | 'radiusClass'>) {
   const images = ((data.images as GridImage[] | undefined) ?? []).slice(0, 9)
   const [openAt, setOpenAt] = useState<number | null>(null)
   if (!images.length) return null
+  const cellRadius = radiusClass.includes('lg') ? 'rounded-[var(--card-radius-md)]' : radiusClass
 
   return (
     <>
@@ -61,7 +64,7 @@ export function ImageGrid({ data }: { data: Record<string, unknown> }) {
             className={`stagger group transition-transform active:scale-[0.97] ${i === 0 ? 'col-span-2 row-span-2' : ''}`}
             style={{ transitionDelay: `${Math.min(i * 70, 420)}ms` }}
           >
-            <span className="block h-full w-full overflow-hidden rounded-[10px]">
+            <span className={`block h-full w-full overflow-hidden ${cellRadius}`}>
               <Img
                 url={img.url}
                 alt={img.alt}
@@ -144,7 +147,7 @@ function Lightbox({ images, start, onClose }: { images: GridImage[]; start: numb
 
 /* ---------- before/after: draggable comparison slider ---------- */
 
-export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; accent: string }) {
+export function BeforeAfter({ data, accent, radiusClass }: BlockProps) {
   const before = data.before as { url?: string } | undefined
   const after = data.after as { url?: string } | undefined
   const caption = (data.caption as string) ?? ''
@@ -164,7 +167,7 @@ export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; a
     <div>
       <div
         ref={ref}
-        className="relative aspect-[4/5] touch-none select-none overflow-hidden rounded-[14px]"
+        className={`relative aspect-[4/5] touch-none select-none overflow-hidden ${radiusClass}`}
         onPointerDown={e => { dragging.current = true; moveTo(e.clientX) }}
         onPointerMove={e => { if (dragging.current) moveTo(e.clientX) }}
         onPointerUp={() => { dragging.current = false }}
@@ -180,7 +183,7 @@ export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; a
         <div className="pointer-events-none absolute inset-y-0" style={{ left: `${pos}%` }}>
           <div className="h-full w-[2px] -translate-x-1/2 bg-white/90 shadow-[0_0_12px_rgba(0,0,0,.6)]" />
           <div
-            className="handle-nudge absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[13px] font-black text-[#141414] shadow-lg"
+            className="handle-nudge absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[13px] font-black text-[var(--card-accent-ink)] shadow-lg"
             style={{ background: accent }}
           >
             ⇄
@@ -194,13 +197,13 @@ export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; a
           Before
         </span>
         <span
-          className="absolute end-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#141414] transition-opacity"
+          className="absolute end-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--card-accent-ink)] transition-opacity"
           style={{ background: accent, opacity: pos < 85 ? 1 : 0 }}
         >
           After
         </span>
       </div>
-      <p className="mt-1.5 text-center text-[11px] text-[#6b7284]">
+      <p className="mt-1.5 text-center text-[11px] text-[var(--card-muted-2)]">
         {caption || 'Drag to compare'}
       </p>
     </div>
@@ -209,13 +212,13 @@ export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; a
 
 /* ---------- testimonial: true WhatsApp incoming-bubble anatomy ---------- */
 
-export function Testimonial({ data }: { data: Record<string, unknown> }) {
+export function Testimonial({ data, radiusClass }: Pick<BlockProps, 'data' | 'radiusClass'>) {
   const text = (data.text as string) ?? ''
   const attribution = (data.attribution as string) ?? ''
   const dateLabel = (data.date_label as string) ?? ''
   if (!text) return null
   return (
-    <div className="rounded-[14px] bg-[#0b141a] px-3.5 py-3.5">
+    <div className={`bg-[#0b141a] px-3.5 py-3.5 ${radiusClass}`}>
       <div className="relative max-w-[92%]">
         {/* bubble tail */}
         <span
@@ -238,7 +241,7 @@ export function Testimonial({ data }: { data: Record<string, unknown> }) {
 
 /* ---------- stat card: counts up when scrolled into view ---------- */
 
-export function StatCard({ data, accent }: { data: Record<string, unknown>; accent: string }) {
+export function StatCard({ data, accent, radiusClass }: BlockProps) {
   const value = (data.value as string) ?? ''
   const label = (data.label as string) ?? ''
   const ref = useRef<HTMLDivElement | null>(null)
@@ -273,16 +276,16 @@ export function StatCard({ data, accent }: { data: Record<string, unknown>; acce
 
   if (!value) return null
   return (
-    <div ref={ref} className="rounded-[14px] border border-[#262a35] bg-[#16181f] px-4 py-5 text-center">
+    <div ref={ref} className={`border border-[var(--card-border)] bg-[var(--card-surface)] px-4 py-5 text-center ${radiusClass}`}>
       <div className="text-[34px] font-black leading-none tabular-nums" style={{ color: accent }}>{display}</div>
-      <div className="mt-1.5 text-[12.5px] text-[#9aa0ae]">{label}</div>
+      <div className="mt-1.5 text-[12.5px] text-[var(--card-muted)]">{label}</div>
     </div>
   )
 }
 
 /* ---------- video link + case card ---------- */
 
-export function VideoLink({ data, accent }: { data: Record<string, unknown>; accent: string }) {
+export function VideoLink({ data, accent, radiusClass }: BlockProps) {
   const url = (data.url as string) ?? ''
   const title = (data.title as string) ?? 'Watch'
   if (!url) return null
@@ -291,41 +294,41 @@ export function VideoLink({ data, accent }: { data: Record<string, unknown>; acc
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 rounded-[14px] border border-[#262a35] bg-[#16181f] px-4 py-3 transition-colors hover:border-white/25"
+      className={`flex items-center gap-3 border border-[var(--card-border)] bg-[var(--card-surface)] px-4 py-3 transition-colors hover:border-[var(--card-muted)] ${radiusClass}`}
     >
       <span
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm text-[#141414]"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm text-[var(--card-accent-ink)]"
         style={{ background: accent }}
       >
         ▶
       </span>
       <span className="text-[13.5px] font-semibold">{title}</span>
-      <span className="ms-auto text-[#6b7284]">↗</span>
+      <span className="ms-auto text-[var(--card-muted-2)]">↗</span>
     </a>
   )
 }
 
-export function CaseCard({ data, accent }: { data: Record<string, unknown>; accent: string }) {
+export function CaseCard({ data, accent, radiusClass }: BlockProps) {
   const title = (data.title as string) ?? ''
   const excerpt = (data.excerpt as string) ?? ''
   if (!title) return null
   return (
-    <div className="rounded-[14px] border border-[#262a35] bg-[#16181f] px-4 py-3.5">
+    <div className={`border border-[var(--card-border)] bg-[var(--card-surface)] px-4 py-3.5 ${radiusClass}`}>
       <div className="h-[3px] w-8 rounded-full" style={{ background: accent }} />
       <h3 className="mt-2.5 text-[14px] font-bold">{title}</h3>
-      {excerpt ? <p className="mt-1 text-[12.5px] leading-relaxed text-[#9aa0ae]">{excerpt}</p> : null}
+      {excerpt ? <p className="mt-1 text-[12.5px] leading-relaxed text-[var(--card-muted)]">{excerpt}</p> : null}
     </div>
   )
 }
 
-export function Block({ block, accent }: { block: PublicBlock; accent: string }) {
+export function Block({ block, accent, radiusClass }: { block: PublicBlock; accent: string; radiusClass: string }) {
   switch (block.type) {
-    case 'image_grid': return <ImageGrid data={block.data} />
-    case 'before_after': return <BeforeAfter data={block.data} accent={accent} />
-    case 'testimonial': return <Testimonial data={block.data} />
-    case 'stat_card': return <StatCard data={block.data} accent={accent} />
-    case 'video_link': return <VideoLink data={block.data} accent={accent} />
-    case 'case_card': return <CaseCard data={block.data} accent={accent} />
+    case 'image_grid': return <ImageGrid data={block.data} radiusClass={radiusClass} />
+    case 'before_after': return <BeforeAfter data={block.data} accent={accent} radiusClass={radiusClass} />
+    case 'testimonial': return <Testimonial data={block.data} radiusClass={radiusClass} />
+    case 'stat_card': return <StatCard data={block.data} accent={accent} radiusClass={radiusClass} />
+    case 'video_link': return <VideoLink data={block.data} accent={accent} radiusClass={radiusClass} />
+    case 'case_card': return <CaseCard data={block.data} accent={accent} radiusClass={radiusClass} />
     default: return null
   }
 }

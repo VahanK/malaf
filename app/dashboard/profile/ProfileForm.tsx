@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { mediaUrl } from '@/lib/media'
+import { CARD_TEMPLATES, type CardTemplateId } from '@/lib/card-templates'
 
 interface Profile {
   id: string
@@ -19,6 +20,8 @@ interface Profile {
   availability_note: string
   page_language: 'en' | 'ar'
   page_published: boolean
+  accent_color: string | null
+  card_template: string | null
 }
 
 export function ProfileForm({ profile }: { profile: Profile }) {
@@ -33,6 +36,7 @@ export function ProfileForm({ profile }: { profile: Profile }) {
     availability_note: profile.availability_note ?? '',
     page_language: profile.page_language ?? 'en',
     page_published: profile.page_published ?? false,
+    card_template: (profile.card_template ?? 'editorial-dark') as CardTemplateId,
   })
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url)
   const [voiceUrl, setVoiceUrl] = useState(profile.voice_intro_url)
@@ -212,6 +216,54 @@ export function ProfileForm({ profile }: { profile: Profile }) {
           className="hidden"
           onChange={e => e.target.files?.[0] && uploadVoice(e.target.files[0])}
         />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-dash-ink">Card look</label>
+        <p className="mt-0.5 text-xs text-dash-muted">
+          Your trade sets your starter content — this sets how your page looks. Switch anytime.
+        </p>
+        <div className="mt-2 grid grid-cols-2 gap-3">
+          {Object.values(CARD_TEMPLATES).map(t => {
+            const accent = profile.accent_color ?? t.swatch.accentFallback
+            const selected = form.card_template === t.id
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setForm({ ...form, card_template: t.id })}
+                className={`overflow-hidden rounded-xl border-2 text-left transition-all ${
+                  selected ? 'border-dash-accent shadow-sm' : 'border-dash-border hover:border-dash-muted'
+                }`}
+              >
+                <div className="p-3" style={{ background: t.swatch.bg, color: t.swatch.ink }}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-black"
+                      style={{ background: accent, color: t.swatch.bg === '#ffffff' ? '#fff' : '#141414' }}
+                    >
+                      {(form.full_name || 'Y').charAt(0).toUpperCase()}
+                    </span>
+                    <div
+                      className="h-2 flex-1 rounded-full"
+                      style={{ background: t.swatch.surface }}
+                    />
+                  </div>
+                  <div
+                    className="mt-2 h-6 rounded-md text-center text-[10px] font-bold leading-6"
+                    style={{ background: accent, color: t.swatch.bg === '#ffffff' ? '#fff' : '#141414' }}
+                  >
+                    Request a quote
+                  </div>
+                </div>
+                <div className="border-t border-dash-border bg-dash-surface px-3 py-2">
+                  <p className="text-xs font-semibold text-dash-ink">{t.label}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-dash-muted">{t.description}</p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <label className="flex items-center gap-2 text-sm text-dash-ink">

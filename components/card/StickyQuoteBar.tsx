@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react'
 // Slim bottom bar that appears once the in-page "Request a quote" CTA has
 // scrolled out of view — the page's one job is converting viewers into quote
 // requests (CLAUDE.md §0), so the ask stays reachable on long portfolios.
-export function StickyQuoteBar({ accent, name }: { accent: string; name: string }) {
+export function StickyQuoteBar({
+  accent, name, corner,
+}: { accent: string; name: string; corner: 'soft' | 'sharp' }) {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -31,6 +33,9 @@ export function StickyQuoteBar({ accent, name }: { accent: string; name: string 
     document.getElementById('quote-cta')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
+  const barRadius = corner === 'sharp' ? 'rounded-[var(--card-radius-md)]' : 'rounded-2xl'
+  const pillRadius = corner === 'sharp' ? 'rounded-[var(--card-radius-md)]' : 'rounded-xl'
+
   return (
     <div
       className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),12px)] transition-all duration-300"
@@ -40,13 +45,13 @@ export function StickyQuoteBar({ accent, name }: { accent: string; name: string 
         pointerEvents: show ? 'auto' : 'none',
       }}
     >
-      <div className="mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-white/10 bg-[#16181f]/95 px-4 py-2.5 shadow-[0_10px_40px_rgba(0,0,0,.55)] backdrop-blur">
-        <span className="min-w-0 flex-1 truncate text-[12.5px] text-[#9aa0ae]">
+      <div className={`mx-auto flex max-w-md items-center gap-3 border border-[var(--card-border)] bg-[var(--card-surface)]/95 px-4 py-2.5 shadow-[var(--card-shadow)] backdrop-blur ${barRadius}`}>
+        <span className="min-w-0 flex-1 truncate text-[12.5px] text-[var(--card-muted)]">
           Work with {name}
         </span>
         <button
           onClick={scrollToCta}
-          className="shrink-0 rounded-xl px-4 py-2 text-[13px] font-black text-[#141414]"
+          className={`shrink-0 px-4 py-2 text-[13px] font-black text-[var(--card-accent-ink)] ${pillRadius}`}
           style={{ background: accent }}
         >
           Request a quote

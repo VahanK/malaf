@@ -11,6 +11,7 @@ interface Props {
   avatarUrl: string | null
   firstName: string
   replyHours: number | null
+  corner: 'soft' | 'sharp'
 }
 
 type Step = 'service' | 'details' | 'contact' | 'sending' | 'sent'
@@ -19,7 +20,9 @@ type Step = 'service' | 'details' | 'contact' | 'sending' | 'sent'
 // whole product: WhatsApp is the culture, the app is the artifact. The
 // client "chats" with the freelancer's card; the payload still posts to the
 // same /api/quote endpoint underneath.
-export function QuoteForm({ handle, services, accent, avatarUrl, firstName, replyHours }: Props) {
+export function QuoteForm({ handle, services, accent, avatarUrl, firstName, replyHours, corner }: Props) {
+  const btnRadius = corner === 'sharp' ? 'rounded-[var(--card-radius-md)]' : 'rounded-2xl'
+  const outerRadius = corner === 'sharp' ? 'rounded-[var(--card-radius-md)]' : 'rounded-2xl'
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step>('service')
   const [serviceId, setServiceId] = useState('')
@@ -75,7 +78,7 @@ export function QuoteForm({ handle, services, accent, avatarUrl, firstName, repl
     return (
       <button
         onClick={() => setOpen(true)}
-        className="block w-full rounded-2xl py-[15px] text-center text-base font-black text-[#141414] transition-transform active:scale-[0.98]"
+        className={`block w-full py-[15px] text-center text-base font-black text-[var(--card-accent-ink)] transition-transform active:scale-[0.98] ${btnRadius}`}
         style={{ background: accent }}
       >
         Request a quote
@@ -86,7 +89,7 @@ export function QuoteForm({ handle, services, accent, avatarUrl, firstName, repl
   const stepIndex = { service: 0, details: 1, contact: 2, sending: 2, sent: 3 }[step]
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-[#0b141a]">
+    <div className={`overflow-hidden bg-[#0b141a] ${outerRadius}`}>
       {/* chat header */}
       <div className="flex items-center gap-2.5 border-b border-white/5 bg-[#16181f] px-3.5 py-2.5">
         {avatarUrl ? (

@@ -43,7 +43,7 @@ export function PublicCard({ page }: { page: PublicPage }) {
       className="min-h-screen text-[var(--card-ink)]"
       style={{
         ...vars,
-        background: tpl.container === 'phone'
+        background: tpl.wash
           ? `radial-gradient(640px 420px at 50% -120px, ${accent}30, transparent 70%), var(--card-bg)`
           : 'var(--card-bg)',
       }}

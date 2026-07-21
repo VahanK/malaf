@@ -9,7 +9,7 @@
 // can't be pure CSS: container strategy, corner radius scale, whether
 // headings use a display serif or the body sans.
 
-export type CardTemplateId = 'editorial-dark' | 'minimal-light'
+export type CardTemplateId = 'editorial-dark' | 'minimal-light' | 'warm-gradient'
 
 export interface CardTemplate {
   id: CardTemplateId
@@ -24,6 +24,8 @@ export interface CardTemplate {
   headingFont: 'display' | 'sans'
   corner: 'soft' | 'sharp'
   motion: 'full' | 'subtle'
+  /** Ambient radial accent wash behind the page — off for flat/neutral templates. */
+  wash: boolean
 }
 
 const EDITORIAL_DARK: CardTemplate = {
@@ -35,6 +37,7 @@ const EDITORIAL_DARK: CardTemplate = {
   headingFont: 'sans',
   corner: 'soft',
   motion: 'full',
+  wash: true,
   vars: accent => ({
     '--card-bg': '#0e0f13',
     '--card-surface': '#16181f',
@@ -64,6 +67,7 @@ const MINIMAL_LIGHT: CardTemplate = {
   headingFont: 'display',
   corner: 'sharp',
   motion: 'subtle',
+  wash: false,
   vars: accent => ({
     '--card-bg': '#faf9f6',
     '--card-surface': '#ffffff',
@@ -84,9 +88,40 @@ const MINIMAL_LIGHT: CardTemplate = {
   }),
 }
 
+const WARM_GRADIENT: CardTemplate = {
+  id: 'warm-gradient',
+  label: 'Warm Gradient',
+  description: 'Bright, soft, confident — a warm wash behind everything and rounded cards. Best for consultants, coaches, tutors, event planners.',
+  swatch: { bg: '#fff7ef', surface: '#ffffff', ink: '#231b12', accentFallback: '#e2703a' },
+  container: 'wide',
+  headingFont: 'sans',
+  corner: 'soft',
+  motion: 'subtle',
+  wash: true,
+  vars: accent => ({
+    '--card-bg': '#fff7ef',
+    '--card-surface': '#ffffff',
+    '--card-surface-soft': '#fdf1e4',
+    '--card-ink': '#231b12',
+    '--card-muted': '#7a6d5c',
+    '--card-muted-2': '#9c9080',
+    '--card-border': '#f0e0cc',
+    '--card-border-soft': '#f6e9d8',
+    '--card-accent': accent,
+    '--card-accent-ink': '#ffffff',
+    '--card-radius-lg': '1.5rem',
+    '--card-radius-md': '1rem',
+    '--card-radius-full': '9999px',
+    '--card-heading-weight': '800',
+    '--card-heading-tracking': '-0.02em',
+    '--card-shadow': '0 12px 40px rgba(226,112,58,.14)',
+  }),
+}
+
 export const CARD_TEMPLATES: Record<CardTemplateId, CardTemplate> = {
   'editorial-dark': EDITORIAL_DARK,
   'minimal-light': MINIMAL_LIGHT,
+  'warm-gradient': WARM_GRADIENT,
 }
 
 export function getCardTemplate(id: string | null | undefined): CardTemplate {

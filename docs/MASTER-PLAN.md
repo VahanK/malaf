@@ -57,6 +57,8 @@ She never signs up, never downloads anything, never hears the word "Malaf" spoke
 
 ## 3. Marketing — the full machine
 
+**Status note (2026-07-21):** the validation gate below was overridden and v1 is built (see CLAUDE.md's "Sequencing & gates" and `docs/launch-plan.md`'s §0). `docs/launch-plan.md` is now the operative week-by-week sequence for getting from "v1 is built" to campus ignition — it supersedes §10's "This week" list and fills the gap this section's content pillars don't cover (proof/trust mechanics, informed by studying linkishop.com). This section's positioning and content-pillar strategy still stand.
+
 ### Positioning
 One breath: **"صفحة مهنية بثواني، وتحصيل بلا إحراج"** — a professional page in seconds, and your money collected without the awkward. The headline feature in all marketing is the money-chaser ("مين بيحكي عن المصاري؟ مش أنت"), because it names the deepest cultural pain: chasing your own money feels shameful, and everyone has a story about it. The page/QR/portfolio is the door; the chaser is the hook; the ledger is why they stay.
 

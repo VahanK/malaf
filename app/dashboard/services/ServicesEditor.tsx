@@ -7,7 +7,7 @@ interface Service {
   id: string
   title: string
   title_ar: string
-  price: number
+  price: number | null // null = no fixed price — card shows "let's talk"
   currency: 'USD' | 'LBP'
   unit: 'project' | 'session' | 'hour' | 'event' | 'day' | 'month'
   starting_from: boolean
@@ -26,7 +26,7 @@ export function ServicesEditor({ initialServices, profileId }: { initialServices
   const supabase = createClient()
 
   const addService = async () => {
-    if (!draft || !draft.title || draft.price <= 0) return
+    if (!draft || !draft.title || (draft.price != null && draft.price <= 0)) return
     const { data, error } = await supabase
       .from('services')
       .insert({ ...draft, profile_id: profileId, sort_order: services.length })
@@ -55,7 +55,9 @@ export function ServicesEditor({ initialServices, profileId }: { initialServices
           <div>
             <div className="text-sm font-medium text-dash-ink">{s.title}</div>
             <div className="text-xs text-dash-muted">
-              {s.currency === 'USD' ? '$' : 'LBP '}{s.price.toLocaleString()}{s.starting_from ? '+' : ''} · {s.unit}
+              {s.price == null
+                ? 'no fixed price — clients ask'
+                : `${s.currency === 'USD' ? '$' : 'LBP '}${s.price.toLocaleString()}${s.starting_from ? '+' : ''} · ${s.unit}`}
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -84,9 +86,10 @@ export function ServicesEditor({ initialServices, profileId }: { initialServices
               type="number"
               min={0}
               placeholder="Price"
-              value={draft.price || ''}
+              disabled={draft.price === null}
+              value={draft.price ?? ''}
               onChange={e => setDraft({ ...draft, price: Number(e.target.value) })}
-              className="w-24 rounded-lg border border-dash-border px-3 py-2 text-sm outline-none focus:border-dash-accent"
+              className="w-24 rounded-lg border border-dash-border px-3 py-2 text-sm outline-none focus:border-dash-accent disabled:opacity-40"
             />
             <select
               value={draft.unit}
@@ -99,6 +102,15 @@ export function ServicesEditor({ initialServices, profileId }: { initialServices
           <label className="flex items-center gap-1.5 text-xs text-dash-muted">
             <input
               type="checkbox"
+              checked={draft.price === null}
+              onChange={e => setDraft({ ...draft, price: e.target.checked ? null : 0 })}
+            />
+            No fixed price — the card shows &quot;let&apos;s talk&quot; and clients ask for a quote
+          </label>
+          <label className="flex items-center gap-1.5 text-xs text-dash-muted">
+            <input
+              type="checkbox"
+              disabled={draft.price === null}
               checked={draft.starting_from}
               onChange={e => setDraft({ ...draft, starting_from: e.target.checked })}
             />

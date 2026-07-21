@@ -5,7 +5,7 @@ export interface PublicService {
   id: string
   title: string
   title_ar: string
-  price: number
+  price: number | null
   currency: 'USD' | 'LBP'
   unit: 'project' | 'session' | 'hour' | 'event' | 'day' | 'month'
   starting_from: boolean

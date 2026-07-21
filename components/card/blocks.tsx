@@ -58,14 +58,17 @@ export function ImageGrid({ data }: { data: Record<string, unknown> }) {
             key={i}
             onClick={() => setOpenAt(i)}
             aria-label={img.alt || `Photo ${i + 1}`}
-            className={i === 0 ? 'col-span-2 row-span-2' : ''}
+            className={`stagger group transition-transform active:scale-[0.97] ${i === 0 ? 'col-span-2 row-span-2' : ''}`}
+            style={{ transitionDelay: `${Math.min(i * 70, 420)}ms` }}
           >
-            <Img
-              url={img.url}
-              alt={img.alt}
-              index={i}
-              className="aspect-square h-full w-full rounded-[10px]"
-            />
+            <span className="block h-full w-full overflow-hidden rounded-[10px]">
+              <Img
+                url={img.url}
+                alt={img.alt}
+                index={i}
+                className="aspect-square h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              />
+            </span>
           </button>
         ))}
       </div>
@@ -177,7 +180,7 @@ export function BeforeAfter({ data, accent }: { data: Record<string, unknown>; a
         <div className="pointer-events-none absolute inset-y-0" style={{ left: `${pos}%` }}>
           <div className="h-full w-[2px] -translate-x-1/2 bg-white/90 shadow-[0_0_12px_rgba(0,0,0,.6)]" />
           <div
-            className="absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[13px] font-black text-[#141414] shadow-lg"
+            className="handle-nudge absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[13px] font-black text-[#141414] shadow-lg"
             style={{ background: accent }}
           >
             ⇄

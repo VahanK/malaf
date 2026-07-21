@@ -8,12 +8,13 @@
 export type PriceUnit = 'project' | 'session' | 'hour' | 'event' | 'day' | 'month'
 
 export interface PricedItem {
-  price: number
+  price: number | null // null = no fixed price ("let's talk") — the quote funnel IS the price
   currency: 'USD' | 'LBP'
   starting_from: boolean
 }
 
 export function formatPrice(s: PricedItem): string {
+  if (s.price == null) return ''
   const symbol = s.currency === 'USD' ? '$' : 'LBP '
   const amount = s.price.toLocaleString('en-US')
   return `${symbol}${amount}${s.starting_from ? '+' : ''}`

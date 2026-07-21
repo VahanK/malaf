@@ -26,7 +26,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" dir="ltr" className={`${inter.variable} ${tajawal.variable}`}>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${tajawal.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Pre-paint: lets CSS gate scroll-reveal hidden states behind html.js,
+            so content is never invisible for no-JS / slow-JS visitors. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="font-sans" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
         <Providers>{children}</Providers>
       </body>

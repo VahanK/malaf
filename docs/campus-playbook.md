@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Malaf — Campus Bubble Playbook (September weapon, prepped in August)
 
 **Principle:** a bubble = saturation of ONE closed network, not reach across many. Facebook's campus-by-campus rule: don't touch campus #2 until campus #1 says "everyone's on it."

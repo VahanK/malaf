@@ -81,7 +81,7 @@ export function FounderView({ freelancers, requests }: { freelancers: Freelancer
               <div>
                 <p className="font-medium text-dash-ink">{f.full_name || f.handle}</p>
                 <p className="text-xs text-dash-muted">
-                  malaf.work/{f.handle} · joined {new Date(f.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  work-withme.com/{f.handle} · joined {new Date(f.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </p>
               </div>
               <div className="flex items-center gap-3">

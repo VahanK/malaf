@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # First Claude Code session in this folder — paste this
 
 Read CLAUDE.md fully first — it is the plan of record; its red lines and scope rules outrank anything we come up with mid-session. Then read docs/khedme-reuse-audit.md (the reuse audit is already done — verdict: greenfield here, selective import from the khedme repo).

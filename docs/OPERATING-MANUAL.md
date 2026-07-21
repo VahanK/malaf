@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Malaf — Operating Manual (how you run this, solo, 15–20 hrs/week)
 
 ## The rhythm

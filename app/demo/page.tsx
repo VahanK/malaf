@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'malaf — how you get paid',
+  title: 'WorkWith — how you get paid',
   description:
     'The page is free. The part you pay for is the machine that collects your money without the awkward conversation.',
 }
@@ -15,7 +15,7 @@ export const revalidate = 3600
 const CHASER_BUBBLES = [
   {
     day: 'Day 1 overdue',
-    text: 'Hi Rima, just a gentle reminder about the invoice for $450 — malaf.work/i/…. Thank you!',
+    text: 'Hi Rima, just a gentle reminder about the invoice for $450 — work-withme.com/i/…. Thank you!',
     time: '10:12',
   },
   {
@@ -63,7 +63,7 @@ export default function DemoPage() {
   return (
     <main className="min-h-screen bg-[#f7f3ec] text-[#171310]">
       <div className="mx-auto max-w-md px-6 pb-20 pt-14">
-        <Link href="/" className="text-xl font-semibold lowercase tracking-tight">malaf</Link>
+        <Link href="/" className="text-xl font-semibold tracking-tight">WorkWith</Link>
 
         <h1 className="mt-8 text-[30px] font-semibold leading-[1.15] tracking-tight">
           The page is free.
@@ -96,7 +96,7 @@ export default function DemoPage() {
             مين بيحكي عن المصاري؟ مش أنت.
           </p>
           <p className="mt-1.5 mb-4 text-[13.5px] leading-relaxed text-[#5c574c]">
-            The invoice is 8 days overdue. malaf writes the reminder — polite, escalating, in your
+            The invoice is 8 days overdue. WorkWith writes the reminder — polite, escalating, in your
             client&rsquo;s language — and you send it with one tap. You are never the one who has
             to bring up money.
           </p>

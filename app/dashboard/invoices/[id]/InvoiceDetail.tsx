@@ -106,7 +106,7 @@ export function InvoiceDetail({
   const sendReminder = async () => {
     const waLink = buildWaLink(doc.client_phone, composerText)
     // Log first — "reminder composed and WhatsApp opened," never claims
-    // delivery Malaf doesn't have (plan §4 honesty note).
+    // delivery WorkWith doesn't have (plan §4 honesty note).
     const { data: logged } = await supabase.rpc('log_reminder_sent', {
       p_document_id: doc.id,
       p_tier: nextTier,
@@ -254,7 +254,7 @@ function eventLabel(e: PaymentEvent) {
     case 'proof_submitted': return 'Client said "I paid"'
     case 'confirmed': return 'You confirmed payment'
     // Honest granularity (plan §4): this means "composed and WhatsApp
-    // opened," never "delivered" — Malaf has no visibility past this point.
+    // opened," never "delivered" — WorkWith has no visibility past this point.
     case 'reminder_sent': return `Reminder opened in WhatsApp (tier ${e.detail?.tier ?? '?'})`
     case 'usdt_matched': return 'USDT payment matched'
     case 'voided': return 'Voided'

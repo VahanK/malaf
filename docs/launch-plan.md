@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Malaf — Launch Plan
 ### What happens between "v1 is built" and "campus playbook ignites in September." Written after studying linkishop.com (2026-07-21) — same market, same WhatsApp-native model, already at 400+ stores.
 

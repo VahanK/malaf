@@ -10,7 +10,7 @@ export async function GET(
   if (!page) return new Response('Not found', { status: 404 })
 
   const p = page.profile
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://malaf.work'
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://work-withme.com'
   const lines = [
     'BEGIN:VCARD',
     'VERSION:3.0',
@@ -18,7 +18,7 @@ export async function GET(
     `TITLE:${p.title}`,
     p.whatsapp_number ? `TEL;TYPE=CELL:${p.whatsapp_number}` : null,
     `URL:${site}/${p.handle}`,
-    `NOTE:${p.title}${p.title_ar ? ` · ${p.title_ar}` : ''} — via Malaf`,
+    `NOTE:${p.title}${p.title_ar ? ` · ${p.title_ar}` : ''} — via WorkWith`,
     'END:VCARD',
   ].filter(Boolean)
 

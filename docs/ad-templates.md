@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Malaf — Ad Templates by Freelancer Type
 **Format:** every ad is 15–20s vertical (Reels/TikTok), phone-shot or screen-recorded, Arabic VO or on-screen text, EN captions. Post organic first; only ever pay to boost what already worked.
 **Structure of every ad:** Hook (0–3s, the pain in their words) → Turn (3–10s, the card/feature doing its job) → Proof (10–15s, the personal detail) → CTA (2s: "بطاقتك مجانية — malaf.me").

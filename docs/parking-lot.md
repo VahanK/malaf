@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Parking Lot — ideas wait here, evaluated at monthly triage or gate resolutions only
 
 **Rule:** one line per idea. Nothing here gets built until ≥5 paying users ask, a gate resolves, or monthly triage promotes it. (CLAUDE.md red lines still apply.)

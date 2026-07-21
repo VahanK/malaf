@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Phase 1 Validation Kit v2 — Levant-First Freelancer Front-Office
 ### (supersedes v1's Gulf-ads plan · product core unchanged · market, rails, channels, gates updated)
 

@@ -33,7 +33,7 @@ export default function SignInPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-dash-bg px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-dash-ink lowercase">malaf</h1>
+        <h1 className="text-2xl font-semibold text-dash-ink">WorkWith</h1>
         <p className="mt-1 text-sm text-dash-muted">Sign in to your dashboard</p>
 
         {error && (

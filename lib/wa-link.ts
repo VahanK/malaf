@@ -1,6 +1,6 @@
 // Plain URL construction — no server round-trip, no secrets, no DB.
 // This is the entire "chaser" mechanic: the app writes the text, the
-// freelancer's own tap opens WhatsApp with it prefilled. Malaf never calls
+// freelancer's own tap opens WhatsApp with it prefilled. WorkWith never calls
 // a WhatsApp API and never sees delivery/read state (CLAUDE.md red line:
 // no Meta APIs, one tap, never automated).
 export function buildWaLink(phone: string, message: string): string {

@@ -133,7 +133,7 @@ export default function OnboardingPage() {
 
                 <label className="mt-4 block text-sm font-medium">Your link</label>
                 <div className="mt-2 flex items-center rounded-lg border border-dash-border bg-dash-surface px-3.5 py-2.5">
-                  <span className="text-sm text-dash-muted">malaf.work/</span>
+                  <span className="text-sm text-dash-muted">work-withme.com/</span>
                   <input
                     value={handle}
                     onChange={e => { setHandleTouched(true); setHandle(slugify(e.target.value)) }}
@@ -324,7 +324,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
               <div className="border-t border-white/5 bg-black/30 py-2.5 text-center text-[11px] text-[#6b7284]">
-                malaf.work/{handle || 'yourname'}
+                work-withme.com/{handle || 'yourname'}
               </div>
             </div>
           </div>

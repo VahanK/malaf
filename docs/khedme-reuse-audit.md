@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Khedme → Malaf v1 Reuse Audit
 **Audited:** VahanK/khedme @ main (shallow clone, July 18 2026) · 132 TS/TSX files · Next 16 / React 19 / Tailwind 4 / HeroUI / Supabase SSR
 

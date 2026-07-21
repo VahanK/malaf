@@ -37,7 +37,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
 
   // The headless browser needs an origin it can actually reach — in
   // production that's the public site URL, but in local dev
-  // NEXT_PUBLIC_SITE_URL is malaf.work (doesn't resolve locally), so this
+  // NEXT_PUBLIC_SITE_URL is work-withme.com (doesn't resolve locally), so this
   // must prefer the request's own origin whenever running off Vercel.
   const origin = process.env.VERCEL
     ? process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin

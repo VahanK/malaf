@@ -14,7 +14,7 @@ export default async function PaymentMethodsPage() {
     <div>
       <h1 className="text-xl font-semibold">Payment methods</h1>
       <p className="mt-1 text-sm text-dash-muted">
-        Your own rails — shown on invoices so clients can pay you directly. Malaf never touches this money.
+        Your own rails — shown on invoices so clients can pay you directly. WorkWith never touches this money.
       </p>
       <PaymentMethodsEditor initialMethods={methods ?? []} profileId={user!.id} />
     </div>

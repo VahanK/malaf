@@ -13,11 +13,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   const page = await getPublicPage(handle)
-  if (!page) return { title: 'Malaf ملف' }
+  if (!page) return { title: 'WorkWith' }
   const p = page.profile
   return {
-    title: `${p.full_name} — ${p.title} · Malaf`,
-    description: p.bio || `${p.full_name} on Malaf — see the work, get a quote.`,
+    title: `${p.full_name} — ${p.title} · WorkWith`,
+    description: p.bio || `${p.full_name} on WorkWith — see the work, get a quote.`,
     robots: p.noindex ? { index: false, follow: false } : undefined,
   }
 }

@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # Phase 1 Validation Kit — Arabic-First Freelancer Front-Office
 
 **Owner:** Vahan · **Budget for this test:** ≤ $150 · **Duration:** 30 days · **Hours:** 15–20/week

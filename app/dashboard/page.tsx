@@ -49,7 +49,7 @@ export default async function DashboardHome() {
         <p className="mt-6 text-sm text-dash-muted">
           Your page:{' '}
           <a href={`/${profile.handle}`} className="font-medium text-dash-ink underline">
-            malaf.work/{profile.handle}
+            work-withme.com/{profile.handle}
           </a>
         </p>
       )}

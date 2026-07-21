@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # SECURITY.md — Malaf security & engineering best practices
 ### Read alongside CLAUDE.md. Applies to every session. Review this checklist at the end of each sprint.
 

@@ -1,6 +1,10 @@
 # CLAUDE.md — Malaf (working name) · Khedme refit
 ### Plan of record. Read fully before any work. Decisions here outrank in-session ideas.
 
+## Rebrand note
+
+Product renamed Malaf → WorkWith, domain work-withme.com, decided by vahan on 2026-07-22. All other references to "Malaf" throughout this document refer to the same product under its new name.
+
 ## What this project is
 
 A **single-player freelancer front-office** for Lebanon (English-first UI, full Arabic supported — see Language policy below), refitted from the Khedme marketplace codebase. One freelancer + their own clients. It is explicitly **NOT a marketplace** — no bidding, no browsing projects, no two sides, no platform escrow. The marketplace (Khedme proper) is parked as a possible Phase-2 layer on top of an installed base of users. Do not rebuild it.

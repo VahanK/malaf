@@ -1,3 +1,5 @@
+Note: this document predates the Malaf → WorkWith rebrand (2026-07-22, work-withme.com). References to "Malaf" below refer to the same product.
+
 # MALAF — The Master Plan
 ### Everything from yesterday, consolidated into one document you can judge.
 **For:** Vahan · **Written:** July 19, 2026 · **Companion docs:** `phase1-validation-kit-v2.md` (validation detail) · `AUDIT.md` (build detail) · `CLAUDE.md` (build rules)

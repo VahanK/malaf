@@ -14,7 +14,7 @@ begin
     confirmation_token, recovery_token, email_change, email_change_token_new
   ) values (
     '00000000-0000-0000-0000-000000000000', demo_id, 'authenticated', 'authenticated',
-    'demo-rami@malaf.work', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')),
+    'demo-rami@work-withme.com', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')),
     now(), now(), now(),
     '{"provider":"email","providers":["email"]}'::jsonb, '{"demo":true}'::jsonb,
     '', '', '', ''

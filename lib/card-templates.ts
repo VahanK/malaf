@@ -31,7 +31,7 @@ export interface CardTemplate {
 const EDITORIAL_DARK: CardTemplate = {
   id: 'editorial-dark',
   label: 'Editorial Dark',
-  description: 'Moody, gallery-like — the original malaf card. Best for visual portfolios: photo, film, design.',
+  description: 'Moody, gallery-like — the original WorkWith card. Best for visual portfolios: photo, film, design.',
   swatch: { bg: '#0e0f13', surface: '#16181f', ink: '#f4f2ec', accentFallback: '#c9a45c' },
   container: 'phone',
   headingFont: 'sans',

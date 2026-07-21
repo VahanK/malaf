@@ -11,12 +11,16 @@ const NAV = [
   { href: '/dashboard/portfolio', label: 'Portfolio' },
   { href: '/dashboard/payment-methods', label: 'Payment methods' },
   { href: '/dashboard/profile', label: 'Profile' },
+  { href: '/dashboard/requests', label: 'Request something' },
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/signin')
+
+  const { data: me } = await supabase.from('profiles').select('is_founder').eq('id', user.id).single()
+  const nav = me?.is_founder ? [...NAV, { href: '/dashboard/founder', label: 'Founder' }] : NAV
 
   return (
     <div className="min-h-screen bg-dash-bg text-dash-ink">
@@ -26,7 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <span className="text-lg font-semibold lowercase">malaf</span>
             <NotificationBell />
           </div>
-          {NAV.map(item => (
+          {nav.map(item => (
             <Link
               key={item.href}
               href={item.href}

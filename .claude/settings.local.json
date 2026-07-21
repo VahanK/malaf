@@ -170,7 +170,22 @@
       "WebFetch(domain:www.smscomparison.com)",
       "Bash([ -f \"$j\" ])",
       "WebFetch(domain:nexmo1700665158.zendesk.com)",
-      "WebFetch(domain:docs.bird.com)"
+      "WebFetch(domain:docs.bird.com)",
+      "Bash(npm view *)",
+      "Bash(npm install *)",
+      "Bash(where chrome.exe)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Google/Chrome/Application/**)",
+      "Bash(grep -qE \"added [0-9]+ package|npm error|npm warn.*deprecated.*$\" \"C:\\\\Users\\\\vahan\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-vahan-Documents-malaf\\\\f0ac0c86-4640-4b60-aca9-b838002114b8\\\\tasks\\\\bftly119x.output\")",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "Bash(ls -la \"/c/Users/vahan/Documents/malaf/node_modules/.package-lock.json\" 2>&1; stat -c '%Y' \"/c/Users/vahan/Documents/malaf/node_modules/.package-lock.json\" 2>&1; date +%s)",
+      "Bash(taskkill //F //PID 40864)",
+      "Bash(wmic process *)",
+      "PowerShell(Get-Process -Id 42780,36804 -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, @{n='CommandLine';e={\\(Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($_.Id\\)\"\\).CommandLine}})",
+      "PowerShell(Stop-Process -Id 42780,36804 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process -Id 42780,36804 -ErrorAction SilentlyContinue)",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\" 2>&1 *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://rwhxhpbgvgrivuowygsv.supabase.co/storage/v1/object/public/payment-proofs/test\")"
     ]
   }
 }

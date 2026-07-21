@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+export { formatPrice, unitLabel } from '@/lib/pricing-format'
 
 export interface PublicService {
   id: string
@@ -53,20 +54,3 @@ export async function getPublicPage(handle: string): Promise<PublicPage | null> 
   return data as unknown as PublicPage
 }
 
-export function formatPrice(s: PublicService): string {
-  const symbol = s.currency === 'USD' ? '$' : 'LBP '
-  const amount = s.currency === 'USD' ? s.price.toLocaleString('en-US') : s.price.toLocaleString('en-US')
-  return `${symbol}${amount}${s.starting_from ? '+' : ''}`
-}
-
-export function unitLabel(unit: PublicService['unit'], lang: 'en' | 'ar'): string {
-  const en: Record<string, string> = {
-    project: 'per project', session: 'per session', hour: 'per hour',
-    event: 'per event', day: 'per day', month: 'per month',
-  }
-  const ar: Record<string, string> = {
-    project: 'للمشروع', session: 'للجلسة', hour: 'بالساعة',
-    event: 'للمناسبة', day: 'باليوم', month: 'بالشهر',
-  }
-  return (lang === 'ar' ? ar : en)[unit]
-}

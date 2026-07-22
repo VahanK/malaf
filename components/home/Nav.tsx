@@ -10,7 +10,7 @@ import { FOUNDER_WA } from '@/lib/founder'
 export { FOUNDER_WA }
 
 const LINKS = [
-  { label: 'A real page', href: '#showcase' },
+  { label: 'Examples', href: '/examples' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'FAQ', href: '#faq' },
 ]

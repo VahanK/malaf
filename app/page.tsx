@@ -107,10 +107,10 @@ export default function Home() {
               Start free — your page in minutes
             </Link>
             <Link
-              href="/rami"
+              href="/examples"
               className="rounded-xl border border-[#171310]/10 bg-white px-6 py-3 text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
             >
-              See a real page ↗
+              See real pages ↗
             </Link>
           </div>
           <p className="mt-3 max-w-md text-[13px] text-[#8a8477] mx-auto lg:mx-0">
@@ -360,10 +360,10 @@ export default function Home() {
               Start building — free
             </Link>
             <Link
-              href="/rami"
+              href="/examples"
               className="rounded-xl border border-white/20 px-6 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-white/5"
             >
-              See Rami&apos;s page ↗
+              See real pages ↗
             </Link>
           </div>
           <p className="mt-6 text-[13px] text-white/50">Free to build · $29/year to go live · be one of the first 100 founders</p>
@@ -394,8 +394,8 @@ export default function Home() {
               <p className="text-[12px] font-semibold uppercase tracking-wider text-[#8a8477]">Product</p>
               <ul className="mt-3 space-y-2 text-[14px] text-[#5c574c]">
                 <li><Link href="/auth/signup" className="hover:text-[#171310]">Make your page</Link></li>
-                <li><Link href="/rami" className="hover:text-[#171310]">See a live page</Link></li>
-                <li><a href="#showcase" className="hover:text-[#171310]">See a real page</a></li>
+                <li><Link href="/examples" className="hover:text-[#171310]">See real pages</Link></li>
+                <li><a href="#showcase" className="hover:text-[#171310]">The showcase</a></li>
                 <li><a href="#pricing" className="hover:text-[#171310]">Pricing</a></li>
               </ul>
             </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { buildWaLink } from '@/lib/wa-link'
 
 interface NotificationRow {
   id: string
@@ -39,6 +40,7 @@ export function NotificationBell() {
   const [items, setItems] = useState<NotificationRow[]>([])
   const [open, setOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [ownWhatsapp, setOwnWhatsapp] = useState<string | null>(null)
 
   const unreadCount = items.filter(n => !n.is_read).length
 
@@ -56,6 +58,20 @@ export function NotificationBell() {
     fetchItems()
     const interval = setInterval(fetchItems, 30000)
     return () => clearInterval(interval)
+  }, [])
+
+  // Own WhatsApp number, fetched once — the bridge back to the app: a
+  // freelancer who found a lead via their card link and went straight back
+  // to WhatsApp never opens the dashboard to see this. "Send to my
+  // WhatsApp" puts the same notification where they'll actually see it,
+  // via the one-tap wa.me pattern already used for the chaser (no Meta
+  // API, no automated send — CLAUDE.md red line intact).
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data } = await supabase.from('profiles').select('whatsapp_number').eq('id', user.id).single()
+      if (data?.whatsapp_number) setOwnWhatsapp(data.whatsapp_number)
+    })
   }, [])
 
   useEffect(() => {
@@ -83,6 +99,15 @@ export function NotificationBell() {
     if (!n.is_read) markRead(n.id)
     setOpen(false)
     if (n.link) router.push(n.link)
+  }
+
+  const sendToWhatsapp = (e: React.MouseEvent, n: NotificationRow) => {
+    e.stopPropagation()
+    if (!ownWhatsapp) return
+    if (!n.is_read) markRead(n.id)
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const text = `${n.title} — ${n.message}${n.link ? `\n${origin}${n.link}` : ''}`
+    window.open(buildWaLink(ownWhatsapp, text), '_blank')
   }
 
   return (
@@ -115,21 +140,31 @@ export function NotificationBell() {
               <p className="px-3 py-6 text-center text-xs text-dash-muted">No notifications yet</p>
             ) : (
               items.map(n => (
-                <button
+                <div
                   key={n.id}
                   onClick={() => handleClick(n)}
-                  className={`block w-full border-b border-dash-border px-3 py-2.5 text-left last:border-0 hover:bg-dash-bg ${!n.is_read ? 'bg-dash-accent/5' : ''}`}
+                  className={`w-full cursor-pointer border-b border-dash-border px-3 py-2.5 text-left last:border-0 hover:bg-dash-bg ${!n.is_read ? 'bg-dash-accent/5' : ''}`}
                 >
                   <div className="flex items-start gap-2">
                     <span className="text-base leading-none">{ICON[n.type]}</span>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold text-dash-ink">{n.title}</p>
                       <p className="mt-0.5 line-clamp-2 text-xs text-dash-muted">{n.message}</p>
-                      <p className="mt-1 text-[10px] text-dash-muted">{formatTime(n.created_at)}</p>
+                      <div className="mt-1 flex items-center gap-2">
+                        <p className="text-[10px] text-dash-muted">{formatTime(n.created_at)}</p>
+                        {ownWhatsapp && (
+                          <button
+                            onClick={e => sendToWhatsapp(e, n)}
+                            className="ml-auto flex items-center gap-1 rounded-full border border-dash-border px-2 py-0.5 text-[10px] font-medium text-dash-muted hover:border-dash-accent hover:text-dash-accent"
+                          >
+                            💬 Send to my WhatsApp
+                          </button>
+                        )}
+                      </div>
                     </div>
                     {!n.is_read && <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-dash-accent" />}
                   </div>
-                </button>
+                </div>
               ))
             )}
           </div>

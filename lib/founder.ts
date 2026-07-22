@@ -3,9 +3,9 @@
 // homepage nav + footer, the onboarding concierge link, and the subscription
 // checkout's manual-payment button.
 //
-// ⚠️ PLACEHOLDER — set FOUNDER_PHONE to the real +961 number (digits only, no
-// spaces or +) before launch. This is the ONLY place to change it.
-export const FOUNDER_PHONE = '961XXXXXXXX'
+// The founder's WhatsApp (+961 71 180 871), digits only for wa.me. This is the
+// ONLY place to change it — Nav/footer/onboarding/subscribe all route through here.
+export const FOUNDER_PHONE = '96171180871'
 
 /** Build a wa.me deep link to the founder with a prefilled message. */
 export function buildFounderWa(message: string): string {

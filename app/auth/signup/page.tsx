@@ -27,7 +27,17 @@ export default function SignUpPage() {
     })
 
     if (signUpError) {
-      setError(signUpError.message)
+      // Surface the real reason — most importantly the rate limit, which on
+      // launch day (a burst of signups) would otherwise fail silently. Give a
+      // clearer message than Supabase's raw string for the two cases users hit.
+      const raw = signUpError.message.toLowerCase()
+      if (raw.includes('rate') || signUpError.status === 429) {
+        setError("We're getting a lot of signups right now — wait a minute and try again.")
+      } else if (raw.includes('already registered') || raw.includes('already been registered')) {
+        setError('That email already has an account. Try signing in instead.')
+      } else {
+        setError(signUpError.message)
+      }
       setLoading(false)
       return
     }
@@ -35,6 +45,18 @@ export default function SignUpPage() {
     // The profiles row is created server-side by a DB trigger on auth.users
     // insert (migration 006) — not here, since no session exists yet when
     // email confirmation is required, and an RLS insert policy needs auth.uid().
+
+    // Repeat signup of an EXISTING confirmed email does NOT error — Supabase
+    // returns a user with an empty identities array and no session (to avoid
+    // leaking which emails are registered). Detecting that here is the
+    // difference between honestly telling the user vs. showing a fake
+    // "check your email" that never arrives.
+    const identities = data.user?.identities
+    if (identities && identities.length === 0) {
+      setError('That email already has an account. Try signing in instead.')
+      setLoading(false)
+      return
+    }
 
     // Email verification required before a page goes public (SECURITY.md D8)
     if (!data.session) {

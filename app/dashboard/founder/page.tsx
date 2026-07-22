@@ -14,7 +14,7 @@ export default async function FounderPage() {
 
   const { data: freelancers } = await supabase
     .from('profiles')
-    .select('id, handle, full_name, created_at, subscriptions(tier, status, amount_usd, paid_via, note)')
+    .select('id, handle, full_name, title, whatsapp_number, page_published, composable, avatar_url, created_at, portfolio_blocks(count), subscriptions(tier, status, amount_usd, paid_via, note)')
     .order('created_at', { ascending: false })
 
   const { data: requests } = await supabase

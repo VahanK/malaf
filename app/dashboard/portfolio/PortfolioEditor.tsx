@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { mediaUrl } from '@/lib/media'
+import { notifyPageUpdated } from '@/lib/page-updated'
 
 type BlockType = 'image_grid' | 'before_after' | 'stat_card' | 'video_link' | 'case_card' | 'testimonial'
 
@@ -40,11 +41,13 @@ export function PortfolioEditor({ initialBlocks, profileId }: { initialBlocks: B
   const updateData = async (id: string, data: Record<string, unknown>) => {
     setBlocks(blocks.map(b => (b.id === id ? { ...b, data } : b)))
     await supabase.from('portfolio_blocks').update({ data }).eq('id', id)
+    notifyPageUpdated()
   }
 
   const toggleActive = async (id: string, active: boolean) => {
     await supabase.from('portfolio_blocks').update({ active }).eq('id', id)
     setBlocks(blocks.map(b => (b.id === id ? { ...b, active } : b)))
+    notifyPageUpdated()
   }
 
   const moveBlock = async (id: string, direction: -1 | 1) => {
@@ -66,11 +69,13 @@ export function PortfolioEditor({ initialBlocks, profileId }: { initialBlocks: B
       supabase.from('portfolio_blocks').update({ position: b.position }).eq('id', a.id),
       supabase.from('portfolio_blocks').update({ position: a.position }).eq('id', b.id),
     ])
+    notifyPageUpdated()
   }
 
   const removeBlock = async (id: string) => {
     await supabase.from('portfolio_blocks').delete().eq('id', id)
     setBlocks(blocks.filter(b => b.id !== id))
+    notifyPageUpdated()
   }
 
   const uploadImage = async (file: File): Promise<string | null> => {

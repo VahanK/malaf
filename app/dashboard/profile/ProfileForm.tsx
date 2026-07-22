@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { mediaUrl } from '@/lib/media'
 import { CARD_TEMPLATES, type CardTemplateId } from '@/lib/card-templates'
+import { notifyPageUpdated } from '@/lib/page-updated'
 
 interface Profile {
   id: string
@@ -83,6 +84,7 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       return
     }
     setStatus('saved')
+    notifyPageUpdated()
     setTimeout(() => setStatus('idle'), 2000)
   }
 

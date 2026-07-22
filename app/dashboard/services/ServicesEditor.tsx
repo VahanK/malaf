@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { notifyPageUpdated } from '@/lib/page-updated'
 
 interface Service {
   id: string
@@ -35,17 +36,20 @@ export function ServicesEditor({ initialServices, profileId }: { initialServices
     if (!error && data) {
       setServices([...services, data])
       setDraft(null)
+      notifyPageUpdated()
     }
   }
 
   const removeService = async (id: string) => {
     await supabase.from('services').delete().eq('id', id)
     setServices(services.filter(s => s.id !== id))
+    notifyPageUpdated()
   }
 
   const toggleActive = async (id: string, active: boolean) => {
     await supabase.from('services').update({ active }).eq('id', id)
     setServices(services.map(s => (s.id === id ? { ...s, active } : s)))
+    notifyPageUpdated()
   }
 
   return (

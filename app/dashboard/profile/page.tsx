@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { EditorShell } from '@/components/dashboard/EditorShell'
 import { ProfileForm } from './ProfileForm'
 
 export default async function ProfilePage() {
@@ -11,12 +12,13 @@ export default async function ProfilePage() {
     .single()
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold">Profile</h1>
-      <p className="mt-1 text-sm text-dash-muted">
-        What clients see on your public page.
-      </p>
+    <EditorShell
+      title="Profile"
+      subtitle="What clients see on your public page."
+      handle={profile?.handle ?? null}
+      published={profile?.page_published ?? false}
+    >
       <ProfileForm profile={profile} />
-    </div>
+    </EditorShell>
   )
 }

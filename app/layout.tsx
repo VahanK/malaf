@@ -17,9 +17,9 @@ const tajawal = Tajawal({
 });
 
 export const metadata: Metadata = {
-  title: "WorkWith — the price and the proof, in one place",
+  title: "WorkWith — your professional page, ready in minutes",
   description:
-    "Whatever you do, WorkWith gives you one place for your prices, your proof, and quote requests straight to WhatsApp.",
+    "A professional page for Lebanese & Syrian freelancers — your work, your prices, your voice, in one shareable link. Free to make, no code.",
 };
 
 export default function RootLayout({

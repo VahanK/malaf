@@ -26,8 +26,28 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-dash-bg text-dash-ink">
-      <div className="mx-auto flex max-w-6xl gap-8 px-6 py-8">
-        <nav className="w-44 shrink-0 space-y-1">
+      {/* Mobile top bar: brand + bell, then a horizontal-scroll nav. */}
+      <div className="sticky top-0 z-20 border-b border-dash-border bg-dash-bg/90 backdrop-blur lg:hidden">
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="text-lg font-semibold">WorkWith</span>
+          <NotificationBell />
+        </div>
+        <nav className="flex gap-1 overflow-x-auto px-3 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {nav.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium text-dash-muted hover:bg-dash-surface hover:text-dash-ink"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      <div className="mx-auto flex max-w-6xl gap-8 px-4 py-6 sm:px-6 lg:py-8">
+        {/* Desktop sidebar */}
+        <nav className="hidden w-44 shrink-0 space-y-1 lg:block">
           <div className="mb-6 flex items-center justify-between">
             <span className="text-lg font-semibold">WorkWith</span>
             <NotificationBell />
@@ -42,7 +62,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </Link>
           ))}
         </nav>
-        <main className="flex-1">{children}</main>
+        <main className="min-w-0 flex-1">{children}</main>
       </div>
     </div>
   )

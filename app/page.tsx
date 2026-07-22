@@ -6,31 +6,42 @@ import { FaqAccordion, type FaqItem } from '@/components/home/FaqAccordion'
 import { HeroFloat, FloatPill } from '@/components/home/HeroFloat'
 
 // ---------------------------------------------------------------------------
-// WorkWith homepage — builder-first. The page (free) is the hook; getting paid
-// through it is the paid upgrade. Proof is ONE real page (/rami), shown honestly
-// and labeled as an example. No fabricated stats/testimonials, Lebanon only.
+// WorkWith homepage — positioned as the way Lebanese freelancers RUN their
+// business (not a website builder). The page is the front door; the tracked
+// job flow (quote → invoice → paid → archived) is why they stay. Proof is ONE
+// real page (/rami), labeled as an example. No fabricated stats, Lebanon only.
+// Copy vetted against the category test + the ChatGPT test (sell tracked state,
+// never "we write your texts").
 // ---------------------------------------------------------------------------
 
 const FAQ: FaqItem[] = [
   {
+    q: 'What is WorkWith, exactly?',
+    a: "It's where you run your freelance work from first message to paid. You get a page clients open with no app and no login — and behind it, the whole job is tracked: quote requested, quote sent, accepted, invoiced, paid, archived. The page gets clients in the door; the tracking is why you stay.",
+  },
+  {
+    q: 'How is this different from Carrd or Linktree?',
+    a: "Those give you a link. WorkWith runs the job. A link tool stops at 'here's my work' — then you're back in WhatsApp typing out prices, chasing the deposit, and trying to remember who paid. WorkWith carries it the whole way: the client requests a quote from your page, you send it, they accept, it becomes an invoice, and you always know what's paid and what's still owed. A page is the front door. This is the business behind it.",
+  },
+  {
     q: 'Do I need a website or any tech skills?',
-    a: "No. You pick a look, add your work, and you're live in minutes. There's nothing to install and no code — if you can post to Instagram, you can build this.",
+    a: "No. You pick a look, add your work, and you're live in minutes. Nothing to install, no code — if you can post to Instagram, you can build this.",
   },
   {
     q: 'Do my clients need to download an app or make an account?',
-    a: "Never. They just open your link — on any phone, even on bad 3G. Seeing your work, requesting a quote, paying — all on a normal web page, no login, no app. That's a rule, not a feature we might change.",
+    a: "Never. They just open your link on any phone. Seeing your work, requesting a quote, paying — all on a normal web page, no login, no app. That's a rule we don't break, not a feature we might change.",
   },
   {
     q: 'How do clients pay me? Does WorkWith take a cut?',
-    a: 'However you already get paid — Whish, USDT, bank transfer, or cash. You set up your own rails and WorkWith shows your client exactly how to pay you, then tracks what’s paid. The money goes straight to you; it never passes through us, and we never take a percentage.',
+    a: "However you already get paid — Whish, USDT, bank transfer, or cash. Your invoice shows the client exactly how to pay, and WorkWith tracks it: you can see at a glance what's paid, what's pending, and what's overdue. The money goes straight to you — it never passes through us, and we never take a percentage. We make money on the subscription, nothing else.",
   },
   {
-    q: 'Will it send messages for me automatically?',
-    a: "No — and that's on purpose. WorkWith writes the polite reminder in your client's language; you tap once and it opens in WhatsApp ready to send. You're always the one who hits send.",
+    q: 'What happens when an invoice goes overdue?',
+    a: "WorkWith marks it overdue and keeps it in front of you, so a late payment is never something you forgot — it's something you can see. When you're ready to follow up, it's one tap into WhatsApp — you send it yourself, on your terms. Once you mark the invoice paid, it moves to archived and the follow-ups stop. You're tracking who owes you, not living in your chat history.",
   },
   {
     q: 'Can my page be in Arabic?',
-    a: 'Yes. Your page has a one-tap full Arabic, right-to-left version, and your quotes, invoices, and receipts can go out in Arabic or English per client. The microcopy is written how people actually talk, not stiff formal Arabic.',
+    a: 'Yes. Your page has a one-tap full Arabic, right-to-left version, and your quotes, invoices, and receipts go out in Arabic or English per client. The wording is how people actually talk, not stiff formal Arabic.',
   },
   {
     q: "What's the voice intro?",
@@ -38,12 +49,36 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "I'm just starting out — is this only for big names?",
-    a: 'Not at all. WorkWith is new, and you can be one of the first freelancers on it. A clean page makes you look established from day one, whether you’ve shot two weddings or two hundred.',
+    a: "Not at all. WorkWith is new, and you can be one of the first freelancers on it. A clean page and an organized way of working make you look established from day one, whether you've shot two weddings or two hundred.",
   },
   {
     q: 'Can I see a real page before I sign up?',
-    a: "Yes — open Rami's live page. It's a real WorkWith page, exactly what your own clients would see.",
+    a: "Yes — open Rami's live page. It's a real WorkWith page we built as an example, exactly what your own clients would see.",
   },
+]
+
+// Today's messy reality — inert, greyed, loops back on itself.
+const TODAY_STEPS: { label: string; note: string }[] = [
+  { label: 'They find you on Instagram', note: 'A DM, a story reply — somewhere in the pile' },
+  { label: '“Hi, how much?”', note: 'The question that starts everything, again' },
+  { label: 'You type it all out', note: "Prices, what's included, from scratch, every time" },
+  { label: '…then silence', note: 'Read at 11:42. No reply.' },
+  { label: 'You ask for a deposit', note: 'And feel weird asking' },
+  { label: 'You remind them. Twice.', note: 'Each one a little more awkward than the last' },
+  { label: 'Maybe you get paid', note: "And you're not fully sure who still owes you" },
+]
+
+// The same job, tracked. Each step is a STATE you can see (not a message we write).
+type Pill = { text: string; tone: 'neutral' | 'gold' | 'green' }
+const WORKWITH_STEPS: { label: string; note: string; pill?: Pill; strong?: boolean }[] = [
+  { label: 'They open your page', note: 'Your work, your prices, your voice — already answered' },
+  { label: 'A quote request lands', note: 'Marked the second it arrives', pill: { text: 'New', tone: 'neutral' } },
+  { label: 'You send the quote', note: "You know it's out", pill: { text: 'Sent', tone: 'neutral' } },
+  { label: 'They accept', note: 'No “did you get it?”', pill: { text: 'Accepted', tone: 'neutral' } },
+  { label: 'The invoice is live', note: 'With your Whish, USDT, bank, or cash right on it', pill: { text: 'Awaiting payment', tone: 'gold' } },
+  { label: 'Overdue is flagged', note: 'It waits until you clear it — one tap opens the nudge in WhatsApp', pill: { text: 'Overdue', tone: 'gold' } },
+  { label: 'Paid.', note: 'Confirmed, receipt out', pill: { text: 'Paid', tone: 'green' }, strong: true },
+  { label: 'Archived.', note: 'Done and filed. You always know who still owes you.', pill: { text: 'Archived', tone: 'neutral' }, strong: true },
 ]
 
 function Check({ className = '' }: { className?: string }) {
@@ -52,6 +87,20 @@ function Check({ className = '' }: { className?: string }) {
       <path d="M20 6L9 17l-5-5" />
     </svg>
   )
+}
+
+function StatusPill({ pill }: { pill: Pill }) {
+  const tone =
+    pill.tone === 'green'
+      ? 'bg-[#1f9254]/12 text-[#1f9254]'
+      : pill.tone === 'gold'
+        ? 'bg-[#c9a45c]/20 text-[#8a6d2f]'
+        : 'bg-[#171310]/5 text-[#5c574c]'
+  return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${tone}`}>{pill.text}</span>
+}
+
+function Eyebrow({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <p className={`text-[12px] font-semibold uppercase tracking-[0.14em] text-[#e8623d] ${className}`}>{children}</p>
 }
 
 export default function Home() {
@@ -65,17 +114,19 @@ export default function Home() {
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#171310]/10 bg-white px-3 py-1 text-[12px] font-medium text-[#5c574c]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#e8623d]" />
-            Made in Beirut · for Lebanese freelancers
+            Run your freelance business — from one link
           </span>
 
-          <h1 className="mt-6 font-serif text-[clamp(40px,6vw,64px)] font-semibold leading-[1.05] tracking-[-0.02em]">
-            A page that looks better than your Instagram —{' '}
-            <span className="text-[#e8623d]">in minutes.</span>
+          <h1 className="mt-6 max-w-[15ch] font-serif text-[clamp(38px,5.5vw,60px)] font-semibold leading-[1.06] tracking-[-0.02em] mx-auto lg:mx-0">
+            Your work gets you the client. WorkWith runs{' '}
+            <span className="text-[#e8623d]">everything after “how much?”</span>
           </h1>
 
-          <p className="mx-auto mt-5 max-w-md text-[18px] leading-[1.55] text-[#5c574c] lg:mx-0">
-            Your work, your prices, even a voice note in your own voice — one beautiful link you put
-            on your bio, your QR card, anywhere. No website builder. No code. Free to start.
+          <p className="mx-auto mt-5 max-w-md text-[17px] leading-[1.55] text-[#5c574c] lg:mx-0">
+            Right now it all lives in your DMs — the “how much?”, the quote you retype every time, the
+            deposit you&apos;re shy to ask for, the client who went quiet. WorkWith puts it in one
+            place: your page brings them in, then quote, invoice, and getting paid all happen — and
+            stay — where you can see them.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
@@ -83,21 +134,22 @@ export default function Home() {
               href="/auth/signup"
               className="rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f] active:translate-y-px"
             >
-              Make your page — free
+              Start free — your page in minutes
             </Link>
             <Link
               href="/rami"
               className="rounded-xl border border-[#171310]/10 bg-white px-6 py-3 text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
             >
-              See Rami&apos;s page ↗
+              See a real page ↗
             </Link>
           </div>
-          <p className="mt-3 text-[13px] text-[#8a8477]">
-            Free forever. Upgrade only when you want to get paid through it.
+          <p className="mt-3 max-w-md text-[13px] text-[#8a8477] mx-auto lg:mx-0">
+            Free forever: your page, your QR card, and quote requests. Upgrade when you want to invoice
+            and get paid — straight to you, never through us.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-[#5c574c] lg:justify-start">
-            {['Voice intro in your own voice', 'One-tap Arabic & English', 'Your own QR business card', 'Clients need no app'].map(c => (
+            {['Quotes, invoices & receipts', 'Whish, USDT, bank & cash', 'One-tap Arabic & English', 'Clients never sign in'].map(c => (
               <span key={c} className="inline-flex items-center gap-1.5">
                 <Check /> {c}
               </span>
@@ -107,7 +159,6 @@ export default function Home() {
 
         {/* right — the phone mockup (real /rami screenshot) */}
         <div className="relative flex justify-center lg:justify-end">
-          {/* faint coral glow behind the frame */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 -z-10"
@@ -127,7 +178,6 @@ export default function Home() {
               </div>
             </HeroFloat>
 
-            {/* floating callout pills (desktop only — kept subtle) */}
             <div className="hidden lg:block">
               <FloatPill className="-right-6 top-10" delay={0}>
                 <span className="h-2 w-2 rounded-full bg-[#1f9254]" /> New quote request
@@ -140,24 +190,155 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ================= TODAY vs WORKWITH (the difference) ================= */}
+      <section id="how" className="scroll-mt-20 py-24">
+        <div className="mx-auto max-w-5xl px-6 lg:px-10">
+          <div className="text-center">
+            <Eyebrow>The difference</Eyebrow>
+            <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
+              Carrd gives you a page. WorkWith runs the job.
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[#5c574c]">
+              The same job you&apos;re already doing — the asking, the quoting, the chasing — but you
+              can see where every client stands, in one place.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-5 md:grid-cols-2 md:gap-6">
+            {/* TODAY — inert, greyed */}
+            <div className="rounded-2xl border border-[#171310]/8 bg-[#f2ede3] p-6 sm:p-7">
+              <div className="flex items-baseline justify-between">
+                <h3 className="font-serif text-[20px] text-[#5c574c]">Today</h3>
+                <span className="text-[12px] text-[#8a8477]">How it goes now</span>
+              </div>
+              <ol className="mt-5 space-y-4">
+                {TODAY_STEPS.map((s, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#171310]/20 text-[12px] font-semibold text-[#8a8477]">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="text-[14.5px] font-medium text-[#5c574c]">{s.label}</p>
+                      <p className="mt-0.5 text-[12.5px] text-[#8a8477]">{s.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-5 border-t border-dashed border-[#171310]/15 pt-4 text-[12.5px] italic text-[#8a8477]">
+                ↺ Nothing is written down. It all lives in your head and your chats — and again with the next one.
+              </p>
+            </div>
+
+            {/* WITH WORKWITH — clean, coral, alive */}
+            <div className="rounded-2xl border border-[#e8623d]/25 bg-white p-6 shadow-[0_20px_50px_-20px_rgba(232,98,61,.25)] sm:p-7">
+              <div className="flex items-baseline justify-between">
+                <h3 className="font-serif text-[20px] font-semibold text-[#171310]">With WorkWith</h3>
+                <span className="text-[12px] font-medium text-[#e8623d]">The same job, tracked</span>
+              </div>
+              <ol className="mt-5 space-y-4">
+                {WORKWITH_STEPS.map((s, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8623d] text-[12px] font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-[14.5px] ${s.strong ? 'font-bold text-[#171310]' : 'font-medium text-[#171310]'}`}>
+                        {s.label}
+                        {s.pill && <StatusPill pill={s.pill} />}
+                      </p>
+                      <p className="mt-0.5 text-[12.5px] text-[#5c574c]">{s.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-5 border-t border-[#e8623d]/20 pt-4 text-[13px] font-semibold text-[#171310]">
+                One place. Every client. You always know where things stand.
+              </p>
+            </div>
+          </div>
+
+          <p className="mx-auto mt-10 max-w-3xl text-center text-[15px] leading-[1.6] text-[#5c574c]">
+            The words were never the hard part. Knowing who said yes, who owes you, and what&apos;s
+            still open — that&apos;s the part that lives in your head today. WorkWith holds it instead.
+            Every step above is a status you can see and act on, not a message you have to remember to
+            send. Overdue is just one of those steps — it waits until you tap to clear it.
+          </p>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/auth/signup"
+              className="inline-block rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
+            >
+              Make your page — free
+            </Link>
+            <p className="mt-3 text-[13px] text-[#8a8477]">
+              Start with the page. Turn on getting-paid the day it earns its keep.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY LEBANON ================= */}
+      <section className="bg-[#f2ede3] py-24">
+        <div className="mx-auto max-w-6xl px-6 lg:px-10">
+          <div className="text-center">
+            <Eyebrow>Built in Beirut — and it shows</Eyebrow>
+            <h2 className="mx-auto mt-3 max-w-3xl font-serif text-[clamp(28px,3.6vw,38px)] font-semibold tracking-[-0.015em]">
+              Your business runs on WhatsApp, Whish, and Arabic. So does WorkWith.
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {[
+              {
+                icon: WalletIcon,
+                title: 'The ways you already get paid, built in',
+                body: 'Whish, USDT, bank transfer, cash — your client sees exactly how to pay you and taps “I paid.” A tool built somewhere else assumes a credit card your client doesn’t use. Here, money goes straight to you.',
+              },
+              {
+                icon: ChatIcon,
+                title: 'WhatsApp is already your office',
+                body: 'The quote, the “did you get it?”, the reminder — it all happens on WhatsApp anyway. WorkWith keeps every job in one place so you always know where each one stands: quoted, approved, invoiced, overdue, paid. Your client just taps a link. No app, no login.',
+              },
+              {
+                icon: GlobeIcon,
+                title: "In your client's language — and your own voice",
+                body: 'Send each client their quote and invoice in Arabic or English. Flip your whole page to Arabic with one tap. And greet visitors with a voice note in your own voice — the way you’d send it anyway.',
+              },
+            ].map(card => (
+              <div key={card.title} className="rounded-2xl border border-[#171310]/8 bg-white p-6 shadow-sm">
+                <card.icon />
+                <h3 className="mt-4 font-serif text-[19px] font-semibold leading-snug">{card.title}</h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-[#5c574c]">{card.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mx-auto mt-12 max-w-2xl text-center text-[18px] leading-[1.5] text-[#171310]">
+            Carrd gives you a page. But your page doesn&apos;t take Whish, doesn&apos;t live where your
+            clients already talk, and doesn&apos;t speak Arabic. That&apos;s the difference between a
+            page and a business.
+          </p>
+        </div>
+      </section>
+
       {/* ================= SHOWCASE / PROOF ================= */}
-      <section id="showcase" className="scroll-mt-20 bg-[#f2ede3] py-24">
+      <section id="showcase" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#e8623d]">A real WorkWith page</p>
+            <Eyebrow>A real WorkWith page</Eyebrow>
             <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
               This is what your clients will see.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[#5c574c]">
-              Rami is a Beirut wedding photographer. This is his actual WorkWith page — the same one
-              you&apos;ll build for your work.
+              This is a real WorkWith page — Rami&apos;s, built as an example. The page is what clients
+              see; everything behind it is what you run.
             </p>
             <p className="mt-2 text-[13px] text-[#8a8477]">
               An example page we built to show what yours could feel like — not customer data.
             </p>
           </div>
 
-          {/* browser-chrome frame around the real /rami desktop screenshot */}
           <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-[#171310]/10 bg-white shadow-[0_20px_50px_-20px_rgba(23,19,16,.25)]">
             <div className="flex items-center gap-2 border-b border-[#171310]/10 bg-[#f2ede3] px-4 py-3">
               <span className="h-3 w-3 rounded-full bg-[#e8623d]/60" />
@@ -175,7 +356,6 @@ export default function Home() {
             />
           </div>
 
-          {/* honest feature callouts (plain list — no fabricated overlays) */}
           <div className="mx-auto mt-8 flex max-w-2xl flex-wrap justify-center gap-x-6 gap-y-2 text-[14px] text-[#5c574c]">
             <span className="inline-flex items-center gap-1.5"><Check /> Their real availability</span>
             <span className="inline-flex items-center gap-1.5"><Check /> Prices, if they want to show them</span>
@@ -191,69 +371,23 @@ export default function Home() {
               Open Rami&apos;s page ↗
             </Link>
             <p className="mx-auto mt-4 max-w-md text-[14px] text-[#8a8477]">
-              WorkWith is brand new — be one of the first Lebanese freelancers with a page like this.
+              WorkWith is brand new — be one of the first Lebanese freelancers running their work this way.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS ================= */}
-      <section id="how" className="scroll-mt-20 py-24">
-        <div className="mx-auto max-w-6xl px-6 lg:px-10">
-          <div className="text-center">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#e8623d]">How it works</p>
-            <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
-              Live in three steps.
-            </h2>
-          </div>
-
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {[
-              {
-                n: '01',
-                title: 'Pick your look',
-                body: 'Choose a template that fits your trade — editorial, minimal, or warm. Your accent color is pulled from your own photos, so it already feels like you.',
-              },
-              {
-                n: '02',
-                title: 'Add your work & your voice',
-                body: 'Drop in photos, prices, a testimonial, and a 20-second voice intro in your own voice. Write in Arabic, English, or both.',
-              },
-              {
-                n: '03',
-                title: 'Share one link',
-                body: "Get your work-withme.com/yourname link and a printable QR card. Put it in your bio, your WhatsApp, on a sticker — you're live.",
-              },
-            ].map(step => (
-              <div key={step.n} className="rounded-2xl border border-[#171310]/8 bg-white p-6 shadow-sm">
-                <div className="font-serif text-[44px] font-semibold leading-none text-[#e8623d]">{step.n}</div>
-                <h3 className="mt-4 font-serif text-[20px] font-semibold">{step.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-[#5c574c]">{step.body}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link
-              href="/auth/signup"
-              className="inline-block rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
-            >
-              Make your page — free
-            </Link>
-            <p className="mt-3 text-[13px] text-[#8a8477]">No credit card. Free forever.</p>
-          </div>
-        </div>
-      </section>
-
       {/* ================= PRICING ================= */}
-      <section id="pricing" className="scroll-mt-20 py-28">
+      <section id="pricing" className="scroll-mt-20 bg-[#f2ede3] py-28">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
           <div className="text-center">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#e8623d]">Pricing</p>
-            <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
-              Free to build. Cheap to get paid.
+            <Eyebrow>Pricing</Eyebrow>
+            <h2 className="mt-3 font-serif text-[clamp(28px,3.6vw,38px)] font-semibold tracking-[-0.015em]">
+              The page is free. Running the business is $29 a year.
             </h2>
-            <p className="mt-3 text-[16px] text-[#5c574c]">No credit card to start. The page is free forever.</p>
+            <p className="mt-3 text-[16px] text-[#5c574c]">
+              No credit card to start. The page is free forever — upgrade when your work starts paying.
+            </p>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2">
@@ -264,7 +398,9 @@ export default function Home() {
                 <span className="text-[32px] font-semibold">$0</span>
                 <span className="text-[14px] text-[#5c574c]"> / forever</span>
               </p>
-              <p className="mt-2 text-[14px] text-[#5c574c]">Everything you need to have a page you&apos;re proud of.</p>
+              <p className="mt-2 text-[14px] text-[#5c574c]">
+                Your front door: a page you&apos;re proud to send, and the first few documents on us.
+              </p>
               <ul className="mt-5 space-y-2.5">
                 {['Your public page + custom link', 'Portfolio blocks, voice intro, availability', 'QR business card + save-contact', 'Arabic & English', '3 documents / month'].map(f => (
                   <li key={f} className="flex items-start gap-2.5 text-[14px] text-[#171310]"><Check className="mt-0.5" /> {f}</li>
@@ -274,29 +410,29 @@ export default function Home() {
                 href="/auth/signup"
                 className="mt-6 block rounded-xl border border-[#171310]/10 bg-white py-3 text-center text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
               >
-                Make your page — free
+                Start free
               </Link>
             </div>
 
-            {/* Pro / founder */}
+            {/* Paid / founder */}
             <div className="relative order-1 rounded-2xl border-2 border-[#e8623d] bg-white p-7 shadow-[0_20px_50px_-20px_rgba(232,98,61,.35)] md:order-2">
               <span className="absolute -top-3 start-6 rounded-full bg-[#e8623d] px-3 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-white">
                 Founder price · first 100
               </span>
-              <h3 className="text-[17px] font-semibold">The collector</h3>
+              <h3 className="text-[17px] font-semibold">The workspace</h3>
               <p className="mt-2">
                 <span className="text-[32px] font-semibold text-[#e8623d]">$29</span>
                 <span className="text-[14px] text-[#5c574c]"> / year</span>
               </p>
               <p className="mt-1 text-[13px] text-[#8a8477]">≈ $2.40/mo — locked while you stay a founder.</p>
-              <p className="mt-2 text-[14px] text-[#5c574c]">For when the page starts bringing in work.</p>
+              <p className="mt-2 text-[14px] text-[#5c574c]">Run every job end to end — and always know who owes you.</p>
               <p className="mt-5 text-[13px] font-semibold text-[#171310]">Everything in Free, plus:</p>
               <ul className="mt-2.5 space-y-2.5">
-                {['The WhatsApp money-chaser', 'Unlimited quotes, invoices & receipts', 'Automatic USDT detection', 'Your own branding, no WorkWith mark'].map(f => (
+                {['Every quote, invoice & receipt tracked to paid', 'Overdue invoices flagged — nothing slips', 'Automatic USDT payment detection', 'Your own branding, no WorkWith mark'].map(f => (
                   <li key={f} className="flex items-start gap-2.5 text-[14px] text-[#171310]"><Check className="mt-0.5" /> {f}</li>
                 ))}
               </ul>
-              <p className="mt-4 text-[13px] text-[#8a8477]">One chased invoice pays for it many times over.</p>
+              <p className="mt-4 text-[13px] text-[#8a8477]">One invoice you&apos;d have lost track of pays for the year.</p>
               <Link
                 href="/auth/signup?plan=pro"
                 className="mt-4 block rounded-xl bg-[#e8623d] py-3 text-center text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
@@ -313,7 +449,7 @@ export default function Home() {
       </section>
 
       {/* ================= FAQ ================= */}
-      <section id="faq" className="scroll-mt-20 bg-[#f2ede3] py-24">
+      <section id="faq" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <h2 className="text-center font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
             Questions, answered.
@@ -325,13 +461,14 @@ export default function Home() {
       {/* ================= FINAL CTA (dark) ================= */}
       <section className="border-t border-[#c9a45c]/40 bg-[#0e0f13] py-28 text-center text-[#f4f2ec]">
         <div className="mx-auto max-w-2xl px-6">
-          <p className="font-[family-name:var(--font-tajawal)] text-[15px] text-[#e8623d]" dir="rtl" lang="ar">صفحة مهنية بثواني</p>
+          <p className="font-[family-name:var(--font-tajawal)] text-[15px] text-[#e8623d]" dir="rtl" lang="ar">شغلك مرتّب، وحقّك بلا إحراج</p>
           <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em] text-[#f4f2ec]">
-            Your clients are one link away.
+            Stop running your business in your DMs.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] leading-[1.55] text-white/70">
-            Build a page you&apos;re proud to send, share it once, and let your work do the talking.
-            Free to start — upgrade the day it starts paying off.
+            The page brings clients in. WorkWith carries the job from first message to paid — quote,
+            invoice, reminder, done — all in one place, so nothing lives in your chat history anymore.
+            Free to start.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
@@ -347,7 +484,7 @@ export default function Home() {
               See Rami&apos;s page ↗
             </Link>
           </div>
-          <p className="mt-6 text-[13px] text-white/50">Free forever · no credit card · ready in minutes</p>
+          <p className="mt-6 text-[13px] text-white/50">Free forever · no credit card · be one of the first 100 founders</p>
         </div>
       </section>
 
@@ -360,7 +497,7 @@ export default function Home() {
                 WorkWith<span className="text-[#e8623d]">.</span>
               </span>
               <p className="mt-2 max-w-xs text-[14px] text-[#5c574c]">
-                A professional page for Lebanese freelancers. Made in Beirut.
+                Run your freelance business — from the first “how much?” to paid. Made in Beirut, for Lebanon.
               </p>
               <a
                 href={FOUNDER_WA}
@@ -376,7 +513,7 @@ export default function Home() {
               <ul className="mt-3 space-y-2 text-[14px] text-[#5c574c]">
                 <li><Link href="/auth/signup" className="hover:text-[#171310]">Make your page</Link></li>
                 <li><Link href="/rami" className="hover:text-[#171310]">See a live page</Link></li>
-                <li><a href="#how" className="hover:text-[#171310]">How it works</a></li>
+                <li><a href="#how" className="hover:text-[#171310]">The difference</a></li>
                 <li><a href="#pricing" className="hover:text-[#171310]">Pricing</a></li>
               </ul>
             </div>
@@ -395,5 +532,34 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  )
+}
+
+// Single-stroke coral glyphs for the Why-Lebanon cards — no brand/payment logos.
+function WalletIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e8623d" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2" />
+      <path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3" />
+      <path d="M21 12h-4a2 2 0 0 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z" />
+    </svg>
+  )
+}
+
+function ChatIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e8623d" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z" />
+    </svg>
+  )
+}
+
+function GlobeIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e8623d" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z" />
+    </svg>
   )
 }

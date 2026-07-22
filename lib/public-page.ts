@@ -13,11 +13,21 @@ export interface PublicService {
   note: string
 }
 
+export type BlockType =
+  | 'image_grid' | 'before_after' | 'stat_card' | 'video_link' | 'case_card' | 'testimonial'
+  | 'narrative' | 'showcase' | 'gallery'
+
 export interface PublicBlock {
   id: string
-  type: 'image_grid' | 'before_after' | 'stat_card' | 'video_link' | 'case_card' | 'testimonial'
+  type: BlockType
   position: number
   data: Record<string, unknown>
+  // Composable envelope (Phase 1) — per-section heading/kicker + layout variant.
+  title: string
+  title_ar: string
+  intro: string
+  intro_ar: string
+  variant: string
 }
 
 export interface PublicProfile {
@@ -38,6 +48,10 @@ export interface PublicProfile {
   page_language: 'en' | 'ar'
   noindex: boolean
   reply_hours: number | null
+  // Composable bones + feature flag (Phase 1).
+  hero_variant: string
+  contact_variant: string
+  composable: boolean
 }
 
 export interface PublicPage {
@@ -68,14 +82,14 @@ export async function getOwnPagePreview(): Promise<PublicPage | null> {
 
   const { data: prof } = await supabase
     .from('profiles')
-    .select('handle, full_name, title, title_ar, bio, avatar_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours')
+    .select('handle, full_name, title, title_ar, bio, avatar_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours, hero_variant, contact_variant, composable')
     .eq('id', user.id)
     .single()
   if (!prof) return null
 
   const [{ data: services }, { data: blocks }] = await Promise.all([
     supabase.from('services').select('id, title, title_ar, price, currency, unit, starting_from, package_qty, note').eq('profile_id', user.id).eq('active', true).order('sort_order'),
-    supabase.from('portfolio_blocks').select('id, type, position, data').eq('profile_id', user.id).eq('active', true).order('position'),
+    supabase.from('portfolio_blocks').select('id, type, position, data, title, title_ar, intro, intro_ar, variant').eq('profile_id', user.id).eq('active', true).order('position'),
   ])
 
   return {

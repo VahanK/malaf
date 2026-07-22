@@ -10,6 +10,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // Homepage display serif — H1/H2 only. Exposed as --font-serif by the
+        // Fraunces loader in app/layout.tsx.
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+      },
       colors: {
         // Malaf card palette (docs/card-visuals.html) — client-facing public card pages
         card: {

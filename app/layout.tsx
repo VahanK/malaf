@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Tajawal } from "next/font/google";
+import { Inter, Tajawal, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -16,17 +16,27 @@ const tajawal = Tajawal({
   display: "swap",
 });
 
+// Display serif for the homepage — H1 and section H2s only. Optical-size axis
+// gives it a warm, premium feel at large sizes (the marketing brand voice),
+// distinct from the app's Inter UI stack.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "WorkWith — your professional page, ready in minutes",
   description:
-    "A professional page for Lebanese & Syrian freelancers — your work, your prices, your voice, in one shareable link. Free to make, no code.",
+    "A professional page for Lebanese freelancers — your work, your prices, your voice, in one shareable link. Free to make, no code.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" dir="ltr" className={`${inter.variable} ${tajawal.variable}`} suppressHydrationWarning>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${tajawal.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <body className="font-sans" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
         <Providers>{children}</Providers>
       </body>

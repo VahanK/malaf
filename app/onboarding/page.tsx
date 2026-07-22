@@ -33,6 +33,13 @@ export default function OnboardingPage() {
   const [presetKey, setPresetKey] = useState('')
   const [title, setTitle] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
+  // Payment rails — Lebanon's working rails only (Can-I-Get-Paid data,
+  // Jul 22): Whish + USDT are the "✅ WORKS" pair, IBAN/cash optional.
+  // Blocked rails (PayPal/Stripe/Wise/Payoneer) are deliberately never shown.
+  const [whishNumber, setWhishNumber] = useState('')
+  const [usdtAddress, setUsdtAddress] = useState('')
+  const [ibanValue, setIbanValue] = useState('')
+  const [cashOn, setCashOn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -67,6 +74,12 @@ export default function OnboardingPage() {
   const launch = async () => {
     setError(null)
     setLoading(true)
+    const rails = [
+      whishNumber.trim() && { kind: 'whish', value: whishNumber.trim() },
+      usdtAddress.trim() && { kind: 'usdt', value: usdtAddress.trim() },
+      ibanValue.trim() && { kind: 'iban', value: ibanValue.trim() },
+      cashOn && { kind: 'cash', value: '' },
+    ].filter(Boolean)
     const res = await fetch('/api/onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -76,6 +89,7 @@ export default function OnboardingPage() {
         full_name: fullName,
         title,
         whatsapp_number: whatsapp,
+        rails,
       }),
     })
     const json = await res.json()
@@ -90,13 +104,16 @@ export default function OnboardingPage() {
 
   const step0Done = fullName.trim().length >= 2 && handleStatus === 'available'
   const step1Done = !!presetKey
+  // The concierge escape hatch — a link to the founder's own WhatsApp for
+  // anyone who'd rather have their page set up for them (vahan, Jul 22).
+  const conciergeWa = `https://wa.me/96176112233?text=${encodeURIComponent("Hi! I'd like help setting up my WorkWith page.")}`
 
   return (
     <main className="min-h-screen bg-dash-bg px-6 py-10 text-dash-ink">
       <div className="mx-auto max-w-4xl">
         {/* progress dots */}
         <div className="flex items-center justify-center gap-1.5">
-          {[0, 1, 2].map(i => (
+          {[0, 1, 2, 3].map(i => (
             <span
               key={i}
               className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -215,6 +232,73 @@ export default function OnboardingPage() {
 
             {step === 2 && (
               <div className="card-reveal">
+                <h1 className="text-2xl font-semibold tracking-tight">How do you get paid?</h1>
+                <p className="mt-1.5 text-sm text-dash-muted">
+                  These show on your invoices and pay page. Add what you use — you can change or add
+                  more later. Everything&apos;s optional.
+                </p>
+
+                <label className="mt-6 block text-sm font-medium">Whish number</label>
+                <input
+                  value={whishNumber}
+                  onChange={e => setWhishNumber(e.target.value)}
+                  maxLength={30}
+                  inputMode="tel"
+                  placeholder="+961 …"
+                  className="mt-2 w-full rounded-lg border border-dash-border bg-dash-surface px-3.5 py-2.5 text-sm outline-none focus:border-dash-accent"
+                />
+
+                <label className="mt-4 block text-sm font-medium">
+                  USDT wallet <span className="font-normal text-dash-muted">(TRC-20 — foreign clients pay you directly)</span>
+                </label>
+                <input
+                  value={usdtAddress}
+                  onChange={e => setUsdtAddress(e.target.value)}
+                  maxLength={80}
+                  placeholder="T…"
+                  className="mt-2 w-full rounded-lg border border-dash-border bg-dash-surface px-3.5 py-2.5 text-sm outline-none focus:border-dash-accent"
+                />
+
+                <label className="mt-4 block text-sm font-medium">
+                  Bank IBAN <span className="font-normal text-dash-muted">(optional)</span>
+                </label>
+                <input
+                  value={ibanValue}
+                  onChange={e => setIbanValue(e.target.value)}
+                  maxLength={40}
+                  placeholder="LB.."
+                  className="mt-2 w-full rounded-lg border border-dash-border bg-dash-surface px-3.5 py-2.5 text-sm outline-none focus:border-dash-accent"
+                />
+
+                <label className="mt-4 flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={cashOn} onChange={e => setCashOn(e.target.checked)} />
+                  I also take cash
+                </label>
+
+                <p className="mt-4 rounded-lg bg-dash-surface px-3 py-2 text-xs text-dash-muted">
+                  💡 In Lebanon, Whish (local clients) + USDT (everyone else) covers almost everyone —
+                  no PayPal/Stripe needed.
+                </p>
+
+                <div className="mt-6 flex gap-2">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="rounded-xl border border-dash-border px-5 py-3 text-sm font-medium"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={() => setStep(3)}
+                    className="flex-1 rounded-xl bg-dash-accent py-3 text-sm font-bold text-dash-accent-ink transition-transform active:scale-[0.99]"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="card-reveal">
                 <p className="text-xs font-bold uppercase tracking-wide text-dash-accent">Final step</p>
                 <h1 className="mt-1 text-2xl font-semibold tracking-tight">Connect your WhatsApp</h1>
                 <p className="mt-1.5 text-sm text-dash-muted">
@@ -240,7 +324,7 @@ export default function OnboardingPage() {
 
                 <div className="mt-6 flex gap-2">
                   <button
-                    onClick={() => setStep(1)}
+                    onClick={() => setStep(2)}
                     className="rounded-xl border border-dash-border px-5 py-3 text-sm font-medium"
                   >
                     Back
@@ -253,6 +337,13 @@ export default function OnboardingPage() {
                     {loading ? 'Launching…' : 'Launch my card 🚀'}
                   </button>
                 </div>
+
+                <p className="mt-5 text-center text-xs text-dash-muted">
+                  Rather have us set it up for you?{' '}
+                  <a href={conciergeWa} target="_blank" rel="noopener noreferrer" className="font-medium text-dash-accent">
+                    Talk to us on WhatsApp
+                  </a>
+                </p>
               </div>
             )}
           </div>

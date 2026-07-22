@@ -19,6 +19,10 @@ export interface CardTemplate {
   swatch: { bg: string; surface: string; ink: string; accentFallback: string }
   /** CSS custom properties applied at the card root — every component reads these, never raw hex. */
   vars: (accent: string) => Record<string, string>
+  /** Which website structure renders this template — each is a distinct
+   *  page layout (hero shape, section rhythm, gallery grammar), not one
+   *  shared column reskinned. See components/card/layouts/*. */
+  layout: 'editorial' | 'minimal' | 'gradient'
   /** Structural choices CSS variables can't express. */
   container: 'phone' | 'wide'
   headingFont: 'display' | 'sans'
@@ -33,6 +37,7 @@ const EDITORIAL_DARK: CardTemplate = {
   label: 'Editorial Dark',
   description: 'Moody, gallery-like — the original WorkWith card. Best for visual portfolios: photo, film, design.',
   swatch: { bg: '#0e0f13', surface: '#16181f', ink: '#f4f2ec', accentFallback: '#c9a45c' },
+  layout: 'editorial',
   container: 'phone',
   headingFont: 'sans',
   corner: 'soft',
@@ -63,6 +68,7 @@ const MINIMAL_LIGHT: CardTemplate = {
   label: 'Minimal Light',
   description: 'Bright, quiet, confident — sharp corners and a serif name. Best for tutors, consultants, trainers.',
   swatch: { bg: '#faf9f6', surface: '#ffffff', ink: '#17171a', accentFallback: '#c9622e' },
+  layout: 'minimal',
   container: 'wide',
   headingFont: 'display',
   corner: 'sharp',
@@ -93,6 +99,7 @@ const WARM_GRADIENT: CardTemplate = {
   label: 'Warm Gradient',
   description: 'Bright, soft, confident — a warm wash behind everything and rounded cards. Best for consultants, coaches, tutors, event planners.',
   swatch: { bg: '#fff7ef', surface: '#ffffff', ink: '#231b12', accentFallback: '#e2703a' },
+  layout: 'gradient',
   container: 'wide',
   headingFont: 'sans',
   corner: 'soft',

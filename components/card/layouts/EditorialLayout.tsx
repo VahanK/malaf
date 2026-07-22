@@ -147,22 +147,43 @@ export function EditorialLayout({ page, accent, tpl, vars }: LayoutProps) {
         </section>
       ))}
 
-      {/* ---------- prices strip ---------- */}
+      {/* ---------- pricing as cards ---------- */}
       {services.length > 0 && (
         <section className="border-t border-[var(--card-border-soft)] bg-[var(--card-surface-soft)]">
-          <div className="mx-auto max-w-4xl px-6 py-12 lg:px-10">
-            <SectionHeading accent={accent}>Rates</SectionHeading>
-            <div className="mt-6 divide-y divide-[var(--card-border)]">
+          <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10">
+            <SectionHeading accent={accent}>What I offer</SectionHeading>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {services.map(s => (
-                <div key={s.id} className="flex items-baseline justify-between py-4">
-                  <div>
-                    <span className="text-[17px] font-bold">{s.title}</span>
-                    {s.price != null && <span className="ms-3 text-[12px] text-[var(--card-muted-2)]">{unitLabel(s.unit, 'en')}</span>}
+                <Reveal key={s.id}>
+                  <div className="group flex h-full flex-col justify-between rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-bg)] p-6 transition-colors hover:border-[color:var(--card-accent)]">
+                    <div>
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-[18px] font-bold leading-snug">{s.title}</h3>
+                        {s.starting_from && s.price != null && (
+                          <span className="mt-0.5 shrink-0 rounded-full border border-[var(--card-border)] px-2 py-0.5 text-[10px] uppercase tracking-wider text-[var(--card-muted-2)]">
+                            from
+                          </span>
+                        )}
+                      </div>
+                      {s.note && <p className="mt-2 text-[13px] leading-relaxed text-[var(--card-muted)]">{s.note}</p>}
+                    </div>
+                    <div className="mt-5 flex items-baseline gap-2">
+                      <span className="text-[26px] font-black leading-none" style={{ color: accent }}>
+                        {s.price == null ? "Let's talk" : formatPrice(s)}
+                      </span>
+                      {s.price != null && (
+                        <span className="text-[12px] text-[var(--card-muted-2)]">/ {unitLabel(s.unit, 'en')}</span>
+                      )}
+                    </div>
+                    <a
+                      href="#quote-cta"
+                      className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-bold transition-transform group-hover:translate-x-0.5"
+                      style={{ color: accent }}
+                    >
+                      Request this <span aria-hidden>→</span>
+                    </a>
                   </div>
-                  <span className="text-[18px] font-black" style={{ color: accent }}>
-                    {s.price == null ? "let's talk" : formatPrice(s)}
-                  </span>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -170,19 +191,34 @@ export function EditorialLayout({ page, accent, tpl, vars }: LayoutProps) {
       )}
 
       {/* ---------- contact / quote ---------- */}
-      <section id="quote-cta" className="mx-auto max-w-lg px-6 py-16 lg:px-10">
-        <SectionHeading accent={accent}>Work with {firstName}</SectionHeading>
-        <div className="mt-6">
+      <section id="quote-cta" className="border-t border-[var(--card-border-soft)] px-6 py-20 lg:px-10">
+        <div className="mx-auto max-w-lg text-center">
+          <h2 className="font-serif text-[30px] font-semibold leading-tight tracking-[-0.02em] lg:text-[38px]">
+            Let&apos;s make something.
+          </h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-[var(--card-muted)]">
+            Tell {firstName}{' '}what you have in mind — a date, a budget, a rough idea. You&apos;ll
+            get a real reply, not a form-letter.
+            {p.reply_hours ? (
+              <>
+                {' '}
+                <span className="font-semibold text-[var(--card-ink)]">Usually within {p.reply_hours}h.</span>
+              </>
+            ) : null}
+          </p>
+        </div>
+        <div className="mx-auto mt-8 max-w-lg">
           <QuoteForm handle={p.handle} services={services} accent={accent} avatarUrl={mediaUrl(p.avatar_url)} firstName={firstName} replyHours={p.reply_hours} corner={tpl.corner} />
-          <div className="mt-3 flex gap-2">
-            <a href={`/api/vcard/${p.handle}`} className="flex-1 rounded-[var(--card-radius-md)] border border-[var(--card-border)] py-3 text-center text-[13px] font-bold">📇 Save contact</a>
-            {p.areas_served.length > 0 && (
-              <span className="flex-1 rounded-[var(--card-radius-md)] border border-[var(--card-border)] py-3 text-center text-[12px] text-[var(--card-muted)]">
-                {p.areas_served.join(' · ')}
-              </span>
-            )}
-          </div>
-          {p.reply_hours ? <p className="mt-3 text-center text-[11px] text-[var(--card-muted)]">Usually replies within {p.reply_hours}h</p> : null}
+          {wa && (
+            <a
+              href={wa}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 flex items-center justify-center gap-2 rounded-[var(--card-radius-md)] border border-[var(--card-border)] py-3 text-center text-[13px] font-bold transition-colors hover:border-[color:var(--card-accent)]"
+            >
+              💬 Or message on WhatsApp
+            </a>
+          )}
         </div>
       </section>
 

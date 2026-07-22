@@ -27,18 +27,18 @@ begin
   ) values (
     demo_id, 'rami', 'Rami Haddad',
     'Wedding & Events Photographer · Beirut', 'مصوّر أعراس ومناسبات · بيروت',
-    'Ten years behind the camera at Lebanese weddings. I shoot the moments people frame.',
+    'Ten years, three hundred weddings. I shoot the quiet moments people end up framing — not the poses. Based in Beirut, I travel anywhere in Lebanon.',
     '#c9a45c', 'photographer',
-    'available', 'Booking for Sept', '+96170000000',
+    'available', 'Booking Sept–Nov 2026', '+96170000000',
     array['Beirut','Jounieh','Batroun'],
     'en', true, true, 2
   ) on conflict (id) do nothing;
 
-  insert into public.services (profile_id, title, title_ar, price, unit, starting_from, sort_order) values
-    (demo_id, 'Full wedding coverage', 'تغطية عرس كاملة', 600, 'event', true, 1),
-    (demo_id, 'Engagement session', 'جلسة خطوبة', 150, 'session', false, 2),
-    (demo_id, 'Events', 'مناسبات', 250, 'event', false, 3),
-    (demo_id, 'Product & content shoot', 'تصوير منتجات ومحتوى', 300, 'day', true, 4);
+  insert into public.services (profile_id, title, title_ar, price, unit, starting_from, note, sort_order) values
+    (demo_id, 'Full wedding day', 'تغطية عرس كاملة', 600, 'event', true, 'Getting-ready to last dance. Two shooters, edited gallery in 3 weeks.', 1),
+    (demo_id, 'Engagement session', 'جلسة خطوبة', 150, 'session', false, 'A relaxed 90 minutes, one location of your choice.', 2),
+    (demo_id, 'Private events', 'مناسبات خاصة', 250, 'event', false, 'Birthdays, baptisms, corporate evenings — up to 4 hours.', 3),
+    (demo_id, 'Product & content shoot', 'تصوير منتجات ومحتوى', 300, 'day', true, 'For brands and shops — a full day of clean, on-brand content.', 4);
 
   insert into public.portfolio_blocks (profile_id, type, position, data) values
     (demo_id, 'image_grid', 1, '{"images":[

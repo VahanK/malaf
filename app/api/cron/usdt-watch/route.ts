@@ -100,12 +100,68 @@ export async function GET(request: Request) {
     }
   }
 
+  // ---- Subscription payments: match transfers to the FOUNDER's address ----
+  // Freelancers pay the platform (Vahan) for pay-to-publish; the target address
+  // is platform_config.usdt_address, NOT any freelancer's own address. Same
+  // exact-amount reference mechanism as invoices.
+  let subMatched = 0
+  const { data: pendingSubs } = await admin
+    .from('subscription_payments')
+    .select('id, amount_usd, usdt_reference, usdt_amount')
+    .eq('status', 'pending')
+    .not('usdt_reference', 'is', null)
+
+  if (pendingSubs?.length) {
+    const { data: cfg } = await admin
+      .from('platform_config')
+      .select('usdt_address')
+      .eq('id', 1)
+      .single()
+    const founderAddress = cfg?.usdt_address?.trim()
+
+    if (founderAddress) {
+      let founderTransfers: Trc20Transfer[] = []
+      try {
+        founderTransfers = await fetchRecentTransfers(founderAddress)
+      } catch (err) {
+        errors.push(`subscription fetch: ${err instanceof Error ? err.message : 'fetch failed'}`)
+      }
+
+      for (const sub of pendingSubs) {
+        const targetAmount = Number(sub.usdt_amount ?? sub.amount_usd)
+        const hit = founderTransfers.find(tx =>
+          tx.to === founderAddress &&
+          tx.token_info.address === USDT_TRC20_CONTRACT &&
+          Math.abs(Number(tx.value) / 10 ** USDT_DECIMALS - targetAmount) < MATCH_EPSILON
+        )
+        if (!hit) continue
+
+        const { error: confirmError } = await admin.rpc('confirm_subscription_payment_system', {
+          p_payment_id: sub.id,
+          p_usdt_tx_hash: hit.transaction_id,
+        })
+        if (confirmError) {
+          errors.push(`subscription ${sub.id}: confirm failed — ${confirmError.message}`)
+          continue
+        }
+        subMatched++
+      }
+    }
+  }
+
   await admin
     .from('usdt_watcher_state')
     .update({ last_checked_block: 0, updated_at: new Date().toISOString() })
     .eq('id', 1)
 
-  return NextResponse.json({ ok: true, checked: pending.length, matched, errors: errors.length ? errors : undefined })
+  return NextResponse.json({
+    ok: true,
+    checked: pending.length,
+    matched,
+    subscriptionsChecked: pendingSubs?.length ?? 0,
+    subscriptionsMatched: subMatched,
+    errors: errors.length ? errors : undefined,
+  })
 }
 
 async function fetchRecentTransfers(address: string): Promise<Trc20Transfer[]> {

@@ -24,6 +24,10 @@ const FAQ: FaqItem[] = [
     a: "Those give you a link. WorkWith runs the job. A link tool stops at 'here's my work' — then you're back in WhatsApp typing out prices, chasing the deposit, and trying to remember who paid. WorkWith carries it the whole way: the client requests a quote from your page, you send it, they accept, it becomes an invoice, and you always know what's paid and what's still owed. A page is the front door. This is the business behind it.",
   },
   {
+    q: "What's free and what costs money?",
+    a: "Building your page is free — pick a template, add your work and prices, and preview exactly what clients will see, no card needed. You pay $29/year (about $2.40/month) only when you're ready to publish it live at your own link and share it. That's when it becomes real: your public page, your QR card, and the whole quote-to-paid flow behind it. Pay by USDT (confirms instantly) or Whish, bank, or cash.",
+  },
+  {
     q: 'Do I need a website or any tech skills?',
     a: "No. You pick a look, add your work, and you're live in minutes. Nothing to install, no code — if you can post to Instagram, you can build this.",
   },
@@ -110,8 +114,8 @@ export default function Home() {
             </Link>
           </div>
           <p className="mt-3 max-w-md text-[13px] text-[#8a8477] mx-auto lg:mx-0">
-            Free forever: your page, your QR card, and quote requests. Upgrade when you want to invoice
-            and get paid — straight to you, never through us.
+            Free to build and preview. Publish it live at your own link for $29/year — no card needed
+            to start, and we never take a cut of what you earn.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-[#5c574c] lg:justify-start">
@@ -261,26 +265,26 @@ export default function Home() {
           <div className="text-center">
             <Eyebrow>Pricing</Eyebrow>
             <h2 className="mt-3 font-serif text-[clamp(28px,3.6vw,38px)] font-semibold tracking-[-0.015em]">
-              The page is free. Running the business is $29 a year.
+              Build for free. Go live for $29 a year.
             </h2>
             <p className="mt-3 text-[16px] text-[#5c574c]">
-              No credit card to start. The page is free forever — upgrade when your work starts paying.
+              No card to start. Build your whole page and see it first — pay only when you&apos;re ready to share it.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2">
-            {/* Free */}
+            {/* Build — free */}
             <div className="order-2 rounded-2xl border border-[#171310]/10 bg-white p-7 shadow-sm md:order-1">
-              <h3 className="text-[17px] font-semibold">The page</h3>
+              <h3 className="text-[17px] font-semibold">Build</h3>
               <p className="mt-2">
                 <span className="text-[32px] font-semibold">$0</span>
-                <span className="text-[14px] text-[#5c574c]"> / forever</span>
+                <span className="text-[14px] text-[#5c574c]"> to try</span>
               </p>
               <p className="mt-2 text-[14px] text-[#5c574c]">
-                Your front door: a page you&apos;re proud to send, and the first few documents on us.
+                Make your whole page and preview exactly what clients will see. No card, no rush.
               </p>
               <ul className="mt-5 space-y-2.5">
-                {['Your public page + custom link', 'Portfolio blocks, voice intro, availability', 'QR business card + save-contact', 'Arabic & English', '3 documents / month'].map(f => (
+                {['Pick a template, add your work & prices', 'Voice intro, availability, Arabic & English', 'A private preview of your live page', 'Set up quotes, invoices & your rails', 'Publish anytime for $29/year'].map(f => (
                   <li key={f} className="flex items-start gap-2.5 text-[14px] text-[#171310]"><Check className="mt-0.5" /> {f}</li>
                 ))}
               </ul>
@@ -288,40 +292,40 @@ export default function Home() {
                 href="/auth/signup"
                 className="mt-6 block rounded-xl border border-[#171310]/10 bg-white py-3 text-center text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
               >
-                Start free
+                Start building — free
               </Link>
             </div>
 
-            {/* Paid / founder */}
+            {/* Publish — $29 founder */}
             <div className="relative order-1 rounded-2xl border-2 border-[#e8623d] bg-white p-7 shadow-[0_20px_50px_-20px_rgba(232,98,61,.35)] md:order-2">
               <span className="absolute -top-3 start-6 rounded-full bg-[#e8623d] px-3 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-white">
                 Founder price · first 100
               </span>
-              <h3 className="text-[17px] font-semibold">The workspace</h3>
+              <h3 className="text-[17px] font-semibold">Publish</h3>
               <p className="mt-2">
                 <span className="text-[32px] font-semibold text-[#e8623d]">$29</span>
                 <span className="text-[14px] text-[#5c574c]"> / year</span>
               </p>
               <p className="mt-1 text-[13px] text-[#8a8477]">≈ $2.40/mo — locked while you stay a founder.</p>
-              <p className="mt-2 text-[14px] text-[#5c574c]">Run every job end to end — and always know who owes you.</p>
-              <p className="mt-5 text-[13px] font-semibold text-[#171310]">Everything in Free, plus:</p>
+              <p className="mt-2 text-[14px] text-[#5c574c]">Your page goes live at your own link — and the whole business runs behind it.</p>
+              <p className="mt-5 text-[13px] font-semibold text-[#171310]">Everything in Build, plus:</p>
               <ul className="mt-2.5 space-y-2.5">
-                {['Every quote, invoice & receipt tracked to paid', 'Overdue invoices flagged — nothing slips', 'Automatic USDT payment detection', 'Your own branding, no WorkWith mark'].map(f => (
+                {['Your page LIVE at work-withme.com/you', 'Your own QR business card, ready to share', 'Unlimited quotes, invoices & receipts', 'Automatic USDT payment detection', 'Your own branding, no WorkWith mark'].map(f => (
                   <li key={f} className="flex items-start gap-2.5 text-[14px] text-[#171310]"><Check className="mt-0.5" /> {f}</li>
                 ))}
               </ul>
-              <p className="mt-4 text-[13px] text-[#8a8477]">One invoice you&apos;d have lost track of pays for the year.</p>
+              <p className="mt-4 text-[13px] text-[#8a8477]">Pay by USDT (instant) or Whish, bank &amp; cash. Money goes straight to us — never a cut of yours.</p>
               <Link
-                href="/auth/signup?plan=pro"
+                href="/auth/signup"
                 className="mt-4 block rounded-xl bg-[#e8623d] py-3 text-center text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
               >
-                Start free — upgrade when it pays off
+                Start free — publish when you&apos;re ready
               </Link>
             </div>
           </div>
 
           <p className="mt-8 text-center text-[13px] text-[#8a8477]">
-            No card required to start. Subscriptions only — WorkWith never takes a cut of what you earn.
+            No card required to start building. WorkWith never takes a cut of what you earn from clients.
           </p>
         </div>
       </section>
@@ -353,7 +357,7 @@ export default function Home() {
               href="/auth/signup"
               className="rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
             >
-              Make your page — free
+              Start building — free
             </Link>
             <Link
               href="/rami"
@@ -362,7 +366,7 @@ export default function Home() {
               See Rami&apos;s page ↗
             </Link>
           </div>
-          <p className="mt-6 text-[13px] text-white/50">Free forever · no credit card · be one of the first 100 founders</p>
+          <p className="mt-6 text-[13px] text-white/50">Free to build · $29/year to go live · be one of the first 100 founders</p>
         </div>
       </section>
 

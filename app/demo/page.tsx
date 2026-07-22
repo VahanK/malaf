@@ -66,9 +66,9 @@ export default function DemoPage() {
         <Link href="/" className="text-xl font-semibold tracking-tight">WorkWith</Link>
 
         <h1 className="mt-8 text-[30px] font-semibold leading-[1.15] tracking-tight">
-          The page is free.
+          Build free.
           <br />
-          <span className="text-[#e8623d]">Getting paid</span> is the product.
+          <span className="text-[#e8623d]">Publish &amp; get paid</span> for $29 a year.
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[#5c574c]">
           Watch one job travel from &ldquo;interested&rdquo; to money in your account — every link
@@ -77,8 +77,8 @@ export default function DemoPage() {
 
         <Beat n={1} title="A client lands on your card">
           <p className="mb-3 text-[13.5px] leading-relaxed text-[#5c574c]">
-            Portfolio, prices, voice intro — a page that sells you while you sleep. This part is
-            free, forever.
+            Portfolio, prices, voice intro — a page that sells you while you sleep. Build it free;
+            publish it live when you&apos;re ready.
           </p>
           <LiveLink href="/rami" label="Open Rami's live card" />
         </Beat>
@@ -147,12 +147,12 @@ export default function DemoPage() {
         <section className="mt-14">
           <div className="rounded-2xl border border-[#171310]/10 bg-white p-5 shadow-sm">
             <div className="flex items-baseline justify-between">
-              <h3 className="text-[15px] font-semibold">The card</h3>
+              <h3 className="text-[15px] font-semibold">Build</h3>
               <span className="text-[22px] font-semibold">Free</span>
             </div>
             <p className="mt-1 text-[12.5px] text-[#5c574c]">
-              Your page, portfolio, QR card, quote requests, 3 documents a month. No credit card,
-              no strings.
+              Make your whole page — portfolio, prices, voice intro — and preview it privately. No
+              credit card, no rush.
             </p>
           </div>
 
@@ -161,25 +161,24 @@ export default function DemoPage() {
               Founder deal · first 100
             </span>
             <div className="flex items-baseline justify-between">
-              <h3 className="text-[15px] font-semibold">The collector</h3>
+              <h3 className="text-[15px] font-semibold">Publish</h3>
               <div className="text-end">
                 <span className="text-[22px] font-semibold text-[#e8623d]">$29</span>
                 <span className="text-[12.5px] text-[#5c574c]"> /year</span>
               </div>
             </div>
             <p className="mt-1 text-[12.5px] text-[#5c574c]">
-              Everything free has, plus the chaser, unlimited documents, automatic USDT detection,
-              and your own branding. That&rsquo;s $2.4 a month — one chased invoice pays for it
-              five times over.
+              Your page goes live at your link, plus the chaser, unlimited documents, automatic USDT
+              detection, and your own branding. That&rsquo;s $2.4 a month.
             </p>
             <Link
               href="/auth/signup"
               className="mt-4 block rounded-xl bg-[#e8623d] py-3 text-center text-[14px] font-bold text-white"
             >
-              Start free — upgrade when it pays for itself
+              Start building — publish when you&rsquo;re ready
             </Link>
             <p className="mt-2 text-center text-[11px] text-[#5c574c]">
-              Pay by Whish or USDT · not happy? Money back within 30 days
+              Pay by USDT (instant) or Whish · not happy? Money back within 30 days
             </p>
           </div>
         </section>

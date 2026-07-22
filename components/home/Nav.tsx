@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FaWhatsapp } from 'react-icons/fa'
 
-// Founder concierge WhatsApp — the "talk to me to set up your profile" channel.
-// PLACEHOLDER: swap 961XXXXXXXX for the real number before launch (also in the footer).
-export const FOUNDER_WA =
-  'https://wa.me/961XXXXXXXX?text=' +
-  encodeURIComponent("Hi! I'd like help setting up my WorkWith page.")
+// Single source of truth is lib/founder.ts. Re-export so existing
+// `import { FOUNDER_WA } from '@/components/home/Nav'` callers keep working.
+import { FOUNDER_WA } from '@/lib/founder'
+export { FOUNDER_WA }
 
 const LINKS = [
   { label: 'A real page', href: '#showcase' },

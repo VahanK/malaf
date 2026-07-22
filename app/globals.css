@@ -94,3 +94,23 @@ body {
   .reveal, .reveal .stagger { opacity: 1; transform: none; transition: none; }
   .glow-breathe, .handle-nudge, .chat-pop { animation: none; }
 }
+
+/* ---- glassmorphism template (GlassLayout) — frosted translucent surfaces ---- */
+/* Plain rules (not @layer) so Tailwind v4 never purges them. Reads --card-*
+   tokens set by the glass template. Browsers without backdrop-filter degrade to
+   a clean translucent card — no JS fallback needed. */
+.glass-panel {
+  background: var(--card-surface);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius-lg);
+  box-shadow: var(--card-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.glass-chip {
+  background: var(--card-surface-soft);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid var(--card-border-soft);
+  border-radius: var(--card-radius-full);
+}

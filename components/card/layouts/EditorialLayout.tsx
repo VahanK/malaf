@@ -7,6 +7,7 @@ import { VoicePlayer } from '../VoicePlayer'
 import { Reveal } from '../Reveal'
 import { Lightbox } from './Lightbox'
 import { collectImages, heroImage, testimonials, beforeAfters, stats, mediaUrl } from './shared'
+import { normalizeAccent } from '@/lib/card-templates'
 import type { LayoutProps } from './types'
 
 // EDITORIAL — a dark gallery website. Full-bleed hero photo with the name
@@ -24,19 +25,36 @@ export function EditorialLayout({ page, accent, tpl, vars }: LayoutProps) {
   const firstName = p.full_name.split(' ')[0] || p.handle
   const wa = p.whatsapp_number ? `https://wa.me/${p.whatsapp_number.replace(/[^\d]/g, '')}` : null
   const [lightbox, setLightbox] = useState<number | null>(null)
+  const a6 = normalizeAccent(accent)
 
   return (
-    <main className="text-[var(--card-ink)]" style={{ ...vars, background: 'var(--card-bg)' }}>
+    <main
+      className="text-[var(--card-ink)]"
+      style={{
+        ...vars,
+        // Ambient aurora wash (Midnight's signature; a gold glow on editorial-dark).
+        // The hero photo covers the top on photo pages, so this only shows through
+        // on image-less heroes and below the fold.
+        background: tpl.wash
+          ? `radial-gradient(90% 60% at 15% -5%, ${a6}22, transparent 55%), radial-gradient(70% 50% at 95% 10%, ${a6}14, transparent 50%), var(--card-bg)`
+          : 'var(--card-bg)',
+      }}
+    >
       {/* ---------- full-bleed hero ---------- */}
       <section className="relative flex min-h-[92vh] items-end overflow-hidden">
         {hero.url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={hero.url} alt={hero.alt} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
-          <div className="absolute inset-0" style={{ background: `radial-gradient(80% 80% at 50% 20%, ${accent}55, #0e0f13)` }} />
+          <div className="absolute inset-0" style={{ background: `radial-gradient(80% 80% at 50% 20%, ${a6}55, var(--card-bg))` }} />
         )}
-        {/* legibility gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+        {/* legibility gradient — strong scrim over photos; a soft bottom fade for
+            image-less heroes so the aurora shows and the name still reads. */}
+        {hero.url ? (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+        ) : (
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, var(--card-bg) 2%, transparent 55%)' }} />
+        )}
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 h-40"

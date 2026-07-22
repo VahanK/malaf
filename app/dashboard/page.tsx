@@ -16,6 +16,31 @@ export default async function DashboardHome() {
     .eq('profile_id', user!.id)
     .eq('status', 'new')
 
+  // Outstanding = sent/approved invoices not yet paid. Collected-this-month =
+  // invoices marked paid since the 1st. Real numbers, not the old $0 literals.
+  const monthStart = new Date()
+  monthStart.setDate(1)
+  monthStart.setHours(0, 0, 0, 0)
+
+  const { data: outstandingRows } = await supabase
+    .from('documents')
+    .select('total')
+    .eq('profile_id', user!.id)
+    .eq('type', 'invoice')
+    .in('status', ['sent', 'approved'])
+  const outstanding = (outstandingRows ?? []).reduce((sum, r) => sum + Number(r.total ?? 0), 0)
+
+  const { data: collectedRows } = await supabase
+    .from('documents')
+    .select('total')
+    .eq('profile_id', user!.id)
+    .eq('type', 'invoice')
+    .eq('status', 'paid')
+    .gte('paid_at', monthStart.toISOString())
+  const collected = (collectedRows ?? []).reduce((sum, r) => sum + Number(r.total ?? 0), 0)
+
+  const money = (n: number) => '$' + n.toLocaleString('en-US')
+
   return (
     <div>
       <h1 className="text-xl font-semibold">Overview</h1>
@@ -32,11 +57,11 @@ export default async function DashboardHome() {
 
       <div className="mt-6 grid grid-cols-3 gap-4">
         <div className="rounded-xl border border-dash-border bg-dash-surface p-5">
-          <div className="text-2xl font-semibold">$0</div>
+          <div className="text-2xl font-semibold">{money(outstanding)}</div>
           <div className="mt-1 text-sm text-dash-muted">Outstanding</div>
         </div>
         <div className="rounded-xl border border-dash-border bg-dash-surface p-5">
-          <div className="text-2xl font-semibold">$0</div>
+          <div className="text-2xl font-semibold">{money(collected)}</div>
           <div className="mt-1 text-sm text-dash-muted">Collected this month</div>
         </div>
         <div className="rounded-xl border border-dash-border bg-dash-surface p-5">

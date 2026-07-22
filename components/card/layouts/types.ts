@@ -5,7 +5,7 @@ import type { CardTemplate } from '@/lib/card-templates'
 // The `vars` FUNCTION never crosses into the client components — PublicCard
 // resolves it to a plain style object first (functions can't be passed to
 // Client Components across the RSC boundary).
-export type LayoutTemplate = Pick<CardTemplate, 'layout' | 'corner' | 'motion' | 'headingFont'>
+export type LayoutTemplate = Pick<CardTemplate, 'layout' | 'corner' | 'motion' | 'headingFont' | 'wash'>
 
 export interface LayoutProps {
   page: PublicPage

@@ -3,6 +3,7 @@ import { getCardTemplate } from '@/lib/card-templates'
 import { EditorialLayout } from './layouts/EditorialLayout'
 import { MinimalLayout } from './layouts/MinimalLayout'
 import { GradientLayout } from './layouts/GradientLayout'
+import { GlassLayout } from './layouts/GlassLayout'
 import type { LayoutProps } from './layouts/types'
 
 // Thin router: resolve the template + its CSS-variable tokens once, then hand
@@ -20,12 +21,13 @@ export function PublicCard({ page }: { page: PublicPage }) {
     page,
     accent,
     vars,
-    tpl: { layout: tpl.layout, corner: tpl.corner, motion: tpl.motion, headingFont: tpl.headingFont },
+    tpl: { layout: tpl.layout, corner: tpl.corner, motion: tpl.motion, headingFont: tpl.headingFont, wash: tpl.wash },
   }
 
   switch (tpl.layout) {
     case 'minimal': return <MinimalLayout {...props} />
     case 'gradient': return <GradientLayout {...props} />
+    case 'glass': return <GlassLayout {...props} />
     case 'editorial':
     default: return <EditorialLayout {...props} />
   }

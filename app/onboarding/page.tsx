@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { buildFounderWa } from '@/lib/founder'
 
 interface SampleService { title: string; price: number | null; unit: string; starting_from?: boolean }
 interface Preset {
@@ -106,7 +107,8 @@ export default function OnboardingPage() {
   const step1Done = !!presetKey
   // The concierge escape hatch — a link to the founder's own WhatsApp for
   // anyone who'd rather have their page set up for them (vahan, Jul 22).
-  const conciergeWa = `https://wa.me/96176112233?text=${encodeURIComponent("Hi! I'd like help setting up my WorkWith page.")}`
+  // Uses the single FOUNDER_PHONE source of truth (lib/founder.ts).
+  const conciergeWa = buildFounderWa("Hi! I'd like help setting up my WorkWith page.")
 
   return (
     <main className="min-h-screen bg-dash-bg px-6 py-10 text-dash-ink">

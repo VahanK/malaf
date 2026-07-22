@@ -9,7 +9,28 @@
 // can't be pure CSS: container strategy, corner radius scale, whether
 // headings use a display serif or the body sans.
 
-export type CardTemplateId = 'editorial-dark' | 'minimal-light' | 'warm-gradient'
+export type CardTemplateId =
+  | 'editorial-dark' | 'minimal-light' | 'warm-gradient'
+  | 'glassmorphism' | 'midnight' | 'clean-gradient'
+
+/** Normalize any stored accent to a safe 6-digit hex. accent_color is a free
+ *  string; 3-digit/8-digit/rgb()/named values would make every `${accent}NN`
+ *  alpha-suffix invalid and silently drop gradients. Callers that compose alpha
+ *  hex MUST use this, not the raw accent. */
+export function normalizeAccent(hex: string, fallback = '#6366f1'): string {
+  return /^#[0-9a-fA-F]{6}$/.test(hex) ? hex : fallback
+}
+
+/** Choose legible ink (near-black vs white) for text placed ON a solid accent
+ *  fill (CTA buttons). Luminance-based so pale accents get dark ink. */
+export function inkOn(hex: string): string {
+  const h = normalizeAccent(hex).replace('#', '')
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  const L = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+  return L > 0.6 ? '#0d1220' : '#ffffff'
+}
 
 export interface CardTemplate {
   id: CardTemplateId
@@ -22,7 +43,7 @@ export interface CardTemplate {
   /** Which website structure renders this template — each is a distinct
    *  page layout (hero shape, section rhythm, gallery grammar), not one
    *  shared column reskinned. See components/card/layouts/*. */
-  layout: 'editorial' | 'minimal' | 'gradient'
+  layout: 'editorial' | 'minimal' | 'gradient' | 'glass'
   /** Structural choices CSS variables can't express. */
   container: 'phone' | 'wide'
   headingFont: 'display' | 'sans'
@@ -125,10 +146,106 @@ const WARM_GRADIENT: CardTemplate = {
   }),
 }
 
+const GLASSMORPHISM: CardTemplate = {
+  id: 'glassmorphism',
+  label: 'Frosted Glass',
+  description: 'Frosted, floating panels over a soft wash of your color — modern and premium. Best for designers, agencies, tech, and photographers who want an Apple-clean feel.',
+  swatch: { bg: '#eef1f8', surface: '#dfe4f2', ink: '#1a1c25', accentFallback: '#6366f1' },
+  layout: 'glass',
+  container: 'wide',
+  headingFont: 'sans',
+  corner: 'soft',
+  motion: 'full',
+  wash: true,
+  vars: accent => ({
+    '--card-bg': '#eef1f8',
+    '--card-surface': 'rgba(255,255,255,0.55)',
+    '--card-surface-soft': 'rgba(255,255,255,0.35)',
+    '--card-ink': '#1a1c25',
+    '--card-muted': '#565a6b',
+    '--card-muted-2': '#7f8496',
+    '--card-border': 'rgba(255,255,255,0.60)',
+    '--card-border-soft': 'rgba(255,255,255,0.35)',
+    '--card-accent': accent,
+    '--card-accent-ink': inkOn(accent),
+    '--card-radius-lg': '1.5rem',
+    '--card-radius-md': '1rem',
+    '--card-radius-full': '9999px',
+    '--card-heading-weight': '800',
+    '--card-heading-tracking': '-0.02em',
+    '--card-shadow': '0 16px 50px rgba(31,38,79,0.16)',
+  }),
+}
+
+const MIDNIGHT: CardTemplate = {
+  id: 'midnight',
+  label: 'Midnight',
+  description: 'Deep indigo, aurora-lit, premium — a night-mode card that feels like a product. Best for developers, designers, agencies, and anyone selling modern or technical work.',
+  swatch: { bg: '#0b1020', surface: '#141a2e', ink: '#eef1fb', accentFallback: '#6d8bff' },
+  layout: 'editorial',
+  container: 'phone',
+  headingFont: 'sans',
+  corner: 'soft',
+  motion: 'full',
+  wash: true,
+  vars: accent => ({
+    '--card-bg': '#0b1020',
+    '--card-surface': '#141a2e',
+    '--card-surface-soft': '#0f1526',
+    '--card-ink': '#eef1fb',
+    '--card-muted': '#9aa3c4',
+    '--card-muted-2': '#6b7398',
+    '--card-border': '#242c47',
+    '--card-border-soft': '#1b2238',
+    '--card-accent': accent,
+    '--card-accent-ink': '#f5f7ff',
+    '--card-radius-lg': '1rem',
+    '--card-radius-md': '0.75rem',
+    '--card-radius-full': '9999px',
+    '--card-heading-weight': '800',
+    '--card-heading-tracking': '-0.025em',
+    '--card-shadow': 'inset 0 1px 0 rgba(255,255,255,.06), 0 24px 70px rgba(3,6,20,.65)',
+  }),
+}
+
+const CLEAN_GRADIENT: CardTemplate = {
+  id: 'clean-gradient',
+  label: 'Clean Gradient',
+  description: 'Crisp and modern — a vibrant color gradient behind a bright, white card layout. Best for tech, digital, and creative freelancers who want a contemporary, polished feel.',
+  swatch: { bg: '#f4f7fb', surface: '#ffffff', ink: '#0d1220', accentFallback: '#4f46e5' },
+  layout: 'gradient',
+  container: 'wide',
+  headingFont: 'sans',
+  corner: 'soft',
+  motion: 'full',
+  wash: true,
+  vars: accent => ({
+    '--card-bg': '#f4f7fb',
+    '--card-surface': '#ffffff',
+    '--card-surface-soft': '#eef2f9',
+    '--card-ink': '#0d1220',
+    '--card-muted': '#5a6478',
+    '--card-muted-2': '#8b95a8',
+    '--card-border': '#e2e8f2',
+    '--card-border-soft': '#eef2f8',
+    '--card-accent': accent,
+    '--card-accent-ink': inkOn(accent),
+    '--card-radius-lg': '1.25rem',
+    '--card-radius-md': '0.75rem',
+    '--card-radius-full': '9999px',
+    '--card-heading-weight': '800',
+    '--card-heading-tracking': '-0.025em',
+    '--card-shadow': '0 10px 30px -8px rgba(13,18,32,.12), 0 4px 12px -6px rgba(13,18,32,.08)',
+  }),
+}
+
 export const CARD_TEMPLATES: Record<CardTemplateId, CardTemplate> = {
   'editorial-dark': EDITORIAL_DARK,
   'minimal-light': MINIMAL_LIGHT,
   'warm-gradient': WARM_GRADIENT,
+  'glassmorphism': GLASSMORPHISM,
+  'midnight': MIDNIGHT,
+  'clean-gradient': CLEAN_GRADIENT,
 }
 
 export function getCardTemplate(id: string | null | undefined): CardTemplate {

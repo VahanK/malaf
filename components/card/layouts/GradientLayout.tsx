@@ -8,6 +8,7 @@ import { Reveal } from '../Reveal'
 import { BeforeAfter } from '../blocks'
 import { Lightbox } from './Lightbox'
 import { collectImages, heroImage, testimonials, stats, mediaUrl } from './shared'
+import { normalizeAccent } from '@/lib/card-templates'
 import type { LayoutProps } from './types'
 
 // GRADIENT — a bright, approachable website. Split hero (text left, image
@@ -25,11 +26,16 @@ export function GradientLayout({ page, accent, tpl, vars }: LayoutProps) {
   const firstName = p.full_name.split(' ')[0] || p.handle
   const wa = p.whatsapp_number ? `https://wa.me/${p.whatsapp_number.replace(/[^\d]/g, '')}` : null
   const [lightbox, setLightbox] = useState<number | null>(null)
+  const a6 = normalizeAccent(accent)
 
   return (
     <main
       className="text-[var(--card-ink)]"
-      style={{ ...vars, background: `radial-gradient(120% 90% at 85% -10%, ${accent}26, transparent 55%), var(--card-bg)` }}
+      style={{
+        ...vars,
+        // Layered aurora bloom — soft on gentle accents, vivid on saturated ones.
+        background: `radial-gradient(90% 70% at 15% -10%, ${a6}22, transparent 60%), radial-gradient(80% 80% at 95% 0%, ${a6}30, transparent 55%), linear-gradient(180deg, ${a6}12 0%, transparent 22%), var(--card-bg)`,
+      }}
     >
       {/* ---------- split hero ---------- */}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 pt-16 pb-12 lg:grid-cols-2 lg:px-10 lg:pt-24">
@@ -62,9 +68,23 @@ export function GradientLayout({ page, accent, tpl, vars }: LayoutProps) {
           {hero.url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={hero.url} alt={hero.alt} className="aspect-[4/5] w-full rounded-[var(--card-radius-lg)] object-cover shadow-[var(--card-shadow)]" />
+          ) : p.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={mediaUrl(p.avatar_url) ?? undefined} alt={p.full_name} className="aspect-[4/5] w-full rounded-[var(--card-radius-lg)] object-cover shadow-[var(--card-shadow)]" />
           ) : (
-            <div className="flex aspect-[4/5] w-full items-center justify-center rounded-[var(--card-radius-lg)] text-[64px] font-black text-[var(--card-accent-ink)]" style={{ background: accent }}>
-              {(p.full_name || p.handle).charAt(0).toUpperCase()}
+            <div
+              className="flex aspect-[4/5] w-full flex-col items-center justify-center gap-4 rounded-[var(--card-radius-lg)] border border-[var(--card-border)] shadow-[var(--card-shadow)]"
+              style={{ background: `radial-gradient(120% 90% at 50% 0%, ${a6}1f, var(--card-surface) 70%)` }}
+            >
+              <span
+                className="flex h-24 w-24 items-center justify-center rounded-[var(--card-radius-full)] border text-[44px] font-black"
+                style={{ borderColor: `${a6}59`, background: `${a6}14`, color: a6 }}
+              >
+                {(p.full_name || p.handle).charAt(0).toUpperCase()}
+              </span>
+              <span className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[var(--card-muted)]">
+                {firstName}
+              </span>
             </div>
           )}
         </div>

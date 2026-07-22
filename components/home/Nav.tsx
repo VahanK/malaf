@@ -11,7 +11,7 @@ export const FOUNDER_WA =
   encodeURIComponent("Hi! I'd like help setting up my WorkWith page.")
 
 const LINKS = [
-  { label: 'How it works', href: '#how' },
+  { label: 'A real page', href: '#showcase' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'FAQ', href: '#faq' },
 ]

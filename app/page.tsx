@@ -57,46 +57,12 @@ const FAQ: FaqItem[] = [
   },
 ]
 
-// Today's messy reality — inert, greyed, loops back on itself.
-const TODAY_STEPS: { label: string; note: string }[] = [
-  { label: 'They find you on Instagram', note: 'A DM, a story reply — somewhere in the pile' },
-  { label: '“Hi, how much?”', note: 'The question that starts everything, again' },
-  { label: 'You type it all out', note: "Prices, what's included, from scratch, every time" },
-  { label: '…then silence', note: 'Read at 11:42. No reply.' },
-  { label: 'You ask for a deposit', note: 'And feel weird asking' },
-  { label: 'You remind them. Twice.', note: 'Each one a little more awkward than the last' },
-  { label: 'Maybe you get paid', note: "And you're not fully sure who still owes you" },
-]
-
-// The same job, tracked. Each step is a STATE you can see (not a message we write).
-type Pill = { text: string; tone: 'neutral' | 'gold' | 'green' }
-const WORKWITH_STEPS: { label: string; note: string; pill?: Pill; strong?: boolean }[] = [
-  { label: 'They open your page', note: 'Your work, your prices, your voice — already answered' },
-  { label: 'A quote request lands', note: 'Marked the second it arrives', pill: { text: 'New', tone: 'neutral' } },
-  { label: 'You send the quote', note: "You know it's out", pill: { text: 'Sent', tone: 'neutral' } },
-  { label: 'They accept', note: 'No “did you get it?”', pill: { text: 'Accepted', tone: 'neutral' } },
-  { label: 'The invoice is live', note: 'With your Whish, USDT, bank, or cash right on it', pill: { text: 'Awaiting payment', tone: 'gold' } },
-  { label: 'Overdue is flagged', note: 'It waits until you clear it — one tap opens the nudge in WhatsApp', pill: { text: 'Overdue', tone: 'gold' } },
-  { label: 'Paid.', note: 'Confirmed, receipt out', pill: { text: 'Paid', tone: 'green' }, strong: true },
-  { label: 'Archived.', note: 'Done and filed. You always know who still owes you.', pill: { text: 'Archived', tone: 'neutral' }, strong: true },
-]
-
 function Check({ className = '' }: { className?: string }) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e8623d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={`shrink-0 ${className}`}>
       <path d="M20 6L9 17l-5-5" />
     </svg>
   )
-}
-
-function StatusPill({ pill }: { pill: Pill }) {
-  const tone =
-    pill.tone === 'green'
-      ? 'bg-[#1f9254]/12 text-[#1f9254]'
-      : pill.tone === 'gold'
-        ? 'bg-[#c9a45c]/20 text-[#8a6d2f]'
-        : 'bg-[#171310]/5 text-[#5c574c]'
-  return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${tone}`}>{pill.text}</span>
 }
 
 function Eyebrow({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -186,94 +152,6 @@ export default function Home() {
                 <span className="h-2 w-2 rounded-full bg-[#e8623d]" /> work-withme.com/rami
               </FloatPill>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= TODAY vs WORKWITH (the difference) ================= */}
-      <section id="how" className="scroll-mt-20 py-24">
-        <div className="mx-auto max-w-5xl px-6 lg:px-10">
-          <div className="text-center">
-            <Eyebrow>The difference</Eyebrow>
-            <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
-              Carrd gives you a page. WorkWith runs the job.
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[#5c574c]">
-              The same job you&apos;re already doing — the asking, the quoting, the chasing — but you
-              can see where every client stands, in one place.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-5 md:grid-cols-2 md:gap-6">
-            {/* TODAY — inert, greyed */}
-            <div className="rounded-2xl border border-[#171310]/8 bg-[#f2ede3] p-6 sm:p-7">
-              <div className="flex items-baseline justify-between">
-                <h3 className="font-serif text-[20px] text-[#5c574c]">Today</h3>
-                <span className="text-[12px] text-[#8a8477]">How it goes now</span>
-              </div>
-              <ol className="mt-5 space-y-4">
-                {TODAY_STEPS.map((s, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#171310]/20 text-[12px] font-semibold text-[#8a8477]">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <p className="text-[14.5px] font-medium text-[#5c574c]">{s.label}</p>
-                      <p className="mt-0.5 text-[12.5px] text-[#8a8477]">{s.note}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-5 border-t border-dashed border-[#171310]/15 pt-4 text-[12.5px] italic text-[#8a8477]">
-                ↺ Nothing is written down. It all lives in your head and your chats — and again with the next one.
-              </p>
-            </div>
-
-            {/* WITH WORKWITH — clean, coral, alive */}
-            <div className="rounded-2xl border border-[#e8623d]/25 bg-white p-6 shadow-[0_20px_50px_-20px_rgba(232,98,61,.25)] sm:p-7">
-              <div className="flex items-baseline justify-between">
-                <h3 className="font-serif text-[20px] font-semibold text-[#171310]">With WorkWith</h3>
-                <span className="text-[12px] font-medium text-[#e8623d]">The same job, tracked</span>
-              </div>
-              <ol className="mt-5 space-y-4">
-                {WORKWITH_STEPS.map((s, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8623d] text-[12px] font-bold text-white">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <p className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-[14.5px] ${s.strong ? 'font-bold text-[#171310]' : 'font-medium text-[#171310]'}`}>
-                        {s.label}
-                        {s.pill && <StatusPill pill={s.pill} />}
-                      </p>
-                      <p className="mt-0.5 text-[12.5px] text-[#5c574c]">{s.note}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-5 border-t border-[#e8623d]/20 pt-4 text-[13px] font-semibold text-[#171310]">
-                One place. Every client. You always know where things stand.
-              </p>
-            </div>
-          </div>
-
-          <p className="mx-auto mt-10 max-w-3xl text-center text-[15px] leading-[1.6] text-[#5c574c]">
-            The words were never the hard part. Knowing who said yes, who owes you, and what&apos;s
-            still open — that&apos;s the part that lives in your head today. WorkWith holds it instead.
-            Every step above is a status you can see and act on, not a message you have to remember to
-            send. Overdue is just one of those steps — it waits until you tap to clear it.
-          </p>
-
-          <div className="mt-10 text-center">
-            <Link
-              href="/auth/signup"
-              className="inline-block rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
-            >
-              Make your page — free
-            </Link>
-            <p className="mt-3 text-[13px] text-[#8a8477]">
-              Start with the page. Turn on getting-paid the day it earns its keep.
-            </p>
           </div>
         </div>
       </section>
@@ -513,7 +391,7 @@ export default function Home() {
               <ul className="mt-3 space-y-2 text-[14px] text-[#5c574c]">
                 <li><Link href="/auth/signup" className="hover:text-[#171310]">Make your page</Link></li>
                 <li><Link href="/rami" className="hover:text-[#171310]">See a live page</Link></li>
-                <li><a href="#how" className="hover:text-[#171310]">The difference</a></li>
+                <li><a href="#showcase" className="hover:text-[#171310]">See a real page</a></li>
                 <li><a href="#pricing" className="hover:text-[#171310]">Pricing</a></li>
               </ul>
             </div>

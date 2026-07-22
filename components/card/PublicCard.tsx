@@ -4,6 +4,7 @@ import { EditorialLayout } from './layouts/EditorialLayout'
 import { MinimalLayout } from './layouts/MinimalLayout'
 import { GradientLayout } from './layouts/GradientLayout'
 import { GlassLayout } from './layouts/GlassLayout'
+import { ComposableLayout } from './layouts/ComposableLayout'
 import type { LayoutProps } from './layouts/types'
 
 // Thin router: resolve the template + its CSS-variable tokens once, then hand
@@ -23,6 +24,10 @@ export function PublicCard({ page }: { page: PublicPage }) {
     vars,
     tpl: { layout: tpl.layout, corner: tpl.corner, motion: tpl.motion, headingFont: tpl.headingFont, wash: tpl.wash },
   }
+
+  // Feature flag: composable pages render the new section composer; everything
+  // else falls through to the existing 4 fixed layouts, untouched.
+  if (page.profile.composable) return <ComposableLayout {...props} />
 
   switch (tpl.layout) {
     case 'minimal': return <MinimalLayout {...props} />

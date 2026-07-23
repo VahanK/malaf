@@ -29,7 +29,7 @@ export function SwapPicker({
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-3 sm:items-center" onClick={onClose}>
       <div
-        className="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"
+        className="max-h-[85vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -45,13 +45,13 @@ export function SwapPicker({
                 onClick={() => { onPick(v.id); onClose() }}
                 className={`group overflow-hidden rounded-xl border-2 text-left transition ${active ? 'border-[var(--card-accent,#e8623d)]' : 'border-neutral-200 hover:border-neutral-400'}`}
               >
-                {/* live mini preview — the real section, scaled down */}
-                <div className="relative h-40 w-full overflow-hidden bg-neutral-100">
-                  <div className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ width: '400%', transform: 'scale(0.25)' }}>
+                {/* schematic preview — fills the card at its real proportions */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+                  <div className="pointer-events-none absolute inset-0 [&>*]:h-full [&>*]:w-full">
                     {renderMini(v.id)}
                   </div>
                   {active && (
-                    <span className="absolute right-2 top-2 rounded-full bg-[var(--card-accent,#e8623d)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                    <span className="absolute right-2 top-2 rounded-full bg-[var(--card-accent,#e8623d)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow">
                       Current
                     </span>
                   )}

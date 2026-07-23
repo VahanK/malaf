@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Nav, FOUNDER_WA } from '@/components/home/Nav'
 import { FaqAccordion, type FaqItem } from '@/components/home/FaqAccordion'
-import { HeroFloat, FloatPill } from '@/components/home/HeroFloat'
+import { HeroPageCycler } from '@/components/home/HeroPageCycler'
 
 // ---------------------------------------------------------------------------
 // WorkWith homepage — positioned as the way Lebanese freelancers RUN their
@@ -78,85 +78,48 @@ export default function Home() {
     <div className="bg-[#f7f3ec] text-[#171310]">
       <Nav />
 
-      {/* ================= HERO ================= */}
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 pt-16 pb-24 lg:grid-cols-2 lg:px-10">
-        {/* left — copy */}
+      {/* ================= HERO — the product IS the pitch ================= */}
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 pt-16 pb-28 lg:grid-cols-2 lg:px-10">
+        {/* left — identity + transformation, not a feature list */}
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#171310]/10 bg-white px-3 py-1 text-[12px] font-medium text-[#5c574c]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#e8623d]" />
-            Run your freelance business — from one link
+            The page every Lebanese freelancer deserves
           </span>
 
-          <h1 className="mt-6 max-w-[15ch] font-serif text-[clamp(38px,5.5vw,60px)] font-semibold leading-[1.06] tracking-[-0.02em] mx-auto lg:mx-0">
-            Your work gets you the client. WorkWith runs{' '}
-            <span className="text-[#e8623d]">everything after “how much?”</span>
+          <h1 className="mt-6 font-serif text-[clamp(40px,6vw,66px)] font-semibold leading-[1.02] tracking-[-0.02em] mx-auto max-w-[16ch] lg:mx-0">
+            Your work is world-class.{' '}
+            <span className="text-[#e8623d]">Make your page look like it.</span>
           </h1>
 
           <p className="mx-auto mt-5 max-w-md text-[17px] leading-[1.55] text-[#5c574c] lg:mx-0">
-            Right now it all lives in your DMs — the “how much?”, the quote you retype every time, the
-            deposit you&apos;re shy to ask for, the client who went quiet. WorkWith puts it in one
-            place: your page brings them in, then quote, invoice, and getting paid all happen — and
-            stay — where you can see them.
+            A link in your bio makes you look small. In one tap, WorkWith turns your work into a real
+            page — the kind that makes a client think “these people are serious.” Free, in Arabic or
+            English, live at your own link in minutes.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
             <Link
               href="/auth/signup"
-              className="rounded-xl bg-[#e8623d] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f] active:translate-y-px"
+              className="rounded-xl bg-[#e8623d] px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-[#d4512f] active:translate-y-px"
             >
-              Start free — your page in minutes
+              Build mine free →
             </Link>
             <Link
               href="/discover"
-              className="rounded-xl border border-[#171310]/10 bg-white px-6 py-3 text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
+              className="rounded-xl border border-[#171310]/10 bg-white px-6 py-3.5 text-[15px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
             >
-              Discover freelancers ↗
+              See real pages ↗
             </Link>
           </div>
           <p className="mt-3 max-w-md text-[13px] text-[#8a8477] mx-auto lg:mx-0">
-            Free to build and publish live at your own link — no card, ever. We never take a cut of
-            what you earn.
+            Free to build and publish — no card, ever. It’s yours.
           </p>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-[#5c574c] lg:justify-start">
-            {['Quotes, invoices & receipts', 'Whish, USDT, bank & cash', 'One-tap Arabic & English', 'Clients never sign in'].map(c => (
-              <span key={c} className="inline-flex items-center gap-1.5">
-                <Check /> {c}
-              </span>
-            ))}
-          </div>
         </div>
 
-        {/* right — the phone mockup (real /rami screenshot) */}
+        {/* right — a phone cycling through real freelancer pages (show, don't tell) */}
         <div className="relative flex justify-center lg:justify-end">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10"
-            style={{ background: 'radial-gradient(circle at 60% 40%, rgba(232,98,61,.08), transparent 70%)' }}
-          />
-          <div className="relative">
-            <HeroFloat>
-              <div className="w-[260px] overflow-hidden rounded-[2.5rem] border-8 border-[#171310] bg-[#0e0f13] shadow-[0_20px_50px_-20px_rgba(23,19,16,.35)] sm:w-[300px]">
-                <Image
-                  src="/mockups/rami-hero.webp"
-                  alt="A real WorkWith page — Rami Haddad, a Beirut wedding photographer"
-                  width={390}
-                  height={730}
-                  priority
-                  className="h-auto w-full"
-                />
-              </div>
-            </HeroFloat>
-
-            <div className="hidden lg:block">
-              <FloatPill className="-right-6 top-10" delay={0}>
-                <span className="h-2 w-2 rounded-full bg-[#1f9254]" /> New quote request
-              </FloatPill>
-              <FloatPill className="-left-8 bottom-16" delay={1.2}>
-                <span className="h-2 w-2 rounded-full bg-[#e8623d]" /> work-withme.com/rami
-              </FloatPill>
-            </div>
-          </div>
+          <HeroPageCycler />
         </div>
       </section>
 
@@ -308,6 +271,30 @@ export default function Home() {
             Paid upgrades are coming later (your own domain, remove the WorkWith mark). The page itself
             stays free — WorkWith never takes a cut of what you earn from clients.
           </p>
+        </div>
+      </section>
+
+      {/* ============ QUIET AGENCY SECOND ACT ============ */}
+      {/* Low on the page, for people who've seen the free tool and want more. Subtle,
+          "we elevate serious brands" — not a hard sell. The free tool is the taste. */}
+      <section className="py-20">
+        <div className="mx-auto max-w-3xl px-6 text-center lg:px-10">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#8a8477]">Running something bigger?</p>
+          <h2 className="mx-auto mt-3 max-w-2xl font-serif text-[clamp(24px,3.2vw,34px)] font-semibold tracking-[-0.015em]">
+            The free page makes you look established. We make brands look <span className="text-[#e8623d]">untouchable.</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[#5c574c]">
+            Beyond the free tool, we design custom, elevated online presences for the studios, brands,
+            and businesses that want more than a great page. Same team behind WorkWith.
+          </p>
+          <a
+            href={`https://wa.me/${FOUNDER_WA}?text=${encodeURIComponent("Hi — I saw WorkWith and I'd like to talk about a custom / elevated presence for my brand.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 text-[14px] font-bold text-[#171310] underline decoration-[#e8623d] decoration-2 underline-offset-4 hover:text-[#e8623d]"
+          >
+            Talk about elevating your brand →
+          </a>
         </div>
       </section>
 

@@ -135,7 +135,14 @@ export function Hero({
     // Custom text (editable in the builder) wins; else derive from services/title.
     const flapText = p.hero_flap_text || p.full_name || p.handle
     const phrases = (p.hero_type_phrases?.length ? p.hero_type_phrases : (serviceTitles.length ? serviceTitles : [roleText].filter(Boolean) as string[]))
-    const words = (p.hero_cube_words?.length ? p.hero_cube_words : (serviceTitles.length ? serviceTitles.slice(0, 4) : (roleText ? roleText.split(/[·,/]/).map(s => s.trim()).filter(Boolean).slice(0, 4) : [])))
+    // Word-cube wants SHORT words — long service phrases read badly rotating. Use
+    // custom words if set; else the first word of each service; else split the role.
+    const shortWord = (s: string) => s.trim().split(/[\s·,/–-]+/)[0]
+    const words = (p.hero_cube_words?.length
+      ? p.hero_cube_words
+      : (serviceTitles.length
+        ? Array.from(new Set(serviceTitles.map(shortWord).filter(w => w.length > 1))).slice(0, 4)
+        : (roleText ? roleText.split(/[·,/]/).map(s => shortWord(s)).filter(Boolean).slice(0, 4) : [])))
     return (
       <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
         {heroPhotoBtn}

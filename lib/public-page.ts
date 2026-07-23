@@ -74,6 +74,31 @@ export async function getPublicPage(handle: string): Promise<PublicPage | null> 
   return data as unknown as PublicPage
 }
 
+// One card in the public /discover directory. Card-safe fields only — no
+// contact or money (the list RPC never returns them).
+export interface DiscoverCard {
+  handle: string
+  full_name: string
+  title: string
+  title_ar: string
+  avatar_url: string | null
+  hero_image_url: string | null
+  accent_color: string | null
+  preset: string | null
+  card_template: string
+  areas_served: string[]
+}
+
+// The public directory of PUBLISHED pages — a second SECURITY DEFINER door
+// (list_published_pages), same discipline as getPublicPage. ISR-cached at the
+// route, so this rarely runs per view.
+export async function listPublishedPages(): Promise<DiscoverCard[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase.rpc('list_published_pages', { p_limit: 60, p_offset: 0 })
+  if (error || !data) return []
+  return data as unknown as DiscoverCard[]
+}
+
 // Owner draft preview: assembles the SAME PublicPage shape from the signed-in
 // owner's OWN rows, via plain RLS (which already restricts every table to
 // auth.uid()) — NOT the public SECURITY DEFINER door. This deliberately

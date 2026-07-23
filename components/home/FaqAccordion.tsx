@@ -12,7 +12,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [open, setOpen] = useState<Record<number, boolean>>({})
 
   return (
-    <div className="mt-12 divide-y divide-[#171310]/10 border-y border-[#171310]/10">
+    <div className="mt-12 divide-y divide-[#FAFAF7]/10 border-y border-[#FAFAF7]/10">
       {items.map((item, i) => {
         const isOpen = !!open[i]
         return (
@@ -22,13 +22,13 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               aria-expanded={isOpen}
               className="flex w-full items-center justify-between gap-4 py-5 text-left"
             >
-              <span className="text-[17px] font-semibold text-[#171310]">{item.q}</span>
+              <span className="text-[17px] font-semibold text-[#FAFAF7]">{item.q}</span>
               <svg
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#e8623d"
+                stroke="#C9F73B"
                 strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -43,7 +43,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               }`}
             >
               <div className="overflow-hidden">
-                <p className="max-w-2xl text-[15px] leading-relaxed text-[#5c574c]">{item.a}</p>
+                <p className="max-w-2xl text-[15px] leading-relaxed text-[rgba(250,250,247,0.72)]">{item.a}</p>
               </div>
             </div>
           </div>

@@ -36,14 +36,14 @@ export function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-[#f7f3ec]/85 backdrop-blur transition-shadow ${
-        scrolled ? 'border-b border-[#171310]/10 shadow-sm' : ''
+      className={`sticky top-0 z-50 bg-[#0B0B0C]/85 backdrop-blur transition-shadow ${
+        scrolled ? 'border-b border-[#FAFAF7]/10 shadow-sm' : ''
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-10">
         {/* wordmark */}
-        <Link href="/" className="font-serif text-[20px] font-semibold tracking-tight text-[#171310]">
-          WorkWith<span className="text-[#e8623d]">.</span>
+        <Link href="/" className="font-serif text-[20px] font-semibold tracking-tight text-[#FAFAF7]">
+          WorkWith<span className="text-[#C9F73B]">.</span>
         </Link>
 
         {/* desktop center links */}
@@ -52,7 +52,7 @@ export function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="text-[14px] text-[#5c574c] transition-colors hover:text-[#e8623d]"
+              className="text-[14px] text-[rgba(250,250,247,0.72)] transition-colors hover:text-[#C9F73B]"
             >
               {l.label}
             </a>
@@ -65,16 +65,16 @@ export function Nav() {
             href={FOUNDER_WA}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-[14px] text-[#5c574c] transition-colors hover:text-[#171310]"
+            className="flex items-center gap-1.5 text-[14px] text-[rgba(250,250,247,0.72)] transition-colors hover:text-[#FAFAF7]"
           >
             <FaWhatsapp className="text-[15px]" /> Let&apos;s talk
           </a>
-          <Link href="/auth/signin" className="text-[14px] text-[#5c574c] transition-colors hover:text-[#171310]">
+          <Link href="/auth/signin" className="text-[14px] text-[rgba(250,250,247,0.72)] transition-colors hover:text-[#FAFAF7]">
             Log in
           </Link>
           <Link
             href="/auth/signup"
-            className="rounded-xl bg-[#e8623d] px-5 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#d4512f]"
+            className="rounded-xl bg-[#C9F73B] px-5 py-2.5 text-[14px] font-bold text-[#0B0B0C] transition-colors hover:bg-[#A6D820]"
           >
             Make your page
           </Link>
@@ -84,7 +84,7 @@ export function Nav() {
         <div className="flex items-center gap-2 md:hidden">
           <Link
             href="/auth/signup"
-            className="rounded-xl bg-[#e8623d] px-4 py-2 text-[13px] font-bold text-white"
+            className="rounded-xl bg-[#C9F73B] px-4 py-2 text-[13px] font-bold text-[#0B0B0C]"
           >
             Make your page
           </Link>
@@ -92,7 +92,7 @@ export function Nav() {
             onClick={() => setMenuOpen(v => !v)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#171310] hover:bg-[#171310]/5"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#FAFAF7] hover:bg-[#FAFAF7]/5"
           >
             {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
@@ -107,14 +107,14 @@ export function Nav() {
             onClick={() => setMenuOpen(false)}
             aria-hidden
           />
-          <div className="absolute inset-x-0 top-16 z-50 border-b border-[#171310]/10 bg-[#f7f3ec] px-6 py-6 md:hidden">
+          <div className="absolute inset-x-0 top-16 z-50 border-b border-[#FAFAF7]/10 bg-[#0B0B0C] px-6 py-6 md:hidden">
             <div className="flex flex-col gap-5">
               {LINKS.map(l => (
                 <a
                   key={l.href}
                   href={l.href}
                   onClick={() => setMenuOpen(false)}
-                  className="text-[18px] font-medium text-[#171310]"
+                  className="text-[18px] font-medium text-[#FAFAF7]"
                 >
                   {l.label}
                 </a>
@@ -124,21 +124,21 @@ export function Nav() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-[18px] font-medium text-[#171310]"
+                className="flex items-center gap-2 text-[18px] font-medium text-[#FAFAF7]"
               >
-                <FaWhatsapp className="text-[19px] text-[#e8623d]" /> Let&apos;s talk
+                <FaWhatsapp className="text-[19px] text-[#C9F73B]" /> Let&apos;s talk
               </a>
               <Link
                 href="/auth/signin"
                 onClick={() => setMenuOpen(false)}
-                className="text-[18px] font-medium text-[#171310]"
+                className="text-[18px] font-medium text-[#FAFAF7]"
               >
                 Log in
               </Link>
               <Link
                 href="/auth/signup"
                 onClick={() => setMenuOpen(false)}
-                className="mt-1 rounded-xl bg-[#e8623d] py-3 text-center text-[15px] font-bold text-white"
+                className="mt-1 rounded-xl bg-[#C9F73B] py-3 text-center text-[15px] font-bold text-[#0B0B0C]"
               >
                 Make your page — free
               </Link>

@@ -16,8 +16,8 @@ export default async function ProfilePage() {
   // custom domain), just no longer gates publishing.
   return (
     <EditorShell
-      title="Profile"
-      subtitle="What clients see on your public page."
+      title="Your info"
+      subtitle="Name, title, contact, look — the details that feed your page. Build the page itself under Your page."
       handle={profile?.handle ?? null}
       published={profile?.page_published ?? false}
     >

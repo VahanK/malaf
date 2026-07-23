@@ -8,10 +8,10 @@ const NAV = [
   { href: '/dashboard/inbox', label: 'Client requests' },
   { href: '/dashboard/quotes', label: 'Quotes' },
   { href: '/dashboard/invoices', label: 'Invoices' },
-  { href: '/dashboard/services', label: 'Services' },
+  { href: '/dashboard/profile', label: 'Your info' },
   { href: '/dashboard/portfolio', label: 'Your page' },
+  { href: '/dashboard/services', label: 'Services & pricing' },
   { href: '/dashboard/payment-methods', label: 'Payment methods' },
-  { href: '/dashboard/profile', label: 'Profile' },
   { href: '/dashboard/requests', label: 'Request a feature' },
 ]
 

@@ -154,21 +154,14 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
           <span className="font-semibold text-dash-ink">Editing your page.</span> Tap any text to edit, a section to change its layout.
         </p>
         <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none">
+          {/* View-live lives in the page header + preview panel already — keep just
+              the palette control here to avoid a duplicate button. */}
           <PaletteControl
             template={page.profile.card_template ?? undefined}
             accent={page.profile.accent_color ?? undefined}
             onPalette={(tpl, hex) => onProfileData({ card_template: tpl, accent_color: hex })}
             onAccent={hex => onProfileData({ accent_color: hex })}
           />
-          <a
-            href="/preview"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-dash-border bg-white px-4 py-2 text-[13px] font-bold text-dash-ink shadow-sm hover:border-dash-accent"
-            title="See exactly how your live page looks (only you can see this)"
-          >
-            👁 View live
-          </a>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import { Editable } from '../edit/Editable'
 import { SectionFrame } from '../edit/SectionFrame'
 import { EditImageButton } from '../edit/EditImageButton'
 import { useEdit } from '../edit/EditContext'
+import { DotGridHero } from '../motion/registry'
 import type { PublicPage } from '@/lib/public-page'
 
 // Profile-level text (name/title/bio) is edited inline too — routed to the
@@ -133,7 +134,8 @@ export function Hero({
           className="relative w-full overflow-hidden px-6 py-24 lg:px-10 lg:py-32"
           style={{ background: `radial-gradient(80% 60% at 15% -10%, ${a6}22, transparent 55%), radial-gradient(70% 50% at 95% 10%, ${a6}14, transparent 50%), var(--card-bg)` }}
         >
-          <div className="mx-auto max-w-5xl">
+          <DotGridHero accent={a6} isRtl={!!isRtl} className="opacity-[0.5]" />
+          <div className="relative mx-auto max-w-5xl">
             {availabilityPill}
             <Name className={`mt-6 block max-w-4xl ${wt.heading} leading-[0.95]`} style={{ fontSize: `clamp(44px,9vw,${wt.heroMax}px)` }} />
             <Title className="mt-4 text-[clamp(16px,2vw,22px)] font-bold" style={{ color: a6 }} />

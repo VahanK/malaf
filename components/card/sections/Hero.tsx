@@ -6,6 +6,8 @@ import { normalizeAccent } from '@/lib/card-templates'
 import { worldType, type World } from './shared'
 import { Editable } from '../edit/Editable'
 import { SectionFrame } from '../edit/SectionFrame'
+import { EditImageButton } from '../edit/EditImageButton'
+import { useEdit } from '../edit/EditContext'
 import type { PublicPage } from '@/lib/public-page'
 
 // Profile-level text (name/title/bio) is edited inline too — routed to the
@@ -35,6 +37,7 @@ export function Hero({
   isRtl?: boolean
 }) {
   const p = page.profile
+  const { onProfileData } = useEdit()
   // On an Arabic page, prefer the Arabic role/title. full_name and bio have no
   // _ar column, so they render as-is.
   const roleText = isRtl && p.title_ar ? p.title_ar : p.title
@@ -48,6 +51,18 @@ export function Hero({
   const heroImg = (p.hero_image_url && mediaUrl(p.hero_image_url)) || hero.url
   const wantsPhoto = variant === 'photo-bleed' || variant === 'cinematic' || variant === 'split-portrait'
   const useStatement = variant === 'statement' || (!heroImg && wantsPhoto)
+
+  // Edit-mode hero-photo control (absolute, top-left under the label chip).
+  // Sets the explicit hero_image_url so photo variants have something to show.
+  const heroPhotoBtn = (
+    <EditImageButton
+      hasImage={!!p.hero_image_url}
+      onUploaded={path => onProfileData({ hero_image_url: path })}
+      addLabel="Add hero photo"
+      changeLabel="Change hero photo"
+      className="absolute left-3 top-14"
+    />
+  )
 
   // Inline-editable name/title/bio — rendered AS the heading/p element itself
   // (no wrapper), so an empty optional field leaves nothing on the public page.
@@ -87,6 +102,7 @@ export function Hero({
   if (variant === 'split-portrait' && heroImg) {
     return (
       <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
+        {heroPhotoBtn}
         <section className="grid w-full md:min-h-[92vh] md:grid-cols-[1.1fr_0.9fr]" style={{ background: 'var(--card-bg)' }}>
           <div className="flex flex-col justify-center px-6 py-20 lg:px-14">
             {availabilityPill}
@@ -112,6 +128,7 @@ export function Hero({
   if (useStatement) {
     return (
       <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
+        {heroPhotoBtn}
         <section
           className="relative w-full overflow-hidden px-6 py-24 lg:px-10 lg:py-32"
           style={{ background: `radial-gradient(80% 60% at 15% -10%, ${a6}22, transparent 55%), radial-gradient(70% 50% at 95% 10%, ${a6}14, transparent 50%), var(--card-bg)` }}
@@ -137,6 +154,7 @@ export function Hero({
   const isCinematic = variant === 'cinematic' && featured.length > 1
   return (
     <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
+      {heroPhotoBtn}
       <section className="relative flex min-h-[88vh] w-full items-end overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={heroImg ?? undefined} alt={hero.alt} className="absolute inset-0 h-full w-full object-cover" />

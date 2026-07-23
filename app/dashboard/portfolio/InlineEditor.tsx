@@ -59,6 +59,12 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     supabase.from('portfolio_blocks').update({ data }).eq('id', blockId)
   }
 
+  // Merge a patch into the profile (hero image, avatar).
+  const onProfileData: EditApi['onProfileData'] = patch => {
+    setProfile(patch as Partial<PublicPage['profile']>)
+    supabase.from('profiles').update(patch).eq('id', profileId)
+  }
+
   const cycleVariant = (variants: { id: string }[], current: string) => {
     const i = Math.max(0, variants.findIndex(v => v.id === current))
     return variants[(i + 1) % variants.length].id
@@ -141,7 +147,7 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     }
   }
 
-  const api: EditApi = { editing: true, onText, onBlockData, onSwap, setVariant, onSwapFixed, setFixedVariant, onMove, onRemove, onUpload, firstId, lastId }
+  const api: EditApi = { editing: true, onText, onBlockData, onProfileData, onSwap, setVariant, onSwapFixed, setFixedVariant, onMove, onRemove, onUpload, firstId, lastId }
 
   return (
     <div>

@@ -5,6 +5,7 @@ import { Reveal } from '../Reveal'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, arText, type SectionProps } from './shared'
 import { useEdit } from '../edit/EditContext'
 import { CardImage } from '../CardImage'
+import { EditImage } from '../edit/EditImage'
 
 // SHOWCASE — work presented as CASES, not a photo wall. The developer's core
 // section (also lawyers, consultants). An item is:
@@ -31,9 +32,15 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
       size?: 'sm' | 'wide' | 'tall' | 'big'
     }[]
   }
-  const { editing } = useEdit()
+  const { editing, onBlockData } = useEdit()
   const kickerTitle = arText(isRtl, block.title, block.title_ar)
+  const allItems = d.items ?? []
   const items = (d.items ?? []).filter(i => i.title || i.image)
+  // Set item i's image, writing the whole items array back to the block.
+  const setItemImage = (i: number, path: string) => {
+    const next = allItems.map((it, j) => (j === i ? { ...it, image: path } : it))
+    onBlockData(block.id, { items: next })
+  }
   // Public page hides an empty section; the builder shows a placeholder so it
   // stays swappable/removable and prompts the user to add content.
   if (!items.length && !editing) return null
@@ -151,7 +158,11 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
             <Reveal key={i} className="group flex flex-col overflow-hidden rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] transition-transform duration-300 hover:-translate-y-1">
-              <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-none" className="[&>img]:transition-transform [&>img]:duration-500 group-hover:[&>img]:scale-105" />
+              {editing ? (
+                <EditImage src={it.image} onChange={p => setItemImage(allItems.indexOf(it), p)} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-none" />
+              ) : (
+                <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-none" className="[&>img]:transition-transform [&>img]:duration-500 group-hover:[&>img]:scale-105" />
+              )}
               <div className="flex flex-1 flex-col p-5">
                 {it.tags && it.tags.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-1.5">
@@ -207,8 +218,10 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
                   </a>
                 )}
               </div>
-              {it.image && (
-                <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-[var(--card-radius-lg)]" />
+              {editing ? (
+                <EditImage src={it.image} onChange={p => setItemImage(allItems.indexOf(it), p)} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-[var(--card-radius-lg)]" />
+              ) : (
+                it.image && <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-[var(--card-radius-lg)]" />
               )}
             </div>
           </Reveal>

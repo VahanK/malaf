@@ -14,6 +14,8 @@ export interface EditApi {
   onText: (blockId: string, field: string, value: string) => void
   /** Merge a partial data object into a block's data (images, list items…). */
   onBlockData: (blockId: string, data: Record<string, unknown>) => void
+  /** Merge a partial patch into the PROFILE (hero image, avatar…). */
+  onProfileData: (data: Record<string, unknown>) => void
   /** Cycle a block's layout variant (legacy quick-swap). */
   onSwap: (blockId: string) => void
   /** Set a block's layout variant directly (from the picker). */
@@ -37,6 +39,7 @@ const EditContext = createContext<EditApi>({
   editing: false,
   onText: noop,
   onBlockData: noop,
+  onProfileData: noop,
   onSwap: noop,
   setVariant: noop,
   onMove: noop,

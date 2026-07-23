@@ -115,6 +115,9 @@ export const HERO_VARIANTS: SectionVariant[] = [
   { id: 'photo-bleed', label: 'Photo', hint: 'A full-bleed hero photo with your name over it.' },
   { id: 'cinematic', label: 'Cinematic', hint: 'Photo hero + a strip of your featured work.' },
   { id: 'split-portrait', label: 'Split', hint: 'Your words on one side, your portrait on the other.' },
+  { id: 'typewriter', label: 'Typewriter', hint: 'Your name, then a line that types out what you do.' },
+  { id: 'word-cube', label: 'Word cube', hint: 'A 3D word rotating through what you offer — bold, playful.' },
+  { id: 'split-flap', label: 'Split-flap', hint: 'Your name spelled on an airport-board flip display.' },
 ]
 export const CONTACT_VARIANTS: SectionVariant[] = [
   { id: 'cta-band', label: 'Centered', hint: 'A centered "let\'s work together" closer.' },

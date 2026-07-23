@@ -71,6 +71,15 @@ export function VariantSchematic({ kind, variantId }: { kind: string; variantId:
         </div>
       )
     }
+    if (variantId === 'typewriter') {
+      return <Frame><div className="mt-6 h-8 w-44 rounded bg-neutral-800" /><div className="mt-2 flex items-center gap-1"><div className="h-4 w-28 rounded" style={{ background: ACCENT }} /><div className="h-4 w-1.5 animate-pulse rounded-sm bg-neutral-800" /></div></Frame>
+    }
+    if (variantId === 'word-cube') {
+      return <Frame><div className="mt-6 h-8 w-40 rounded bg-neutral-800" /><div className="mt-3 flex items-center gap-2"><span className="h-4 w-10 rounded bg-neutral-300" /><div className="h-8 w-28 rounded shadow-lg" style={{ background: ACCENT }} /></div></Frame>
+    }
+    if (variantId === 'split-flap') {
+      return <Frame><div className="mt-8 flex justify-center gap-1">{[0, 1, 2, 3, 4, 5].map(i => <div key={i} className="relative h-8 w-6 rounded bg-neutral-900" style={{ borderBottom: `2px solid ${ACCENT}` }}><span className="absolute inset-x-0 top-1/2 h-px bg-black/40" /></div>)}</div></Frame>
+    }
     return (
       <Frame>
         <div className="mt-6 h-9 w-52 rounded bg-neutral-800" />

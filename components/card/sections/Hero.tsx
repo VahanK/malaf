@@ -8,7 +8,7 @@ import { Editable } from '../edit/Editable'
 import { SectionFrame } from '../edit/SectionFrame'
 import { EditImageButton } from '../edit/EditImageButton'
 import { useEdit } from '../edit/EditContext'
-import { DotGridHero } from '../motion/registry'
+import { DotGridHero, Typewrite, SpinningBoxText, SplitFlapDisplay } from '../motion/registry'
 import type { PublicPage } from '@/lib/public-page'
 
 // Profile-level text (name/title/bio) is edited inline too — routed to the
@@ -126,6 +126,59 @@ export function Hero({
   }
 
   // ── statement: no photo — huge name on an aurora wash ──
+  // ── Motion headline treatments (typewriter / word-cube / split-flap) ──
+  // Statement-style chrome with the name/tagline rendered through a motion piece.
+  // Words/phrases derive from real data (services + title) so they're personal.
+  if (variant === 'typewriter' || variant === 'word-cube' || variant === 'split-flap') {
+    const serviceTitles = (page.services ?? []).map(s => (isRtl && s.title_ar ? s.title_ar : s.title)).filter(Boolean) as string[]
+    const phrases = serviceTitles.length ? serviceTitles : [roleText].filter(Boolean) as string[]
+    const words = serviceTitles.length ? serviceTitles.slice(0, 4) : (roleText ? roleText.split(/[·,/]/).map(s => s.trim()).filter(Boolean).slice(0, 4) : [])
+    return (
+      <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
+        {heroPhotoBtn}
+        <section
+          className="relative w-full overflow-hidden px-6 py-24 lg:px-10 lg:py-32"
+          style={{ background: `radial-gradient(80% 60% at 15% -10%, ${a6}22, transparent 55%), radial-gradient(70% 50% at 95% 10%, ${a6}14, transparent 50%), var(--card-bg)` }}
+        >
+          <DotGridHero accent={a6} isRtl={!!isRtl} className="opacity-[0.4]" />
+          <div className="relative mx-auto max-w-5xl">
+            {availabilityPill}
+            {variant === 'split-flap' ? (
+              <div className="mt-8">
+                {/* accessible name for SEO / screen readers; the flap board is decorative */}
+                <h1 className="sr-only">{p.full_name || p.handle}</h1>
+                <SplitFlapDisplay text={p.full_name || p.handle} accent={a6} isRtl={!!isRtl} />
+                <Title className="mt-4 text-center text-[clamp(16px,2vw,22px)] font-bold" style={{ color: a6 }} />
+              </div>
+            ) : (
+              <>
+                <Name className={`mt-6 block max-w-4xl ${wt.heading} leading-[0.95]`} style={{ fontSize: `clamp(40px,8vw,${wt.heroMax}px)` }} />
+                {variant === 'word-cube' && words.length > 0 && (
+                  <div className="mt-4 flex items-baseline gap-3 text-[clamp(18px,3vw,32px)] font-black">
+                    <span className="text-[var(--card-muted)]">I do</span>
+                    <SpinningBoxText words={words} accent={a6} isRtl={!!isRtl} />
+                  </div>
+                )}
+                {variant === 'typewriter' && phrases.length > 0 && (
+                  <div className="mt-4 text-[clamp(16px,2.4vw,26px)] font-bold" style={{ color: a6 }}>
+                    <Typewrite phrases={phrases} accent={a6} isRtl={!!isRtl} />
+                  </div>
+                )}
+              </>
+            )}
+            <Bio className="mt-5 max-w-xl text-[16px] leading-relaxed text-[var(--card-muted)]" />
+            {ctas(false)}
+            {p.voice_intro_url && (
+              <div className="mt-8 max-w-sm">
+                <VoicePlayer src={mediaUrl(p.voice_intro_url)} label="Hear from me" accent={a6} radiusClass="rounded-[var(--card-radius-lg)]" />
+              </div>
+            )}
+          </div>
+        </section>
+      </SectionFrame>
+    )
+  }
+
   if (useStatement) {
     return (
       <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>

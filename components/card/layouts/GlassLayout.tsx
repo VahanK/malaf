@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { formatPrice, unitLabel } from '@/lib/pricing-format'
 import { QuoteForm } from '../QuoteForm'
+import { ViralMark } from '../ViralMark'
 import { VoicePlayer } from '../VoicePlayer'
 import { Reveal } from '../Reveal'
 import { BeforeAfter } from '../blocks'
@@ -186,6 +187,7 @@ export function GlassLayout({ page, accent, tpl, vars }: LayoutProps) {
       </section>
 
       {lightbox !== null && <Lightbox images={images} start={lightbox} onClose={() => setLightbox(null)} />}
+      <ViralMark accent={accent} />
     </main>
   )
 }

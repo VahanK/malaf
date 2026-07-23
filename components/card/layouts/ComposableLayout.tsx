@@ -7,6 +7,7 @@ import { Showcase } from '../sections/Showcase'
 import { Gallery } from '../sections/Gallery'
 import { Band, SectionKicker, TYPE_LABEL, Marquee, arText, type World } from '../sections/shared'
 import { SectionFrame } from '../edit/SectionFrame'
+import { ViralMark } from '../ViralMark'
 import { BeforeAfter } from '../blocks'
 import { mediaUrl } from './shared'
 import type { LayoutProps } from './types'
@@ -100,6 +101,7 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
       <SectionFrame blockId="contact" label="Footer" fixed="contact">
         <Contact page={page} accent={accent} world={world} isRtl={isRtl} />
       </SectionFrame>
+      <ViralMark accent={accent} />
     </main>
   )
 }

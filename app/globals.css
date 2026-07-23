@@ -96,6 +96,35 @@ body {
   background-clip: text;
   color: transparent;
 }
+/* ---- inline builder: click-to-edit text affordances ---- */
+/* Only present in the dashboard editor (Editable adds .ww-editable in edit mode).
+   Public pages never render these classes. */
+.ww-editable {
+  outline: none;
+  cursor: text;
+  border-radius: 4px;
+  transition: box-shadow 0.12s, background 0.12s;
+}
+.ww-editable:hover {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--card-accent) 45%, transparent);
+}
+.ww-editable:focus {
+  box-shadow: 0 0 0 2px var(--card-accent);
+  background: color-mix(in oklch, var(--card-accent) 8%, transparent);
+}
+.ww-editable-empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.45;
+  font-style: italic;
+}
+/* a subtle outline on every editable section so the page reads as blocks */
+.ww-section {
+  transition: box-shadow 0.12s;
+}
+.ww-section:hover {
+  box-shadow: inset 0 0 0 2px color-mix(in oklch, var(--card-accent) 35%, transparent);
+}
+
 @keyframes card-marquee { to { transform: translateX(-50%); } }
 @keyframes card-float {
   0%, 100% { transform: translateY(-10px); }

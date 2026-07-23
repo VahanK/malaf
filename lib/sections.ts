@@ -43,6 +43,9 @@ export const SECTIONS: SectionDef[] = [
     variants: [
       { id: 'case-stack', label: 'Case stack', hint: 'Big stacked rows, one per project.' },
       { id: 'card-grid', label: 'Card grid', hint: 'A grid of project cards.' },
+      { id: 'numbered-list', label: 'Numbered list', hint: 'Big numbered rows — great for devs & lawyers, no images.' },
+      { id: 'bento', label: 'Bento grid', hint: 'A playful mosaic of varied tiles — the no-photos answer.' },
+      { id: 'logo-strip', label: 'Logo strip', hint: 'A row of client / brand logos.' },
     ],
   },
   {
@@ -54,6 +57,8 @@ export const SECTIONS: SectionDef[] = [
     variants: [
       { id: 'masonry', label: 'Masonry', hint: 'Edge-to-edge, varied heights.' },
       { id: 'grid-3', label: 'Even grid', hint: 'A clean 3-column grid.' },
+      { id: 'offset-rows', label: 'Offset rows', hint: 'Numbered, offset editorial rows.' },
+      { id: 'filmstrip', label: 'Filmstrip', hint: 'A full-width horizontal scroll of big frames.' },
     ],
   },
   {
@@ -83,6 +88,22 @@ export const SECTIONS: SectionDef[] = [
 export function sectionDef(type: string): SectionDef | undefined {
   return SECTIONS.find(s => s.type === type)
 }
+
+// The fixed bones (hero, contact/footer) are also SWAPPABLE — the founder wants
+// a change-layout control on every component, hero and footer included. These
+// live on the profile (hero_variant / contact_variant), not portfolio_blocks,
+// so the editor handles them separately, but they share the variant shape.
+export const HERO_VARIANTS: SectionVariant[] = [
+  { id: 'statement', label: 'Big name', hint: 'Huge name + statement on a color wash — no photo needed.' },
+  { id: 'photo-bleed', label: 'Photo', hint: 'A full-bleed hero photo with your name over it.' },
+  { id: 'cinematic', label: 'Cinematic', hint: 'Photo hero + a strip of your featured work.' },
+  { id: 'split-portrait', label: 'Split', hint: 'Your words on one side, your portrait on the other.' },
+]
+export const CONTACT_VARIANTS: SectionVariant[] = [
+  { id: 'cta-band', label: 'Centered', hint: 'A centered "let\'s work together" closer.' },
+  { id: 'big-type', label: 'Big type', hint: 'Your name huge as the closing statement.' },
+  { id: 'columns', label: 'Footer columns', hint: 'A real footer — links, socials, contact columns.' },
+]
 
 // ---- trade → composable starter page ----
 // A new user should land on a GOOD, trade-appropriate composed page — not a

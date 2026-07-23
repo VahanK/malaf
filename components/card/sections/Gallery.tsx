@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, arText, type SectionProps } from './shared'
 import { Lightbox } from '../layouts/Lightbox'
+import { useEdit } from '../edit/EditContext'
 
 // GALLERY — the visual trade's core. Full-bleed image sections.
 //   - masonry:     edge-to-edge columns, varied heights (editorial)
@@ -11,16 +12,36 @@ import { Lightbox } from '../layouts/Lightbox'
 //   - filmstrip:   a full-bleed horizontal scroller of tall frames (Creacy)
 // data: { images: [{ url, alt }] }
 export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps) {
+  const { editing, onBlockData, onUpload } = useEdit()
   const d = block.data as { images?: { url?: string; alt?: string }[] }
-  const images = (d.images ?? [])
-    .filter(im => im.url)
-    .map(im => ({ url: mediaUrl(im.url), alt: im.alt ?? '' }))
+  const rawImages = (d.images ?? []).filter(im => im.url) as { url: string; alt?: string }[]
+  const images = rawImages.map(im => ({ url: mediaUrl(im.url), alt: im.alt ?? '' }))
   const [lightbox, setLightbox] = useState<number | null>(null)
-  if (!images.length) return null
+  // In the builder an empty gallery still renders (so the user can add photos);
+  // on the public page an empty gallery shows nothing.
+  if (!images.length && !editing) return null
   const variant = block.variant || 'masonry'
   const tone = block.tone ?? toneHint ?? 'base'
   const onDark = tone === 'dark'
   const kickerTitle = arText(isRtl, block.title, block.title_ar)
+
+  // Edit-mode photo management: add (multi-select) + remove, written to the block.
+  const addPhotos = async (files: FileList | null) => {
+    const list = Array.from(files ?? [])
+    const uploaded: { url: string }[] = []
+    for (const f of list) {
+      const p = await onUpload(f)
+      if (p) uploaded.push({ url: p })
+    }
+    if (uploaded.length) onBlockData(block.id, { images: [...rawImages, ...uploaded] })
+  }
+  const removePhoto = (i: number) => onBlockData(block.id, { images: rawImages.filter((_, j) => j !== i) })
+  const AddTile = editing ? (
+    <label className="flex aspect-square w-full cursor-pointer items-center justify-center rounded-[var(--card-radius-md)] border-2 border-dashed border-[var(--card-border)] text-[13px] font-semibold text-[var(--card-muted)] transition hover:border-[var(--card-accent)] hover:text-[var(--card-ink)]">
+      ＋ Add photos
+      <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={e => addPhotos(e.target.files)} />
+    </label>
+  ) : null
 
   // ── offset-rows: editorial 12-col grid, each image a different span + drop ──
   if (variant === 'offset-rows') {
@@ -81,23 +102,44 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
       {variant === 'grid-3' ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {images.map((im, i) => (
-            <button key={i} onClick={() => setLightbox(i)} className="group block overflow-hidden rounded-[var(--card-radius-md)]" aria-label={im.alt || `Photo ${i + 1}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            </button>
+            <div key={i} className="group relative overflow-hidden rounded-[var(--card-radius-md)]">
+              <button onClick={() => setLightbox(i)} className="block w-full" aria-label={im.alt || `Photo ${i + 1}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              </button>
+              {editing && <RemoveBtn onClick={() => removePhoto(i)} />}
+            </div>
           ))}
+          {AddTile}
         </div>
       ) : (
         <div className="columns-2 gap-3 lg:columns-3 [&>*]:mb-3">
           {images.map((im, i) => (
-            <button key={i} onClick={() => setLightbox(i)} className="group block w-full overflow-hidden rounded-[var(--card-radius-md)]" aria-label={im.alt || `Photo ${i + 1}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]" />
-            </button>
+            <div key={i} className="group relative w-full overflow-hidden rounded-[var(--card-radius-md)]">
+              <button onClick={() => setLightbox(i)} className="block w-full" aria-label={im.alt || `Photo ${i + 1}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]" />
+              </button>
+              {editing && <RemoveBtn onClick={() => removePhoto(i)} />}
+            </div>
           ))}
+          {AddTile}
         </div>
       )}
       {lightbox !== null && <Lightbox images={images} start={lightbox} onClose={() => setLightbox(null)} />}
     </Band>
+  )
+}
+
+// Small remove control shown on hover over a photo in the builder.
+function RemoveBtn({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={e => { e.stopPropagation(); onClick() }}
+      className="absolute right-2 top-2 z-10 hidden h-7 w-7 items-center justify-center rounded-full bg-black/70 text-[13px] text-white shadow-lg group-hover:flex"
+      aria-label="Remove photo"
+    >
+      ✕
+    </button>
   )
 }

@@ -12,6 +12,8 @@ export interface EditApi {
   editing: boolean
   /** Save an edited text field on a block's data (or its title). */
   onText: (blockId: string, field: string, value: string) => void
+  /** Merge a partial data object into a block's data (images, list items…). */
+  onBlockData: (blockId: string, data: Record<string, unknown>) => void
   /** Swap a block's layout variant. */
   onSwap: (blockId: string) => void
   onMove: (blockId: string, dir: -1 | 1) => void
@@ -30,6 +32,7 @@ const noop = () => {}
 const EditContext = createContext<EditApi>({
   editing: false,
   onText: noop,
+  onBlockData: noop,
   onSwap: noop,
   onMove: noop,
   onRemove: noop,

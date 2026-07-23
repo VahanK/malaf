@@ -50,6 +50,15 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     }
   }
 
+  // Merge a partial data object into a block (images, list items, sub-fields).
+  const onBlockData: EditApi['onBlockData'] = (blockId, patch) => {
+    const b = blocks.find(x => x.id === blockId)
+    if (!b) return
+    const data = { ...b.data, ...patch }
+    setBlock(blockId, { data })
+    supabase.from('portfolio_blocks').update({ data }).eq('id', blockId)
+  }
+
   const cycleVariant = (variants: { id: string }[], current: string) => {
     const i = Math.max(0, variants.findIndex(v => v.id === current))
     return variants[(i + 1) % variants.length].id
@@ -119,7 +128,7 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     }
   }
 
-  const api: EditApi = { editing: true, onText, onSwap, onSwapFixed, onMove, onRemove, onUpload, firstId, lastId }
+  const api: EditApi = { editing: true, onText, onBlockData, onSwap, onSwapFixed, onMove, onRemove, onUpload, firstId, lastId }
 
   return (
     <div>

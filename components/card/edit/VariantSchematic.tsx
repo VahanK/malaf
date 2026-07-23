@@ -129,6 +129,27 @@ export function VariantSchematic({ kind, variantId }: { kind: string; variantId:
     if (variantId === 'logo-strip') {
       return <Frame><div className="flex items-center justify-center gap-3 py-6">{[0, 1, 2, 3].map(i => <div key={i} className="h-5 w-10 rounded bg-neutral-300" />)}</div></Frame>
     }
+    if (variantId === 'grid-cards') {
+      return <Frame><div className="grid grid-cols-3 gap-1.5">{[0, 1, 2, 3, 4, 5].map(i => <div key={i} className="relative"><Box extra="h-9" /><span className="absolute left-0 top-0 h-2 w-2 border-l-2 border-t-2" style={{ borderColor: ACCENT }} /><span className="absolute bottom-0 right-0 h-2 w-2 border-b-2 border-r-2" style={{ borderColor: ACCENT }} /></div>)}</div></Frame>
+    }
+    if (variantId === 'card-carousel') {
+      return <Frame><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-full bg-neutral-300" /><div className="flex flex-1 gap-2 overflow-hidden">{[0, 1, 2].map(i => <Box key={i} extra="h-16 w-1/3 shrink-0" />)}</div><div className="h-5 w-5 rounded-full" style={{ background: ACCENT }} /></div></Frame>
+    }
+    if (variantId === 'spring-cards') {
+      return <Frame><div className="grid grid-cols-2 gap-3">{[0, 1, 2, 3].map(i => <div key={i} className="relative"><div className="absolute -right-1 -top-1 h-full w-full rounded border-2 border-neutral-800" /><div className="relative rounded border-2 border-neutral-800 bg-white p-2"><Bar w="70%" h="h-2" /></div></div>)}</div></Frame>
+    }
+    if (variantId === 'sticky-stack') {
+      return <Frame><div className="flex flex-col gap-1">{[0, 1, 2].map(i => <div key={i} className={`rounded p-2 ${i % 2 ? 'bg-white border border-neutral-300' : 'bg-neutral-900'}`}><Bar w="60%" h={i % 2 ? 'h-2' : 'h-2 !bg-white/40'} /></div>)}</div></Frame>
+    }
+    if (variantId === 'scroll-fade') {
+      return <Frame><div className="grid grid-cols-[0.9fr_1.1fr] gap-3"><div className="flex flex-col gap-1"><div className="h-4 w-20 rounded bg-neutral-800" /></div><div className="flex flex-col gap-1.5"><Box extra="h-8 opacity-100" /><Box extra="h-8 opacity-60" /><Box extra="h-8 opacity-30" /></div></div></Frame>
+    }
+    if (variantId === 'text-parallax') {
+      return <div className="relative h-full w-full overflow-hidden bg-neutral-800"><div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${ACCENT}44, #2a2825)` }} /><div className="absolute inset-0 flex items-center justify-center"><div className="h-6 w-40 rounded bg-white/90" /></div></div>
+    }
+    if (variantId === 'oppo-scroll') {
+      return <div className="grid h-full w-full grid-cols-2"><div className="flex flex-col"><div className="flex-1 bg-neutral-900 p-2"><Bar w="70%" h="h-2 !bg-white/40" /></div><div className="flex-1 bg-white p-2"><Bar w="70%" h="h-2" /></div></div><div className="bg-neutral-400" /></div>
+    }
     return <Frame>{[0, 1].map(i => <div key={i} className="grid grid-cols-[1.2fr_1fr] gap-2 border-b border-neutral-200 pb-2"><div className="flex flex-col gap-1"><div className="h-4 w-24 rounded bg-neutral-800" /><Bar w="80%" h="h-2" /></div><Box extra="h-10" /></div>)}</Frame>
   }
 
@@ -143,7 +164,35 @@ export function VariantSchematic({ kind, variantId }: { kind: string; variantId:
     if (variantId === 'filmstrip') {
       return <div className="flex h-full items-center gap-2 bg-neutral-900 p-3">{[0, 1, 2, 3].map(i => <div key={i} className="h-24 w-16 shrink-0 rounded bg-neutral-600" />)}</div>
     }
+    if (variantId === 'horizontal-scroll') {
+      return <div className="flex h-full items-center gap-2 overflow-hidden bg-neutral-900 px-3">{[0, 1, 2, 3, 4].map(i => <div key={i} className="h-20 w-28 shrink-0 rounded bg-neutral-600" />)}</div>
+    }
+    if (variantId === 'swipe-deck') {
+      return <div className="relative flex h-full items-center justify-center"><div className="absolute h-24 w-32 rotate-6 rounded bg-neutral-300" /><div className="absolute h-24 w-32 -rotate-3 rounded bg-neutral-400" /><div className="relative h-24 w-32 rounded" style={{ background: ACCENT, opacity: 0.5 }} /></div>
+    }
     return <Frame><div className="columns-3 gap-2 [&>*]:mb-2">{['h-12', 'h-8', 'h-10', 'h-6', 'h-14', 'h-9'].map((h, i) => <Box key={i} extra={`w-full ${h}`} />)}</div></Frame>
+  }
+
+  // ---- STAT / NUMBERS ----
+  if (k === 'stat_card') {
+    if (variantId === 'count-up') {
+      return <Frame><div className="grid grid-cols-3 gap-2 pt-4">{['12', '340', '98'].map((n, i) => <div key={i} className="text-center"><div className="text-2xl font-black" style={{ color: ACCENT }}>{n}</div><Bar w="80%" h="h-1.5" extra="mx-auto mt-1" /></div>)}</div></Frame>
+    }
+    if (variantId === 'interactive-grid') {
+      return <Frame><div className="grid grid-cols-3 gap-1.5">{[0, 1, 2].map(i => <div key={i} className={`rounded p-2 text-center ${i === 1 ? '' : 'opacity-40'}`} style={i === 1 ? { borderBottom: `2px solid ${ACCENT}` } : undefined}><div className="text-lg font-black" style={{ color: i === 1 ? ACCENT : '#888' }}>#{i + 1}</div></div>)}</div></Frame>
+    }
+    return <Frame><div className="grid grid-cols-3 divide-x divide-neutral-200">{[0, 1, 2].map(i => <div key={i} className="px-2"><div className="text-2xl font-black" style={{ color: ACCENT }}>9</div><Bar w="70%" h="h-1.5" extra="mt-1" /></div>)}</div></Frame>
+  }
+
+  // ---- TESTIMONIAL ----
+  if (k === 'testimonial') {
+    if (variantId === 'stagger-deck') {
+      return <div className="relative flex h-full items-center justify-center"><div className="absolute h-20 w-40 -rotate-3 rounded-lg bg-neutral-200" /><div className="absolute h-20 w-40 rotate-3 rounded-lg bg-neutral-300" /><div className="relative h-20 w-40 rounded-lg p-2" style={{ background: ACCENT, opacity: 0.85 }}><Bar w="80%" h="h-1.5 !bg-white/60" /><Bar w="50%" h="h-1.5 !bg-white/60" extra="mt-1" /></div></div>
+    }
+    if (variantId === 'stacked-auto') {
+      return <Frame><div className="grid grid-cols-[0.8fr_1.2fr] gap-3"><div className="flex flex-col gap-1.5">{[0, 1, 2].map(i => <div key={i} className="h-1.5 rounded-full" style={{ background: i === 0 ? ACCENT : '#ddd' }} />)}</div><Box extra="h-16" /></div></Frame>
+    }
+    return <Frame><div className="grid grid-cols-2 gap-2">{[0, 1].map(i => <div key={i} className="rounded border border-neutral-200 p-2"><Bar w="90%" h="h-1.5" /><Bar w="60%" h="h-1.5" extra="mt-1" /></div>)}</div></Frame>
   }
 
   return <Frame><Bar w="60%" /><Bar w="80%" h="h-2" /><Box extra="h-10" /></Frame>

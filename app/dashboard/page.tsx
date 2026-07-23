@@ -64,10 +64,10 @@ export default async function DashboardHome() {
           <div className="text-2xl font-semibold">{money(collected)}</div>
           <div className="mt-1 text-sm text-dash-muted">Collected this month</div>
         </div>
-        <div className="rounded-xl border border-dash-border bg-dash-surface p-5">
+        <a href="/dashboard/inbox" className="rounded-xl border border-dash-border bg-dash-surface p-5 transition-colors hover:border-dash-accent">
           <div className="text-2xl font-semibold">{newQuoteRequests ?? 0}</div>
-          <div className="mt-1 text-sm text-dash-muted">New quote requests</div>
-        </div>
+          <div className="mt-1 text-sm text-dash-muted">New client requests {newQuoteRequests ? '→' : ''}</div>
+        </a>
       </div>
 
       {profile?.handle && (

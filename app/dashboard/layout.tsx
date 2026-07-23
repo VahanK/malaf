@@ -5,13 +5,14 @@ import { NotificationBell } from '@/components/dashboard/NotificationBell'
 
 const NAV = [
   { href: '/dashboard', label: 'Overview' },
+  { href: '/dashboard/inbox', label: 'Client requests' },
   { href: '/dashboard/quotes', label: 'Quotes' },
   { href: '/dashboard/invoices', label: 'Invoices' },
   { href: '/dashboard/services', label: 'Services' },
-  { href: '/dashboard/portfolio', label: 'Portfolio' },
+  { href: '/dashboard/portfolio', label: 'Your page' },
   { href: '/dashboard/payment-methods', label: 'Payment methods' },
   { href: '/dashboard/profile', label: 'Profile' },
-  { href: '/dashboard/requests', label: 'Request something' },
+  { href: '/dashboard/requests', label: 'Request a feature' },
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -11,12 +11,22 @@ interface ServiceOption {
   unit: LineItem['unit']
 }
 
-export function NewQuoteForm({ services }: { services: ServiceOption[] }) {
-  const [clientName, setClientName] = useState('')
-  const [clientPhone, setClientPhone] = useState('')
+interface Prefill { name: string; phone: string; note: string; service: string }
+
+export function NewQuoteForm({ services, prefill }: { services: ServiceOption[]; prefill?: Prefill }) {
+  const [clientName, setClientName] = useState(prefill?.name ?? '')
+  const [clientPhone, setClientPhone] = useState(prefill?.phone ?? '')
   const [language, setLanguage] = useState<'en' | 'ar'>('en')
   const [currency, setCurrency] = useState<'USD' | 'LBP'>('USD')
-  const [items, setItems] = useState<LineItem[]>([])
+  // Seed the first line item from the request: the service they asked for if it
+  // matches, else a blank line titled with what they wrote.
+  const [items, setItems] = useState<LineItem[]>(() => {
+    if (!prefill) return []
+    const matched = prefill.service ? services.find(s => s.title === prefill.service) : undefined
+    if (matched) return [{ title: matched.title, title_ar: matched.title_ar, qty: 1, unit_price: matched.price, unit: matched.unit }]
+    if (prefill.note || prefill.service) return [{ title: prefill.service || prefill.note.slice(0, 60), qty: 1, unit_price: 0, unit: 'project' }]
+    return []
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()

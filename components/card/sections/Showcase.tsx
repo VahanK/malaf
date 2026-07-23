@@ -4,6 +4,7 @@ import { AiFillGithub, AiOutlineExport } from 'react-icons/ai'
 import { Reveal } from '../Reveal'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, arText, type SectionProps } from './shared'
 import { useEdit } from '../edit/EditContext'
+import { CardImage } from '../CardImage'
 
 // SHOWCASE — work presented as CASES, not a photo wall. The developer's core
 // section (also lawyers, consultants). An item is:
@@ -150,12 +151,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
             <Reveal key={i} className="group flex flex-col overflow-hidden rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] transition-transform duration-300 hover:-translate-y-1">
-              {it.image && (
-                <div className="overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={mediaUrl(it.image) ?? undefined} alt={it.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                </div>
-              )}
+              <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-none" className="[&>img]:transition-transform [&>img]:duration-500 group-hover:[&>img]:scale-105" />
               <div className="flex flex-1 flex-col p-5">
                 {it.tags && it.tags.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-1.5">
@@ -212,8 +208,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
                 )}
               </div>
               {it.image && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={mediaUrl(it.image) ?? undefined} alt={it.title} loading="lazy" className="aspect-[4/3] w-full rounded-[var(--card-radius-lg)] object-cover" />
+                <CardImage src={it.image} alt={it.title} accent={accent} aspect="aspect-[4/3]" rounded="rounded-[var(--card-radius-lg)]" />
               )}
             </div>
           </Reveal>

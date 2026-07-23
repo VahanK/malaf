@@ -2,6 +2,8 @@
 
 import { mediaUrl } from '@/lib/media'
 import { SectionFrame } from '../edit/SectionFrame'
+import { Editable } from '../edit/Editable'
+import { useEdit } from '../edit/EditContext'
 import type { PublicPage, PublicBlock } from '@/lib/public-page'
 
 // Shared primitives for composable sections. The whole point (vs the old fixed
@@ -84,6 +86,8 @@ export function SectionKicker({
   accent,
   onDark = false,
   heading,
+  blockId,
+  hideNumber,
 }: {
   index: number
   title?: string
@@ -92,26 +96,60 @@ export function SectionKicker({
   onDark?: boolean
   /** Optional per-world heading class (family/weight/case). */
   heading?: string
+  /** When set, the title is inline-editable and the number can be toggled. */
+  blockId?: string
+  /** Hide the numbered eyebrow (per-section preference). */
+  hideNumber?: boolean
 }) {
   const label = (title && title.trim()) || fallback
   return (
     <div className="mb-10">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="font-mono text-[13px] font-bold tabular-nums" style={{ color: accent }}>
-          {String(index).padStart(2, '0')}
-        </span>
-        <span className="h-px w-8" style={{ background: accent }} />
-        <span className={`text-[11px] font-bold uppercase tracking-[0.24em] ${onDark ? 'text-white/50' : 'text-[var(--card-muted)]'}`}>
-          {fallback}
-        </span>
-      </div>
-      <h2
-        className={`${heading ?? 'font-sans font-black tracking-[-0.03em]'} leading-[0.98]`}
-        style={{ fontSize: 'clamp(30px,7vw,54px)' }}
-      >
-        {label}
-      </h2>
+      {!hideNumber && (
+        <div className="mb-3 flex items-center gap-3">
+          <span className="font-mono text-[13px] font-bold tabular-nums" style={{ color: accent }}>
+            {String(index).padStart(2, '0')}
+          </span>
+          <span className="h-px w-8" style={{ background: accent }} />
+          <span className={`text-[11px] font-bold uppercase tracking-[0.24em] ${onDark ? 'text-white/50' : 'text-[var(--card-muted)]'}`}>
+            {fallback}
+          </span>
+          {blockId && <SectionKickerControls blockId={blockId} hideNumber={false} />}
+        </div>
+      )}
+      {hideNumber && blockId && (
+        <div className="mb-3"><SectionKickerControls blockId={blockId} hideNumber={true} /></div>
+      )}
+      {blockId ? (
+        <Editable
+          as="h2"
+          blockId={blockId}
+          field="title"
+          value={title ?? ''}
+          placeholder={fallback}
+          className={`${heading ?? 'font-sans font-black tracking-[-0.03em]'} leading-[0.98]`}
+          style={{ fontSize: 'clamp(30px,7vw,54px)' }}
+        />
+      ) : (
+        <h2 className={`${heading ?? 'font-sans font-black tracking-[-0.03em]'} leading-[0.98]`} style={{ fontSize: 'clamp(30px,7vw,54px)' }}>
+          {label}
+        </h2>
+      )}
     </div>
+  )
+}
+
+// Edit-mode-only control to hide/show the section number. Renders nothing on the
+// public page (useEdit().editing is false there).
+function SectionKickerControls({ blockId, hideNumber }: { blockId: string; hideNumber: boolean }) {
+  const { editing, onBlockData } = useEdit()
+  if (!editing) return null
+  return (
+    <button
+      onClick={() => onBlockData(blockId, { hide_number: !hideNumber })}
+      className="ww-toolbar rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white opacity-0 transition group-hover/edit:opacity-100"
+    >
+      {hideNumber ? '＋ number' : '✕ number'}
+    </button>
   )
 }
 

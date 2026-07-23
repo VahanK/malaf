@@ -20,6 +20,7 @@ export function EditImage({
   accent = '#c9a45c',
   className = '',
   label = 'Add a photo',
+  cropAspect,
 }: {
   src?: string | null
   onChange: (path: string) => void
@@ -29,6 +30,10 @@ export function EditImage({
   accent?: string
   className?: string
   label?: string
+  /** If this slot needs a fixed ratio (e.g. a square avatar), pass it (w/h, e.g.
+   *  1 or 16/9) to open the crop step locked to it. If omitted, the slot accepts
+   *  any shape and cropping is SKIPPED — no needless crop step. */
+  cropAspect?: number
 }) {
   const { editing } = useEdit()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -41,8 +46,13 @@ export function EditImage({
   }
 
   const pick = () => inputRef.current?.click()
-  // Picking a file opens the crop modal; confirming there uploads the cropped result.
-  const handleFile = (file: File | undefined) => { if (file) setCropFile(file) }
+  // Only crop when the slot needs a fixed ratio; otherwise upload the file as-is
+  // (compression still happens in uploadImageWithProgress).
+  const handleFile = (file: File | undefined) => {
+    if (!file) return
+    if (cropAspect) setCropFile(file)
+    else doUpload(file)
+  }
   const doUpload = async (file: File) => {
     setCropFile(null)
     setBusy(true)
@@ -83,7 +93,7 @@ export function EditImage({
         onChange={e => { handleFile(e.target.files?.[0]); e.target.value = '' }}
       />
       {cropFile && (
-        <CropUploadModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
+        <CropUploadModal file={cropFile} lockAspect={cropAspect} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
       )}
     </div>
   )

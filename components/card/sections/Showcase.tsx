@@ -101,7 +101,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
     const brutal = world === 'brutalist'
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
-        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} blockId={block.id} hideNumber={Boolean((block.data as {hide_number?: boolean}).hide_number)} />
         <div className="divide-y divide-[var(--card-border)]">
           {items.map((it, i) => (
             <Reveal key={i}>
@@ -180,7 +180,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   if (variant === 'card-grid') {
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
-        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} blockId={block.id} hideNumber={Boolean((block.data as {hide_number?: boolean}).hide_number)} />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
             <Reveal key={i} className="group flex flex-col overflow-hidden rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] transition-transform duration-300 hover:-translate-y-1">
@@ -219,7 +219,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   // ── case-stack (default): big full-width rows, works with zero images ──
   return (
     <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
-      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} blockId={block.id} hideNumber={Boolean((block.data as {hide_number?: boolean}).hide_number)} />
       <div className="divide-y divide-[var(--card-border)]">
         {items.map((it, i) => (
           <Reveal key={i}>

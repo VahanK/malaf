@@ -15,12 +15,15 @@ export function EditImageButton({
   className = '',
   addLabel = 'Add photo',
   changeLabel = 'Change photo',
+  cropAspect,
 }: {
   hasImage: boolean
   onUploaded: (path: string) => void
   className?: string
   addLabel?: string
   changeLabel?: string
+  /** Fixed ratio for this slot; omitted → any shape, no crop step. */
+  cropAspect?: number
 }) {
   const { editing } = useEdit()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -28,7 +31,11 @@ export function EditImageButton({
   const [cropFile, setCropFile] = useState<File | null>(null)
   if (!editing) return null
 
-  const handle = (file: File | undefined) => { if (file) setCropFile(file) }
+  const handle = (file: File | undefined) => {
+    if (!file) return
+    if (cropAspect) setCropFile(file)
+    else doUpload(file)
+  }
   const doUpload = async (file: File) => {
     setCropFile(null)
     setPct(0)
@@ -61,7 +68,7 @@ export function EditImageButton({
         onChange={e => { handle(e.target.files?.[0]); e.target.value = '' }}
       />
       {cropFile && (
-        <CropUploadModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
+        <CropUploadModal file={cropFile} lockAspect={cropAspect} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
       )}
     </div>
   )

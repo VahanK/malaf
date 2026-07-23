@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Reorder, useDragControls } from 'motion/react'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, arText, type SectionProps } from './shared'
 import { Lightbox } from '../layouts/Lightbox'
 import { useEdit } from '../edit/EditContext'
@@ -59,6 +60,12 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     ;[next[i], next[j]] = [next[j], next[i]]
     onBlockData(block.id, { images: next })
   }
+  // Drag-to-reorder: persist a full reordered array (touch-friendly, phone-first).
+  const reorderByUrl = (urls: string[]) => {
+    const byUrl = new Map(rawImages.map(im => [im.url, im]))
+    const next = urls.map(u => byUrl.get(u)).filter(Boolean) as { url: string; alt?: string }[]
+    if (next.length === rawImages.length) onBlockData(block.id, { images: next })
+  }
   const AddTile = editing ? (
     <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-[var(--card-radius-md)] border-2 border-dashed border-[var(--card-border)] text-center text-[13px] font-semibold text-[var(--card-muted)] transition hover:border-[var(--card-accent)] hover:text-[var(--card-ink)]">
       {uploading ? (
@@ -84,7 +91,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     return (
       <Band tone={tone} accent={accent} className="!px-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
         <MOTION images={imgs} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
-        {editing && <ManagePhotosStrip images={images} onRemove={removePhoto} onMove={movePhoto} onCaption={setCaption} addTile={AddTile} />}
+        {editing && <ManagePhotosStrip rawImages={rawImages} onReorder={reorderByUrl} onRemove={removePhoto} onCaption={setCaption} addTile={AddTile} />}
       </Band>
     )
   }
@@ -96,7 +103,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     const rows = chunk(images, 3)
     return (
       <Band tone={tone} accent={accent} className="!py-20" frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
-        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} blockId={block.id} hideNumber={Boolean((block.data as {hide_number?: boolean}).hide_number)} />
         {rows.map((row, ri) => (
           <div key={ri} className="mb-12 grid grid-cols-12 items-end gap-4">
             {row.map((im, ci) => {
@@ -144,7 +151,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
 
   return (
     <Band tone={tone} accent={accent} className="!py-16" frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
-      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} blockId={block.id} hideNumber={Boolean((block.data as {hide_number?: boolean}).hide_number)} />
       {variant === 'grid-3' ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {images.map((im, i) => (
@@ -197,41 +204,54 @@ function PhotoControls({ onRemove, onLeft, onRight, isFirst, isLast, isRtl }: {
   )
 }
 
-// Builder-only thumbnail strip for the motion gallery variants (swipe-deck,
-// horizontal-scroll) whose animated view can't host inline add/remove controls.
-// Lets the user reorder / remove / add photos while still previewing the motion.
-function ManagePhotosStrip({ images, onRemove, onMove, onCaption, addTile }: {
-  images: { url: string | null; alt?: string }[]
+// Builder-only manager for the motion gallery variants: DRAG to reorder
+// (touch-friendly, phone-first — founder: "make it draggable so it works on
+// phone"), edit captions, remove, add. Uses motion's Reorder (pointer-based).
+function ManagePhotosStrip({ rawImages, onReorder, onRemove, onCaption, addTile }: {
+  rawImages: { url: string; alt?: string }[]
+  onReorder: (urls: string[]) => void
   onRemove: (i: number) => void
-  onMove: (i: number, dir: -1 | 1) => void
   onCaption: (i: number, alt: string) => void
   addTile: React.ReactNode
 }) {
+  const urls = rawImages.map(im => im.url)
   return (
     <div className="mx-auto max-w-2xl border-t border-white/10 bg-black/40 px-4 py-3">
-      <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-white/60">Manage photos &amp; captions</p>
-      <div className="flex flex-col gap-2">
-        {images.map((im, i) => (
-          <div key={i} className="flex items-center gap-2 rounded-lg bg-white/5 p-1.5">
-            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-md ring-1 ring-white/20">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={im.url ?? undefined} alt={im.alt} className="h-full w-full object-cover" />
-            </div>
-            <input
-              defaultValue={im.alt ?? ''}
-              onBlur={e => onCaption(i, e.target.value)}
-              placeholder="Add a caption…"
-              className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/40"
-            />
-            <div className="flex shrink-0 items-center gap-1">
-              <button onClick={() => onMove(i, -1)} disabled={i === 0} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white disabled:opacity-30">↑</button>
-              <button onClick={() => onMove(i, 1)} disabled={i === images.length - 1} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white disabled:opacity-30">↓</button>
-              <button onClick={() => onRemove(i)} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white hover:bg-red-600">✕</button>
-            </div>
-          </div>
+      <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-white/60">Drag to reorder · tap to caption</p>
+      <Reorder.Group axis="y" values={urls} onReorder={onReorder} className="flex flex-col gap-2">
+        {rawImages.map((im, i) => (
+          <PhotoRow key={im.url} url={im.url} alt={im.alt} onCaption={v => onCaption(i, v)} onRemove={() => onRemove(i)} />
         ))}
-      </div>
+      </Reorder.Group>
       <div className="mt-2 [&_label]:!aspect-auto [&_label]:!h-10 [&_label]:!flex-row [&_label]:!gap-2">{addTile}</div>
     </div>
+  )
+}
+
+// One draggable photo row. A dedicated drag handle keeps the caption input
+// tappable/editable without starting a drag.
+function PhotoRow({ url, alt, onCaption, onRemove }: { url: string; alt?: string; onCaption: (v: string) => void; onRemove: () => void }) {
+  const controls = useDragControls()
+  return (
+    <Reorder.Item value={url} dragListener={false} dragControls={controls} className="flex touch-none items-center gap-2 rounded-lg bg-white/5 p-1.5">
+      <button
+        onPointerDown={e => controls.start(e)}
+        className="flex h-9 w-6 shrink-0 cursor-grab items-center justify-center text-white/40 active:cursor-grabbing"
+        aria-label="Drag to reorder"
+      >
+        ⠿
+      </button>
+      <div className="h-11 w-11 shrink-0 overflow-hidden rounded-md ring-1 ring-white/20">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={mediaUrl(url) ?? undefined} alt={alt} className="h-full w-full object-cover" draggable={false} />
+      </div>
+      <input
+        defaultValue={alt ?? ''}
+        onBlur={e => onCaption(e.target.value)}
+        placeholder="Add a caption…"
+        className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/40"
+      />
+      <button onClick={onRemove} className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-white/10 text-[12px] text-white hover:bg-red-600" aria-label="Remove photo">✕</button>
+    </Reorder.Item>
   )
 }

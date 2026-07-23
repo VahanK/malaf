@@ -46,7 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </nav>
       </div>
 
-      <div className="mx-auto flex max-w-6xl gap-8 px-4 py-6 sm:px-6 lg:py-8">
+      <div className="mx-auto flex max-w-[104rem] gap-8 px-4 py-6 sm:px-6 lg:py-8">
         {/* Desktop sidebar */}
         <nav className="hidden w-44 shrink-0 space-y-1 lg:block">
           <div className="mb-6 flex items-center justify-between">

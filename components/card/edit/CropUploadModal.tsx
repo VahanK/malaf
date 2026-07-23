@@ -22,16 +22,20 @@ interface Crop { x: number; y: number; w: number; h: number } // in natural px
 
 export function CropUploadModal({
   file,
+  lockAspect,
   onCancel,
   onConfirm,
 }: {
   file: File
+  /** When set, the crop is LOCKED to this ratio (w/h) and presets are hidden —
+   *  the slot needs exactly this shape (e.g. a square avatar). */
+  lockAspect?: number
   onCancel: () => void
   onConfirm: (cropped: File) => void
 }) {
   const [img, setImg] = useState<HTMLImageElement | null>(null)
   const [nat, setNat] = useState<{ w: number; h: number } | null>(null)
-  const [aspect, setAspect] = useState<Aspect>(ASPECTS[0])
+  const [aspect, setAspect] = useState<Aspect>(lockAspect ? { label: 'Locked', ratio: lockAspect } : ASPECTS[0])
   const [crop, setCrop] = useState<Crop | null>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const drag = useRef<{ mode: 'move' | 'new'; sx: number; sy: number; start: Crop } | null>(null)
@@ -43,8 +47,14 @@ export function CropUploadModal({
     im.onload = () => {
       setImg(im)
       setNat({ w: im.naturalWidth, h: im.naturalHeight })
-      // default crop = whole image
-      setCrop({ x: 0, y: 0, w: im.naturalWidth, h: im.naturalHeight })
+      if (lockAspect) {
+        // Center the largest rect of the locked ratio.
+        let w = im.naturalWidth, h = w / lockAspect
+        if (h > im.naturalHeight) { h = im.naturalHeight; w = h * lockAspect }
+        setCrop({ x: (im.naturalWidth - w) / 2, y: (im.naturalHeight - h) / 2, w, h })
+      } else {
+        setCrop({ x: 0, y: 0, w: im.naturalWidth, h: im.naturalHeight })
+      }
     }
     im.src = url
     return () => URL.revokeObjectURL(url)
@@ -164,18 +174,20 @@ export function CropUploadModal({
           </div>
         )}
 
-        {/* aspect presets */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {ASPECTS.map(a => (
-            <button
-              key={a.label}
-              onClick={() => applyAspect(a)}
-              className={`rounded-full px-3 py-1.5 text-[12px] font-bold transition ${aspect.label === a.label ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
-            >
-              {a.label}
-            </button>
-          ))}
-        </div>
+        {/* aspect presets — hidden when the slot locks the ratio */}
+        {!lockAspect && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {ASPECTS.map(a => (
+              <button
+                key={a.label}
+                onClick={() => applyAspect(a)}
+                className={`rounded-full px-3 py-1.5 text-[12px] font-bold transition ${aspect.label === a.label ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
+              >
+                {a.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="mt-4 flex items-center justify-between gap-2">
           <p className="text-[11.5px] text-neutral-400">Drag inside to move · drag outside to draw a new crop</p>

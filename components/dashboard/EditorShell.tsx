@@ -37,7 +37,10 @@ export function EditorShell({
         </button>
       </div>
 
-      <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+      {/* Editor on the left (capped so fields stay readable), a LARGE live preview
+          on the right that grows with the screen — the preview is the point, so it
+          gets the extra width, not empty margin. */}
+      <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]">
         <div className={showPreviewMobile ? 'hidden lg:block' : ''}>{children}</div>
         <div className={`${showPreviewMobile ? '' : 'hidden'} lg:sticky lg:top-8 lg:block lg:h-[calc(100vh-6rem)]`}>
           <PagePreview handle={handle} published={published} />

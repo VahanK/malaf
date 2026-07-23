@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { sectionDef, HERO_VARIANTS, CONTACT_VARIANTS, type SectionVariant } from '@/lib/sections'
+import { sectionDef, HERO_VARIANTS, CONTACT_VARIANTS, NAV_VARIANTS, type SectionVariant } from '@/lib/sections'
 
 // The live-mini-preview swap picker. Instead of blindly cycling variants, the
 // swap control opens a panel showing each layout option as a small LIVE render
@@ -71,9 +71,10 @@ export function SwapPicker({
 
 // Resolve the variant list for a swap target: a fixed bone (hero/contact) or a
 // block type (via the SECTIONS registry).
-export function variantsFor(target: { fixed?: 'hero' | 'contact'; blockType?: string }): SectionVariant[] {
+export function variantsFor(target: { fixed?: 'hero' | 'contact' | 'nav'; blockType?: string }): SectionVariant[] {
   if (target.fixed === 'hero') return HERO_VARIANTS
   if (target.fixed === 'contact') return CONTACT_VARIANTS
+  if (target.fixed === 'nav') return NAV_VARIANTS
   if (target.blockType) return sectionDef(target.blockType)?.variants ?? []
   return []
 }

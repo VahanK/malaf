@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { PublicCard } from '@/components/card/PublicCard'
 import { EditProvider, type EditApi } from '@/components/card/edit/EditContext'
-import { sectionDef, HERO_VARIANTS, CONTACT_VARIANTS, SECTIONS } from '@/lib/sections'
+import { sectionDef, HERO_VARIANTS, CONTACT_VARIANTS, NAV_VARIANTS, SECTIONS } from '@/lib/sections'
 import { FOUNDER_PHONE } from '@/lib/founder'
 import type { PublicPage, PublicBlock } from '@/lib/public-page'
 
@@ -87,22 +87,18 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
 
   const onSwapFixed: EditApi['onSwapFixed'] = which => {
     if (which === 'hero') {
-      const next = cycleVariant(HERO_VARIANTS, page.profile.hero_variant || 'statement')
-      setFixedVariant('hero', next)
+      setFixedVariant('hero', cycleVariant(HERO_VARIANTS, page.profile.hero_variant || 'statement'))
+    } else if (which === 'nav') {
+      setFixedVariant('nav', cycleVariant(NAV_VARIANTS, page.profile.nav_variant || 'none'))
     } else {
-      const next = cycleVariant(CONTACT_VARIANTS, page.profile.contact_variant || 'cta-band')
-      setFixedVariant('contact', next)
+      setFixedVariant('contact', cycleVariant(CONTACT_VARIANTS, page.profile.contact_variant || 'cta-band'))
     }
   }
 
   const setFixedVariant: EditApi['setFixedVariant'] = (which, variantId) => {
-    if (which === 'hero') {
-      setProfile({ hero_variant: variantId })
-      supabase.from('profiles').update({ hero_variant: variantId }).eq('id', profileId)
-    } else {
-      setProfile({ contact_variant: variantId })
-      supabase.from('profiles').update({ contact_variant: variantId }).eq('id', profileId)
-    }
+    const col = which === 'hero' ? 'hero_variant' : which === 'nav' ? 'nav_variant' : 'contact_variant'
+    setProfile({ [col]: variantId } as Partial<PublicPage['profile']>)
+    supabase.from('profiles').update({ [col]: variantId }).eq('id', profileId)
   }
 
   const onMove: EditApi['onMove'] = (blockId, dir) => {

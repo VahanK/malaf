@@ -54,6 +54,7 @@ export interface PublicProfile {
   noindex: boolean
   reply_hours: number | null
   // Composable bones + feature flag (Phase 1).
+  nav_variant: string
   hero_variant: string
   contact_variant: string
   composable: boolean
@@ -112,7 +113,7 @@ export async function getOwnPagePreview(): Promise<PublicPage | null> {
 
   const { data: prof } = await supabase
     .from('profiles')
-    .select('handle, full_name, title, title_ar, bio, avatar_url, hero_image_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours, hero_variant, contact_variant, composable')
+    .select('handle, full_name, title, title_ar, bio, avatar_url, hero_image_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours, nav_variant, hero_variant, contact_variant, composable')
     .eq('id', user.id)
     .single()
   if (!prof) return null

@@ -23,9 +23,9 @@ export interface EditApi {
   onMove: (blockId: string, dir: -1 | 1) => void
   onRemove: (blockId: string) => void
   /** Fixed bones (hero/contact) live on the profile, keyed by these ids. */
-  onSwapFixed: (which: 'hero' | 'contact') => void
+  onSwapFixed: (which: 'hero' | 'contact' | 'nav') => void
   /** Set a fixed bone's variant directly (from the picker). */
-  setFixedVariant: (which: 'hero' | 'contact', variantId: string) => void
+  setFixedVariant: (which: 'hero' | 'contact' | 'nav', variantId: string) => void
   /** Upload an image, return its stored path. */
   onUpload: (file: File) => Promise<string | null>
   /** The block currently first/last (for disabling move arrows). */

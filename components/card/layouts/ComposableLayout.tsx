@@ -1,6 +1,7 @@
 'use client'
 
 import { Hero } from '../sections/Hero'
+import { Nav } from '../sections/Nav'
 import { Contact } from '../sections/Contact'
 import { Narrative } from '../sections/Narrative'
 import { Showcase } from '../sections/Showcase'
@@ -64,6 +65,15 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
 
   let idx = 0
   const nodes: React.ReactNode[] = []
+  // Anchor ids for the navbar links (#work / #about). First matching section
+  // gets the id; scroll-mt keeps a sticky navbar from covering the heading.
+  let hasWork = false
+  let hasAbout = false
+  const anchorFor = (g: (typeof groups)[number]): string | undefined => {
+    if (!hasAbout && g.kind === 'section' && g.blocks[0]?.type === 'narrative') { hasAbout = true; return 'about' }
+    if (!hasWork && (g.kind === 'section' && (g.blocks[0]?.type === 'showcase' || g.blocks[0]?.type === 'gallery' || g.blocks[0]?.type === 'image_grid'))) { hasWork = true; return 'work' }
+    return undefined
+  }
   groups.forEach((g, gi) => {
     let node: React.ReactNode = null
     if (g.kind === 'stats') {
@@ -81,7 +91,8 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
       else if (b.type === 'gallery' || b.type === 'image_grid') node = <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
     }
     if (!node) return
-    nodes.push(node)
+    const anchor = anchorFor(g)
+    nodes.push(anchor ? <div key={`a-${gi}`} id={anchor} className="scroll-mt-20">{node}</div> : node)
     // OKO signature: an oversized scrolling word between bands — brutalist only,
     // never after the final band.
     if (world === 'brutalist' && gi < groups.length - 1) {
@@ -96,6 +107,9 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
       className={`text-[var(--card-ink)] ${isRtl ? 'font-[family-name:var(--font-tajawal)]' : ''}`}
       style={{ ...vars, background: 'var(--card-bg)' }}
     >
+      <SectionFrame blockId="nav" label="Navbar" fixed="nav" currentVariant={p.nav_variant || 'none'}>
+        <Nav page={page} accent={accent} variant={p.nav_variant || 'none'} isRtl={isRtl} />
+      </SectionFrame>
       <Hero page={page} accent={accent} variant={heroVariant} world={world} isRtl={isRtl} />
       {nodes}
       <SectionFrame blockId="contact" label="Footer" fixed="contact" currentVariant={p.contact_variant || 'cta-band'}>

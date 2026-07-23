@@ -104,6 +104,16 @@ export const CONTACT_VARIANTS: SectionVariant[] = [
   { id: 'big-type', label: 'Big type', hint: 'Your name huge as the closing statement.' },
   { id: 'columns', label: 'Footer columns', hint: 'A real footer — links, socials, contact columns.' },
 ]
+// The swappable NAV / HEADER bone. 'none' keeps the page opening straight into
+// the hero (default). Cursor-based variants degrade to a plain bar on touch.
+export const NAV_VARIANTS: SectionVariant[] = [
+  { id: 'none', label: 'No navbar', hint: 'Open straight into your hero — clean and simple.' },
+  { id: 'simple-floating', label: 'Floating pill', hint: 'A minimal centered pill that floats at the top.' },
+  { id: 'flyout-sticky', label: 'Sticky bar', hint: 'A full-width bar that shrinks and darkens as you scroll.' },
+  { id: 'hamburger-overlay', label: 'Menu overlay', hint: 'A bold burger button that opens a full-screen menu.' },
+  { id: 'glass-magnetic', label: 'Glass', hint: 'A frosted-glass bar with a glow that follows the cursor.' },
+  { id: 'side-stagger', label: 'Side lines', hint: 'Editorial line-nav docked to the edge (desktop).' },
+]
 
 // ---- trade → composable starter page ----
 // A new user should land on a GOOD, trade-appropriate composed page — not a

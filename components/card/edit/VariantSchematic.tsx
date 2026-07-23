@@ -21,6 +21,29 @@ function Frame({ children }: { children: React.ReactNode }) {
 export function VariantSchematic({ kind, variantId }: { kind: string; variantId: string }) {
   const k = kind.toLowerCase()
 
+  // ---- NAV / NAVBAR ----
+  if (k === 'nav' || k === 'navbar') {
+    if (variantId === 'none') {
+      return <Frame><div className="mt-6 h-8 w-40 rounded bg-neutral-800" /><Bar w="55%" /></Frame>
+    }
+    if (variantId === 'simple-floating') {
+      return <div className="flex h-full w-full flex-col items-center bg-white p-4"><div className="flex items-center gap-2 rounded-full border border-neutral-200 px-3 py-1.5 shadow-sm"><div className="h-3 w-12 rounded bg-neutral-800" />{[0, 1, 2].map(i => <div key={i} className="h-2 w-8 rounded bg-neutral-300" />)}<div className="h-4 w-12 rounded-full" style={{ background: ACCENT }} /></div></div>
+    }
+    if (variantId === 'flyout-sticky') {
+      return <div className="flex h-full w-full flex-col bg-white"><div className="flex items-center justify-between bg-neutral-950 px-4 py-2.5"><div className="h-3 w-14 rounded bg-white/90" /><div className="flex gap-2">{[0, 1, 2].map(i => <div key={i} className="h-2 w-8 rounded bg-white/50" />)}<div className="h-4 w-12 rounded-full" style={{ background: ACCENT }} /></div></div></div>
+    }
+    if (variantId === 'hamburger-overlay') {
+      return <div className="flex h-full w-full items-start justify-between bg-neutral-950 p-4"><div className="h-3 w-14 rounded bg-white/90" /><div className="flex flex-col gap-1">{[0, 1, 2].map(i => <div key={i} className="h-0.5 w-5 rounded bg-white" />)}</div></div>
+    }
+    if (variantId === 'glass-magnetic') {
+      return <div className="flex h-full w-full flex-col items-center bg-gradient-to-br from-neutral-200 to-neutral-400 p-4"><div className="flex items-center gap-2 rounded-full border border-white/40 bg-white/25 px-3 py-1.5 backdrop-blur"><div className="h-3 w-12 rounded bg-neutral-800" />{[0, 1].map(i => <div key={i} className="h-2 w-8 rounded bg-neutral-600" />)}<div className="h-4 w-10 rounded-full" style={{ background: ACCENT }} /></div></div>
+    }
+    if (variantId === 'side-stagger') {
+      return <div className="relative h-full w-full bg-white p-4"><div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-col items-end gap-1.5">{[24, 16, 32, 12, 20, 28, 14].map((w, i) => <div key={i} className="h-1 rounded-full" style={{ width: w, background: i % 2 ? ACCENT : '#c9c6c0' }} />)}</div></div>
+    }
+    return <Frame><Bar w="40%" /></Frame>
+  }
+
   // ---- HERO ----
   if (k === 'hero') {
     if (variantId === 'photo-bleed' || variantId === 'cinematic') {

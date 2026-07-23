@@ -30,7 +30,7 @@ export function SectionFrame({
   removable?: boolean
   movable?: boolean
   /** For hero/contact bones that live on the profile, not portfolio_blocks. */
-  fixed?: 'hero' | 'contact'
+  fixed?: 'hero' | 'contact' | 'nav'
   children: React.ReactNode
 }) {
   const { editing, setVariant, setFixedVariant, onSwap, onSwapFixed, onMove, onRemove, firstId, lastId } = useEdit()

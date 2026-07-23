@@ -6,6 +6,7 @@ import { Narrative } from '../sections/Narrative'
 import { Showcase } from '../sections/Showcase'
 import { Gallery } from '../sections/Gallery'
 import { Band, SectionKicker, TYPE_LABEL, Marquee, type World } from '../sections/shared'
+import { SectionFrame } from '../edit/SectionFrame'
 import { BeforeAfter } from '../blocks'
 import { mediaUrl } from './shared'
 import type { LayoutProps } from './types'
@@ -85,7 +86,9 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
     <main className="text-[var(--card-ink)]" style={{ ...vars, background: 'var(--card-bg)' }}>
       <Hero page={page} accent={accent} variant={heroVariant} world={world} />
       {nodes}
-      <Contact page={page} accent={accent} world={world} />
+      <SectionFrame blockId="contact" label="Footer" fixed="contact">
+        <Contact page={page} accent={accent} world={world} />
+      </SectionFrame>
     </main>
   )
 }
@@ -120,7 +123,7 @@ function StatsBand({ blocks, accent, index, tone, world }: { blocks: PublicBlock
   // Oversized numbers with hairline dividers (OKO/Anthony) — the scale contrast
   // is the whole design; a small stat row reads like a dashboard, not a page.
   return (
-    <Band tone={tone} accent={accent}>
+    <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Numbers">
       <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.stat_card} accent={accent} onDark={onDark} />
       <div className="grid grid-cols-2 divide-x divide-[var(--card-border)] sm:grid-cols-3">
         {items.slice(0, 3).map((s, i) => (
@@ -139,7 +142,7 @@ function TestimonialsBand({ blocks, accent, index, tone }: { blocks: PublicBlock
   if (!quotes.length) return null
   const onDark = tone === 'dark'
   return (
-    <Band tone={tone} accent={accent}>
+    <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Testimonials">
       <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />
       <div className="grid gap-5 sm:grid-cols-2">
         {quotes.map((q, i) => (
@@ -155,7 +158,7 @@ function TestimonialsBand({ blocks, accent, index, tone }: { blocks: PublicBlock
 
 function ComparisonBand({ blocks, accent, index, tone }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone }) {
   return (
-    <Band tone={tone} accent={accent}>
+    <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Before / after">
       <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.before_after} accent={accent} onDark={tone === 'dark'} />
       <div className="space-y-6">
         {blocks.map(b => (

@@ -3,6 +3,7 @@
 import { AiFillGithub, AiOutlineExport } from 'react-icons/ai'
 import { Reveal } from '../Reveal'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, type SectionProps } from './shared'
+import { useEdit } from '../edit/EditContext'
 
 // SHOWCASE — work presented as CASES, not a photo wall. The developer's core
 // section (also lawyers, consultants). An item is:
@@ -29,8 +30,11 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
       size?: 'sm' | 'wide' | 'tall' | 'big'
     }[]
   }
+  const { editing } = useEdit()
   const items = (d.items ?? []).filter(i => i.title || i.image)
-  if (!items.length) return null
+  // Public page hides an empty section; the builder shows a placeholder so it
+  // stays swappable/removable and prompts the user to add content.
+  if (!items.length && !editing) return null
   const variant = block.variant || 'case-stack'
   const tone = block.tone ?? toneHint ?? 'base'
   const onDark = tone === 'dark'
@@ -61,7 +65,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   if (variant === 'numbered-list') {
     const brutal = world === 'brutalist'
     return (
-      <Band tone={tone} accent={accent}>
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
         <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="divide-y divide-[var(--card-border)]">
           {items.map((it, i) => (
@@ -96,7 +100,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
       big: 'col-span-2 row-span-2',
     }
     return (
-      <Band tone={tone} accent={accent}>
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
         <SectionKicker index={index} title={block.title} fallback="What sets me apart" accent={accent} onDark={onDark} />
         <div className="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 md:grid-cols-4">
           {items.map((it, i) => (
@@ -124,7 +128,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   // ── logo-strip: brand/client logos ──
   if (variant === 'logo-strip') {
     return (
-      <Band tone={tone} accent={accent}>
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
         <SectionKicker index={index} title={block.title} fallback="Brands I've worked with" accent={accent} onDark={onDark} />
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 py-2">
           {items.map((it, i) => it.image && (
@@ -140,7 +144,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   // ── card-grid: case cards with dev affordances + hover tilt ──
   if (variant === 'card-grid') {
     return (
-      <Band tone={tone} accent={accent}>
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
         <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
@@ -180,7 +184,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
 
   // ── case-stack (default): big full-width rows, works with zero images ──
   return (
-    <Band tone={tone} accent={accent}>
+    <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
       <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
       <div className="divide-y divide-[var(--card-border)]">
         {items.map((it, i) => (

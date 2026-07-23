@@ -27,7 +27,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
     const chunk = <T,>(a: T[], n: number) => a.reduce<T[][]>((r, _, i) => (i % n ? r : [...r, a.slice(i, i + n)]), [])
     const rows = chunk(images, 3)
     return (
-      <Band tone={tone} accent={accent} className="!py-20">
+      <Band tone={tone} accent={accent} className="!py-20" frameId={block.id} frameLabel="Gallery">
         <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
         {rows.map((row, ri) => (
           <div key={ri} className="mb-12 grid grid-cols-12 items-end gap-4">
@@ -75,7 +75,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
   }
 
   return (
-    <Band tone={tone} accent={accent} className="!py-16">
+    <Band tone={tone} accent={accent} className="!py-16" frameId={block.id} frameLabel="Gallery">
       <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
       {variant === 'grid-3' ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">

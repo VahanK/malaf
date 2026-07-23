@@ -1,6 +1,7 @@
 'use client'
 
 import { mediaUrl } from '@/lib/media'
+import { SectionFrame } from '../edit/SectionFrame'
 import type { PublicPage, PublicBlock } from '@/lib/public-page'
 
 // Shared primitives for composable sections. The whole point (vs the old fixed
@@ -101,6 +102,8 @@ export function Band({
   className = '',
   bleed = false,
   id,
+  frameId,
+  frameLabel,
 }: {
   children: React.ReactNode
   tone?: 'base' | 'soft' | 'dark'
@@ -111,6 +114,11 @@ export function Band({
    *  its own padding. */
   bleed?: boolean
   id?: string
+  /** When set, the band is wrapped in the builder's SectionFrame (swap/move/
+   *  remove toolbar). No-op on the public page. Lets any Band-based section
+   *  become editable by just passing its block id + label. */
+  frameId?: string
+  frameLabel?: string
 }) {
   const bg =
     tone === 'dark'
@@ -119,7 +127,7 @@ export function Band({
         ? 'var(--card-surface-soft)'
         : 'var(--card-bg)'
   const text = tone === 'dark' ? { color: 'var(--card-bg)' } : undefined
-  return (
+  const inner = (
     <section
       id={id}
       className={`w-full py-16 sm:py-20 ${bleed ? '' : 'px-6 lg:px-10'} ${className}`}
@@ -128,6 +136,10 @@ export function Band({
       {bleed ? children : <div className="mx-auto max-w-5xl">{children}</div>}
     </section>
   )
+  if (frameId) {
+    return <SectionFrame blockId={frameId} label={frameLabel ?? 'Section'}>{inner}</SectionFrame>
+  }
+  return inner
 }
 
 /** OKO-style marquee divider — an oversized word scrolling between bands, half

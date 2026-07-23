@@ -29,7 +29,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "WorkWith — your freelance business, from one link",
   description:
-    "For Lebanese freelancers: build a professional page free, publish it live for $29/year, and run the whole job behind it — quotes, invoices, getting paid on Whish, USDT & cash.",
+    "For Lebanese freelancers: a professional page, free — build it, publish it live at your own link, and run the whole job behind it: quotes, invoices, getting paid on Whish, USDT & cash.",
 };
 
 export default function RootLayout({

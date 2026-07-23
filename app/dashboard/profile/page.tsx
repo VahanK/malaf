@@ -11,18 +11,9 @@ export default async function ProfilePage() {
     .eq('id', user!.id)
     .single()
 
-  // Whether this freelancer is allowed to publish (paid, active subscription).
-  // Read the owner's own subscription row directly (RLS-scoped); the DB trigger
-  // is the real enforcement — this just drives the paywall UI.
-  const { data: sub } = await supabase
-    .from('subscriptions')
-    .select('tier, status, period_end')
-    .eq('profile_id', user!.id)
-    .single()
-  const canPublish =
-    !!sub && sub.tier !== 'free' && sub.status === 'active' &&
-    (sub.period_end == null || new Date(sub.period_end) > new Date())
-
+  // Publishing is FREE (farm-users pivot) — every freelancer can go live. The
+  // subscription machinery is kept for future PAID upgrades (remove-branding,
+  // custom domain), just no longer gates publishing.
   return (
     <EditorShell
       title="Profile"
@@ -30,7 +21,7 @@ export default async function ProfilePage() {
       handle={profile?.handle ?? null}
       published={profile?.page_published ?? false}
     >
-      <ProfileForm profile={profile} canPublish={!!canPublish} />
+      <ProfileForm profile={profile} />
     </EditorShell>
   )
 }

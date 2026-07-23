@@ -25,7 +25,7 @@ interface Profile {
   card_template: string | null
 }
 
-export function ProfileForm({ profile, canPublish }: { profile: Profile; canPublish: boolean }) {
+export function ProfileForm({ profile }: { profile: Profile }) {
   const [form, setForm] = useState({
     full_name: profile.full_name ?? '',
     title: profile.title ?? '',
@@ -43,27 +43,9 @@ export function ProfileForm({ profile, canPublish }: { profile: Profile; canPubl
   const [voiceUrl, setVoiceUrl] = useState(profile.voice_intro_url)
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
-  const [checkoutBusy, setCheckoutBusy] = useState(false)
   const avatarInput = useRef<HTMLInputElement>(null)
   const voiceInput = useRef<HTMLInputElement>(null)
   const supabase = createClient()
-
-  // Free users can't publish — send them to checkout. The DB trigger enforces
-  // this regardless of the UI, so this is UX, not the security boundary.
-  const goToCheckout = async () => {
-    setCheckoutBusy(true)
-    const { data } = await supabase.rpc('start_subscription_checkout')
-    if (data?.already_active) {
-      window.location.reload()
-      return
-    }
-    if (data?.token) {
-      window.location.href = `/subscribe/${data.token}`
-      return
-    }
-    setCheckoutBusy(false)
-    setError('Could not start checkout — try again.')
-  }
 
   const uploadAvatar = async (file: File) => {
     const fd = new FormData()
@@ -97,13 +79,7 @@ export function ProfileForm({ profile, canPublish }: { profile: Profile; canPubl
       .eq('id', profile.id)
 
     if (updateError) {
-      // The DB paywall trigger rejects publishing without a subscription — show
-      // the human version, not the raw exception.
-      setError(
-        updateError.message.includes('publish_requires_subscription')
-          ? 'Publishing requires a subscription. Save the rest, then publish for $29/year below.'
-          : updateError.message,
-      )
+      setError(updateError.message)
       setStatus('error')
       return
     }
@@ -292,32 +268,19 @@ export function ProfileForm({ profile, canPublish }: { profile: Profile; canPubl
         </div>
       </div>
 
-      {canPublish ? (
-        <label className="flex items-center gap-2 text-sm text-dash-ink">
-          <input
-            type="checkbox"
-            checked={form.page_published}
-            onChange={e => setForm({ ...form, page_published: e.target.checked })}
-          />
-          Publish my page (live at your link)
-        </label>
-      ) : (
-        <div className="rounded-xl border border-dash-accent/30 bg-dash-accent/5 p-4">
-          <p className="text-sm font-semibold text-dash-ink">Your page is ready — publish it live</p>
-          <p className="mt-1 text-[13px] leading-relaxed text-dash-muted">
-            Building and previewing is free. To make your page live at your public link — the one you
-            share with clients — publish it for <span className="font-semibold text-dash-ink">$29/year</span> (~$2.40/mo).
-          </p>
-          <button
-            type="button"
-            onClick={goToCheckout}
-            disabled={checkoutBusy}
-            className="mt-3 rounded-lg bg-dash-accent px-5 py-2.5 text-sm font-bold text-dash-accent-ink disabled:opacity-60"
-          >
-            {checkoutBusy ? 'Starting…' : 'Publish for $29/year →'}
-          </button>
-        </div>
-      )}
+      {/* Publishing is free — flip the page live at your public link. */}
+      <label className="flex items-start gap-2.5 rounded-xl border border-dash-border bg-dash-surface p-4 text-sm text-dash-ink">
+        <input
+          type="checkbox"
+          checked={form.page_published}
+          onChange={e => setForm({ ...form, page_published: e.target.checked })}
+          className="mt-0.5"
+        />
+        <span>
+          <span className="font-semibold">Publish my page</span> — make it live at your public link, free.
+          <span className="mt-0.5 block text-[13px] text-dash-muted">Share it anywhere; clients open it with no app and no login.</span>
+        </span>
+      </label>
 
       {error && <p className="rounded-lg bg-dash-danger/10 px-3 py-2 text-sm text-dash-danger">{error}</p>}
 

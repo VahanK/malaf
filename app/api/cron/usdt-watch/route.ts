@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 // Tier-1 USDT watcher (plan §0/§7). Reads the freelancer's OWN address via
-// TronGrid's public chain-read API — Malaf never holds a key or moves funds,
+// TronGrid's public chain-read API — WorkWith never holds a key or moves funds,
 // it only observes a public ledger and calls confirm_payment_system when a
 // transfer matches. No custody, no wallet API integration (CLAUDE.md red lines).
 

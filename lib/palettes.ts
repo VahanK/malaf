@@ -23,7 +23,7 @@ export const ACCENTS: Accent[] = [
   { name: 'Crimson', hex: '#c0392b' },
   { name: 'Cedar', hex: '#8a5a3c' },
   { name: 'Slate', hex: '#4a5568' },
-  { name: 'Gold', hex: '#c9a45c' },       // the Malaf brand gold
+  { name: 'Gold', hex: '#c9a45c' },       // the brand gold
   { name: 'Emerald', hex: '#1f8a4c' },
 ]
 

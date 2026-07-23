@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Malaf inversion of Khedme: public-by-default. Only the freelancer's own
+  // WorkWith inversion of Khedme: public-by-default. Only the freelancer's own
   // back office requires auth — public cards (/{handle}) and zero-login client
   // pages (token routes) must never redirect (CLAUDE.md red line: clients never log in).
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {

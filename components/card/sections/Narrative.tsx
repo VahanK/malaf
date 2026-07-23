@@ -93,7 +93,7 @@ export function Narrative({ block, accent, index, toneHint, world, isRtl }: Sect
               </div>
             )}
           </div>
-          {statement(`${wt.heading} text-[clamp(28px,4.5vw,52px)] leading-[1.05]`)}
+          {statement(`${wt.heading} max-w-2xl text-pretty text-[clamp(26px,3.6vw,44px)] leading-[1.1]`)}
         </div>
       </Band>
     </SectionFrame>

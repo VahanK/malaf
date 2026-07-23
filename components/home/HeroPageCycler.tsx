@@ -75,8 +75,8 @@ export function HeroPageCycler() {
         </AnimatePresence>
       </div>
 
-      {/* the live-link chip */}
-      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white px-4 py-2 text-[12px] font-bold text-[#171310] shadow-lg ring-1 ring-black/5">
+      {/* the live-link chip — single line, never wraps */}
+      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-2 text-[12px] font-bold text-[#171310] shadow-lg ring-1 ring-black/5">
         work-withme.com/<span style={{ color: s.accent }}>{s.name.split(' ')[0].toLowerCase()}</span>
       </div>
     </div>

@@ -240,11 +240,13 @@ export function Hero({
         </div>
       </section>
       {isCinematic && (
-        <div className="relative z-10 -mt-10 flex snap-x gap-4 overflow-x-auto px-6 pb-8 lg:px-10 [&>*]:snap-start" style={{ background: 'var(--card-bg)' }}>
-          {featured.slice(0, 4).map((im, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={im.url ?? undefined} alt={im.alt} className="aspect-[3/4] w-[200px] shrink-0 rounded-[var(--card-radius-lg)] object-cover shadow-[var(--card-shadow)]" />
-          ))}
+        <div className="relative z-10 -mt-12 px-6 pb-4 lg:px-10" style={{ background: 'var(--card-bg)' }}>
+          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {featured.slice(0, 4).map((im, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} src={im.url ?? undefined} alt={im.alt} className="aspect-[3/4] w-full rounded-[var(--card-radius-lg)] object-cover shadow-[var(--card-shadow)]" />
+            ))}
+          </div>
         </div>
       )}
     </SectionFrame>

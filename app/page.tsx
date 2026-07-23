@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Nav, FOUNDER_WA } from '@/components/home/Nav'
+import { buildFounderWa } from '@/lib/founder'
 import { FaqAccordion, type FaqItem } from '@/components/home/FaqAccordion'
 import { HeroPageCycler } from '@/components/home/HeroPageCycler'
 
@@ -17,15 +18,15 @@ import { HeroPageCycler } from '@/components/home/HeroPageCycler'
 const FAQ: FaqItem[] = [
   {
     q: 'What is WorkWith, exactly?',
-    a: "It's where you run your freelance work from first message to paid. You get a page clients open with no app and no login — and behind it, the whole job is tracked: quote requested, quote sent, accepted, invoiced, paid, archived. The page gets clients in the door; the tracking is why you stay.",
+    a: "It's a free, professional page for your freelance work — the kind that makes clients take you seriously. You pick a look, add your work, and publish it live at your own link in minutes. Clients open it on any phone, see your work, and message you straight on WhatsApp. No app, no login for them.",
   },
   {
     q: 'How is this different from Carrd or Linktree?',
-    a: "Those give you a link. WorkWith runs the job. A link tool stops at 'here's my work' — then you're back in WhatsApp typing out prices, chasing the deposit, and trying to remember who paid. WorkWith carries it the whole way: the client requests a quote from your page, you send it, they accept, it becomes an invoice, and you always know what's paid and what's still owed. A page is the front door. This is the business behind it.",
+    a: "Those give you a link — a list of buttons. WorkWith gives you a real page: big type, your work up front, a face, an accent, an Arabic version. The difference is looking like a hobby versus looking like a studio. A link says 'here's my stuff.' A WorkWith page says 'this person is the real deal.'",
   },
   {
-    q: "What's free and what costs money?",
-    a: "Your page is free — build it, publish it live at your own link, and share it, with no card ever. Your QR card and the whole quote-to-paid flow are included. Later we'll add optional paid upgrades (your own domain, removing the WorkWith mark), but the page itself stays free, and we never take a cut of what you earn.",
+    q: "Is it really free?",
+    a: "Yes. Build it, publish it live at your own link, and share it — no card, ever, and it stays yours. Later there'll be optional upgrades for people who want more (your own domain, removing the WorkWith mark, custom design work), but the page itself is free.",
   },
   {
     q: 'Do I need a website or any tech skills?',
@@ -33,31 +34,19 @@ const FAQ: FaqItem[] = [
   },
   {
     q: 'Do my clients need to download an app or make an account?',
-    a: "Never. They just open your link on any phone. Seeing your work, requesting a quote, paying — all on a normal web page, no login, no app. That's a rule we don't break, not a feature we might change.",
-  },
-  {
-    q: 'How do clients pay me? Does WorkWith take a cut?',
-    a: "However you already get paid — Whish, USDT, bank transfer, or cash. Your invoice shows the client exactly how to pay, and WorkWith tracks it: you can see at a glance what's paid, what's pending, and what's overdue. The money goes straight to you — it never passes through us, and we never take a percentage.",
-  },
-  {
-    q: 'What happens when an invoice goes overdue?',
-    a: "WorkWith marks it overdue and keeps it in front of you, so a late payment is never something you forgot — it's something you can see. When you're ready to follow up, it's one tap into WhatsApp — you send it yourself, on your terms. Once you mark the invoice paid, it moves to archived and the follow-ups stop. You're tracking who owes you, not living in your chat history.",
+    a: "Never. They just open your link on any phone — see your work, message you on WhatsApp — all on a normal web page, no login, no app. That's a rule we don't break.",
   },
   {
     q: 'Can my page be in Arabic?',
-    a: 'Yes. Your page has a one-tap full Arabic, right-to-left version, and your quotes, invoices, and receipts go out in Arabic or English per client. The wording is how people actually talk, not stiff formal Arabic.',
-  },
-  {
-    q: "What's the voice intro?",
-    a: "A 20-second clip in your own voice with a play button at the top of your page. It's the fastest way to feel personal — something no link-in-bio tool gives you.",
+    a: 'Yes — one tap flips your whole page to a full Arabic, right-to-left version. And it stays light and fast so it opens instantly, even on a weak connection.',
   },
   {
     q: "I'm just starting out — is this only for big names?",
-    a: "Not at all. WorkWith is new, and you can be one of the first freelancers on it. A clean page and an organized way of working make you look established from day one, whether you've shot two weddings or two hundred.",
+    a: "Not at all. WorkWith is new, and you can be one of the first on it. A clean, confident page makes you look established from day one — whether you've shot two weddings or two hundred.",
   },
   {
-    q: 'Can I see a real page before I sign up?',
-    a: "Yes — open Rami's live page. It's a real WorkWith page we built as an example, exactly what your own clients would see.",
+    q: 'Can I see real pages before I sign up?',
+    a: "Yes — browse real published pages on the Discover page. That's exactly what your own page can look like.",
   },
 ]
 
@@ -123,32 +112,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= WHY LEBANON ================= */}
+      {/* ================= WHY IT'S DIFFERENT ================= */}
       <section className="bg-[#f2ede3] py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           <div className="text-center">
-            <Eyebrow>Built in Beirut — and it shows</Eyebrow>
+            <Eyebrow>Not a link. A presence.</Eyebrow>
             <h2 className="mx-auto mt-3 max-w-3xl font-serif text-[clamp(28px,3.6vw,38px)] font-semibold tracking-[-0.015em]">
-              Your business runs on WhatsApp, Whish, and Arabic. So does WorkWith.
+              Everyone can make a link. Almost no one looks like they mean it.
             </h2>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {[
               {
-                icon: WalletIcon,
-                title: 'The ways you already get paid, built in',
-                body: 'Whish, USDT, bank transfer, cash — your client sees exactly how to pay you and taps “I paid.” A tool built somewhere else assumes a credit card your client doesn’t use. Here, money goes straight to you.',
+                icon: GlobeIcon,
+                title: 'Looks like a studio, not a bio link',
+                body: 'Real page design — big type, your work front and centre, a face and an accent that feel like you. The kind of page that makes a client assume you charge more. Not a list of links.',
               },
               {
                 icon: ChatIcon,
-                title: 'WhatsApp is already your office',
-                body: 'The quote, the “did you get it?”, the reminder — it all happens on WhatsApp anyway. WorkWith keeps every job in one place so you always know where each one stands: quoted, approved, invoiced, overdue, paid. Your client just taps a link. No app, no login.',
+                title: 'Built for here',
+                body: 'One tap to a full Arabic, right-to-left version. Light enough to open instantly on any phone, on any connection. A “message me” button that lands straight in WhatsApp — where your clients already are.',
               },
               {
-                icon: GlobeIcon,
-                title: "In your client's language — and your own voice",
-                body: 'Send each client their quote and invoice in Arabic or English. Flip your whole page to Arabic with one tap. And greet visitors with a voice note in your own voice — the way you’d send it anyway.',
+                icon: WalletIcon,
+                title: 'Live in minutes, yours forever',
+                body: 'Pick your trade, add your work, publish at your own link — free, no card, no code. If you can post to Instagram, you can build this. And it stays yours.',
               },
             ].map(card => (
               <div key={card.title} className="rounded-2xl border border-[#171310]/8 bg-white p-6 shadow-sm">
@@ -160,9 +149,8 @@ export default function Home() {
           </div>
 
           <p className="mx-auto mt-12 max-w-2xl text-center text-[18px] leading-[1.5] text-[#171310]">
-            Carrd gives you a page. But your page doesn&apos;t take Whish, doesn&apos;t live where your
-            clients already talk, and doesn&apos;t speak Arabic. That&apos;s the difference between a
-            page and a business.
+            Carrd and Linktree give you a link. WorkWith gives you a page people take seriously — the
+            difference between “here’s my stuff” and “this person is the real deal.”
           </p>
         </div>
       </section>
@@ -171,16 +159,13 @@ export default function Home() {
       <section id="showcase" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           <div className="mx-auto max-w-2xl text-center">
-            <Eyebrow>A real WorkWith page</Eyebrow>
+            <Eyebrow>What yours can look like</Eyebrow>
             <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em]">
-              This is what your clients will see.
+              This is the page clients will see.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[#5c574c]">
-              This is a real WorkWith page — Rami&apos;s, built as an example. The page is what clients
-              see; everything behind it is what you run.
-            </p>
-            <p className="mt-2 text-[13px] text-[#8a8477]">
-              An example page we built to show what yours could feel like — not customer data.
+              Big type, your work up front, your face, your accent — a page that looks like a studio, not
+              a bio link. This is one example; every trade gets its own look.
             </p>
           </div>
 
@@ -209,14 +194,13 @@ export default function Home() {
 
           <div className="mt-10 text-center">
             <Link
-              href="/rami"
-              target="_blank"
+              href="/discover"
               className="inline-block rounded-xl border border-[#171310]/10 bg-white px-6 py-3 text-[14px] font-semibold shadow-sm transition-colors hover:bg-[#faf8f3]"
             >
-              Open Rami&apos;s page ↗
+              Browse real pages ↗
             </Link>
             <p className="mx-auto mt-4 max-w-md text-[14px] text-[#8a8477]">
-              WorkWith is brand new — be one of the first Lebanese freelancers running their work this way.
+              WorkWith is brand new — be one of the first Lebanese freelancers with a page like this.
             </p>
           </div>
         </div>
@@ -250,9 +234,9 @@ export default function Home() {
                 {[
                   'Your page LIVE at work-withme.com/you',
                   'Pick a look, add your work & prices',
-                  'Voice intro, availability, Arabic & English',
-                  'Your own QR business card to share',
-                  'Quotes, invoices & receipts',
+                  'One-tap full Arabic & English',
+                  'A “message me” button straight to WhatsApp',
+                  'Your own QR card to share',
                   'Clients open it — no app, no login',
                 ].map(f => (
                   <li key={f} className="flex items-start gap-2.5 text-[14px] text-[#171310]"><Check className="mt-0.5" /> {f}</li>
@@ -288,7 +272,7 @@ export default function Home() {
             and businesses that want more than a great page. Same team behind WorkWith.
           </p>
           <a
-            href={`https://wa.me/${FOUNDER_WA}?text=${encodeURIComponent("Hi — I saw WorkWith and I'd like to talk about a custom / elevated presence for my brand.")}`}
+            href={buildFounderWa("Hi — I saw WorkWith and I'd like to talk about a custom / elevated presence for my brand.")}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-flex items-center gap-2 text-[14px] font-bold text-[#171310] underline decoration-[#e8623d] decoration-2 underline-offset-4 hover:text-[#e8623d]"

@@ -129,16 +129,8 @@ export default function SignUpPage() {
           {loading ? 'Creating account…' : 'Create account'}
         </button>
 
-        {/* Phone is first-class here — Lebanon-first, no email needed. */}
-        <div className="my-4 flex items-center gap-3 text-[12px] text-dash-muted">
-          <span className="h-px flex-1 bg-dash-border" /> or <span className="h-px flex-1 bg-dash-border" />
-        </div>
-        <Link
-          href="/auth/phone"
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-dash-border bg-dash-surface py-2.5 text-sm font-semibold text-dash-ink hover:border-dash-accent"
-        >
-          📱 Continue with your phone number
-        </Link>
+        {/* Phone signup exists (/auth/phone) but stays off the main path for now
+            (email-only) — phone-number sign-in is "coming soon". */}
 
         <p className="mt-4 text-center text-sm text-dash-muted">
           Already have an account?{' '}

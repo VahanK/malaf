@@ -217,12 +217,12 @@ export function Band({
 export function Marquee({ word, accent }: { word: string; accent: string }) {
   const w = (word || 'work').length > 12 ? word.slice(0, 12).trim() : word || 'work'
   return (
-    <div className="hidden overflow-hidden border-y border-[var(--card-border)] py-5 sm:block" aria-hidden>
-      <div className="flex whitespace-nowrap [animation:card-marquee_28s_linear_infinite] motion-reduce:[animation:none]">
+    <div className="hidden overflow-hidden border-y border-[var(--card-border)] py-8 sm:block" aria-hidden>
+      <div className="flex items-center whitespace-nowrap leading-none [animation:card-marquee_28s_linear_infinite] motion-reduce:[animation:none]">
         {Array.from({ length: 8 }).map((_, i) => (
           <span
             key={i}
-            className="mx-6 font-sans text-[clamp(36px,7vw,88px)] font-black uppercase tracking-[-0.02em]"
+            className="mx-6 font-sans text-[clamp(36px,7vw,80px)] font-black uppercase leading-none tracking-[-0.02em]"
             style={i % 2 ? { WebkitTextStroke: '2px var(--card-ink)', color: 'transparent' } : { color: accent }}
           >
             {w}

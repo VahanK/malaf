@@ -33,17 +33,6 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
   const onDark = tone === 'dark'
   const kickerTitle = arText(isRtl, block.title, block.title_ar)
 
-  // Premium-motion gallery variants (public page only — in the builder we fall
-  // through to the grid so photos stay add/removable). Lazy-loaded.
-  const MOTION = MOTION_GALLERY[variant]
-  if (MOTION && images.length && !editing) {
-    const imgs = images.filter(im => im.url).map(im => ({ url: im.url as string, alt: im.alt }))
-    return (
-      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
-        <MOTION images={imgs} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
-      </Band>
-    )
-  }
 
   // Edit-mode photo management: add (multi-select) + remove, written to the block.
   const addPhotos = async (files: FileList | null) => {
@@ -84,6 +73,20 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     </label>
   ) : null
 
+  // Premium-motion gallery variants. Render on the public page AND in the builder
+  // (so switching to them visibly changes the layout). In the builder we add a
+  // small "manage photos" strip below since the motion view isn't add/removable.
+  const MOTION = MOTION_GALLERY[variant]
+  if (MOTION && images.length) {
+    const imgs = images.filter(im => im.url).map(im => ({ url: im.url as string, alt: im.alt }))
+    return (
+      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
+        <MOTION images={imgs} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
+        {editing && <ManagePhotosStrip images={images} onRemove={removePhoto} onMove={movePhoto} addTile={AddTile} />}
+      </Band>
+    )
+  }
+
   // ── offset-rows: editorial 12-col grid, each image a different span + drop ──
   if (variant === 'offset-rows') {
     const OFFSET: Array<[string, string]> = [['col-span-5', 'mt-0'], ['col-span-4', 'mt-16'], ['col-span-3', 'mt-8']]
@@ -120,7 +123,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
   // ── filmstrip: full-bleed horizontal scroller of tall frames ──
   if (variant === 'filmstrip') {
     return (
-      <Band tone="dark" accent={accent} bleed className="!py-20">
+      <Band tone="dark" accent={accent} bleed className="!py-20" frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
         <div className="px-6 lg:px-10">
           <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark />
         </div>
@@ -188,6 +191,36 @@ function PhotoControls({ onRemove, onLeft, onRight, isFirst, isLast, isRtl }: {
         <button onClick={stop(onRight)} disabled={isLast} className={btn} aria-label="Move later">{isRtl ? '◀' : '▶'}</button>
       </div>
       <button onClick={stop(onRemove)} className={`${btn} bg-black/75 hover:bg-red-600`} aria-label="Remove photo">✕</button>
+    </div>
+  )
+}
+
+// Builder-only thumbnail strip for the motion gallery variants (swipe-deck,
+// horizontal-scroll) whose animated view can't host inline add/remove controls.
+// Lets the user reorder / remove / add photos while still previewing the motion.
+function ManagePhotosStrip({ images, onRemove, onMove, addTile }: {
+  images: { url: string | null; alt?: string }[]
+  onRemove: (i: number) => void
+  onMove: (i: number, dir: -1 | 1) => void
+  addTile: React.ReactNode
+}) {
+  return (
+    <div className="border-t border-white/10 bg-black/40 px-4 py-3">
+      <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-white/60">Manage photos</p>
+      <div className="flex flex-wrap items-center gap-2">
+        {images.map((im, i) => (
+          <div key={i} className="group/thumb relative h-14 w-14 shrink-0 overflow-hidden rounded-lg ring-1 ring-white/20">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={im.url ?? undefined} alt={im.alt} className="h-full w-full object-cover" />
+            <div className="absolute inset-0 flex items-center justify-between px-0.5 opacity-0 transition group-hover/thumb:opacity-100">
+              <button onClick={() => onMove(i, -1)} disabled={i === 0} className="rounded bg-black/70 px-1 text-[10px] text-white disabled:opacity-30">◀</button>
+              <button onClick={() => onRemove(i)} className="rounded bg-black/70 px-1 text-[10px] text-white hover:bg-red-600">✕</button>
+              <button onClick={() => onMove(i, 1)} disabled={i === images.length - 1} className="rounded bg-black/70 px-1 text-[10px] text-white disabled:opacity-30">▶</button>
+            </div>
+          </div>
+        ))}
+        <div className="h-14 w-14 shrink-0 [&_label]:!aspect-auto [&_label]:!h-14 [&_label]:!w-14 [&_label]:!text-[10px]">{addTile}</div>
+      </div>
     </div>
   )
 }

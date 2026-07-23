@@ -154,7 +154,12 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
           <span className="font-semibold text-dash-ink">Editing your page.</span> Tap any text to edit, a section to change its layout.
         </p>
         <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none">
-          <PaletteControl current={page.profile.accent_color ?? undefined} onPick={hex => onProfileData({ accent_color: hex })} />
+          <PaletteControl
+            template={page.profile.card_template ?? undefined}
+            accent={page.profile.accent_color ?? undefined}
+            onPalette={(tpl, hex) => onProfileData({ card_template: tpl, accent_color: hex })}
+            onAccent={hex => onProfileData({ accent_color: hex })}
+          />
           <a
             href="/preview"
             target="_blank"

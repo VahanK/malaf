@@ -11,6 +11,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Builder on touch devices (most traffic is phone): there's no hover, so the
+   per-section edit controls (toolbar + label chip) must be visible by default,
+   not revealed on hover. On a touch device force them on and give tap targets
+   more room. Desktop keeps the hover-to-reveal behavior. */
+@media (hover: none) {
+  .ww-toolbar,
+  .ww-chip {
+    opacity: 1 !important;
+  }
+  .ww-toolbar button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
 /* RTL: Arabic page variants flip via dir attribute; logical properties preferred in components */
 [dir="rtl"] {
   text-align: right;

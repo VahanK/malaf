@@ -6,6 +6,7 @@ import { PublicCard } from '@/components/card/PublicCard'
 import { EditProvider, type EditApi } from '@/components/card/edit/EditContext'
 import { sectionDef, HERO_VARIANTS, CONTACT_VARIANTS, NAV_VARIANTS, SECTIONS } from '@/lib/sections'
 import { FOUNDER_PHONE } from '@/lib/founder'
+import { PaletteControl } from './PaletteControl'
 import type { PublicPage, PublicBlock } from '@/lib/public-page'
 
 // The inline builder: the freelancer's REAL page, editable in place. Click text
@@ -147,20 +148,23 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
 
   return (
     <div>
-      {/* builder header — edit hint + view-live (owner-only preview, no public link) */}
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="text-[13px] text-dash-muted">
-          <span className="font-semibold text-dash-ink">Editing your page.</span> Click any text to edit, hover a section to change its layout.
+      {/* builder header — edit hint + color palette + view-live */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="hidden text-[13px] text-dash-muted sm:block">
+          <span className="font-semibold text-dash-ink">Editing your page.</span> Tap any text to edit, a section to change its layout.
         </p>
-        <a
-          href="/preview"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-dash-border bg-white px-4 py-2 text-[13px] font-bold text-dash-ink shadow-sm hover:border-dash-accent"
-          title="See exactly how your live page looks (only you can see this)"
-        >
-          👁 View live
-        </a>
+        <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none">
+          <PaletteControl current={page.profile.accent_color ?? undefined} onPick={hex => onProfileData({ accent_color: hex })} />
+          <a
+            href="/preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-dash-border bg-white px-4 py-2 text-[13px] font-bold text-dash-ink shadow-sm hover:border-dash-accent"
+            title="See exactly how your live page looks (only you can see this)"
+          >
+            👁 View live
+          </a>
+        </div>
       </div>
 
       {/* the real page, editable in place */}

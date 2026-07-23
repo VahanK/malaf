@@ -5,6 +5,12 @@ import { Band, SectionKicker, TYPE_LABEL, mediaUrl, arText, type SectionProps } 
 import { Lightbox } from '../layouts/Lightbox'
 import { useEdit } from '../edit/EditContext'
 import { uploadImageWithProgress } from '@/lib/upload-with-progress'
+import { HorizontalScrollGallery, SwipeCards } from '../motion/registry'
+
+const MOTION_GALLERY: Record<string, React.ComponentType<{ images: { url: string; alt?: string }[]; accent: string; isRtl: boolean; title?: string }>> = {
+  'horizontal-scroll': HorizontalScrollGallery as never,
+  'swipe-deck': SwipeCards as never,
+}
 
 // GALLERY — the visual trade's core. Full-bleed image sections.
 //   - masonry:     edge-to-edge columns, varied heights (editorial)
@@ -26,6 +32,18 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
   const tone = block.tone ?? toneHint ?? 'base'
   const onDark = tone === 'dark'
   const kickerTitle = arText(isRtl, block.title, block.title_ar)
+
+  // Premium-motion gallery variants (public page only — in the builder we fall
+  // through to the grid so photos stay add/removable). Lazy-loaded.
+  const MOTION = MOTION_GALLERY[variant]
+  if (MOTION && images.length && !editing) {
+    const imgs = images.filter(im => im.url).map(im => ({ url: im.url as string, alt: im.alt }))
+    return (
+      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
+        <MOTION images={imgs} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
+      </Band>
+    )
+  }
 
   // Edit-mode photo management: add (multi-select) + remove, written to the block.
   const addPhotos = async (files: FileList | null) => {

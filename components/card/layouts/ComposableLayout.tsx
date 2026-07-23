@@ -10,6 +10,7 @@ import { Band, SectionKicker, TYPE_LABEL, Marquee, arText, type World } from '..
 import { SectionFrame } from '../edit/SectionFrame'
 import { ViralMark } from '../ViralMark'
 import { BeforeAfter } from '../blocks'
+import { CountUpStats, InteractiveStatGrid, StaggerTestimonials, StackedAutoTestimonials } from '../motion/registry'
 import { mediaUrl } from './shared'
 import type { LayoutProps } from './types'
 import type { PublicBlock } from '@/lib/public-page'
@@ -147,6 +148,17 @@ function StatsBand({ blocks, accent, index, tone, world, isRtl }: { blocks: Publ
   const items = blocks.map(b => ({ value: (b.data.value as string) ?? '', label: (b.data.label as string) ?? '' })).filter(s => s.value)
   if (!items.length) return null
   const onDark = tone === 'dark'
+  // Motion stat variants (variant lives on the first block of the group).
+  const sv = blocks[0].variant
+  if (sv === 'count-up' || sv === 'interactive-grid') {
+    const Comp = sv === 'count-up' ? CountUpStats : InteractiveStatGrid
+    return (
+      <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Numbers" frameType="stat_card" frameVariant={sv}>
+        <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.stat_card} accent={accent} onDark={onDark} />
+        <Comp stats={items} accent={accent} isRtl={!!isRtl} />
+      </Band>
+    )
+  }
   // Oversized numbers with hairline dividers (OKO/Anthony) — the scale contrast
   // is the whole design; a small stat row reads like a dashboard, not a page.
   return (
@@ -168,6 +180,17 @@ function TestimonialsBand({ blocks, accent, index, tone, isRtl }: { blocks: Publ
   const quotes = blocks.map(b => ({ text: (b.data.text as string) ?? '', attribution: (b.data.attribution as string) ?? '', date_label: (b.data.date_label as string) ?? '' })).filter(q => q.text)
   if (!quotes.length) return null
   const onDark = tone === 'dark'
+  // Motion testimonial variants (variant on the first block of the group).
+  const tv = blocks[0].variant
+  if (tv === 'stagger-deck' || tv === 'stacked-auto') {
+    const Comp = tv === 'stagger-deck' ? StaggerTestimonials : StackedAutoTestimonials
+    return (
+      <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Testimonials" frameType="testimonial" frameVariant={tv}>
+        <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />
+        <Comp quotes={quotes} accent={accent} isRtl={!!isRtl} />
+      </Band>
+    )
+  }
   return (
     <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Testimonials">
       <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />

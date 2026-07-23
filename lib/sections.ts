@@ -46,6 +46,13 @@ export const SECTIONS: SectionDef[] = [
       { id: 'numbered-list', label: 'Numbered list', hint: 'Big numbered rows — great for devs & lawyers, no images.' },
       { id: 'bento', label: 'Bento grid', hint: 'A playful mosaic of varied tiles — the no-photos answer.' },
       { id: 'logo-strip', label: 'Logo strip', hint: 'A row of client / brand logos.' },
+      { id: 'grid-cards', label: 'Bracket cards', hint: 'A grid with corner-bracket hover reveals — classy, editorial.' },
+      { id: 'card-carousel', label: 'Carousel', hint: 'A swipeable slider of project cards — great on mobile.' },
+      { id: 'spring-cards', label: 'Spring cards', hint: 'Bold layered cards that spring on hover — for creators.' },
+      { id: 'sticky-stack', label: 'Sticky stack', hint: 'Full-height cards that slide over each other as you scroll.' },
+      { id: 'scroll-fade', label: 'Scroll reveal', hint: 'Sticky heading + items that fade in on scroll — product-tour feel.' },
+      { id: 'text-parallax', label: 'Parallax', hint: 'Full-bleed image with a parallax headline — flagship editorial.' },
+      { id: 'oppo-scroll', label: 'Opposing scroll', hint: 'Text scrolls one way, a sticky image the other — premium.' },
     ],
   },
   {
@@ -59,6 +66,8 @@ export const SECTIONS: SectionDef[] = [
       { id: 'grid-3', label: 'Even grid', hint: 'A clean 3-column grid.' },
       { id: 'offset-rows', label: 'Offset rows', hint: 'Numbered, offset editorial rows.' },
       { id: 'filmstrip', label: 'Filmstrip', hint: 'A full-width horizontal scroll of big frames.' },
+      { id: 'horizontal-scroll', label: 'Sideways scroll', hint: 'Scroll down and your photos glide sideways — premium.' },
+      { id: 'swipe-deck', label: 'Swipe deck', hint: 'A playful swipeable stack of photos — great on mobile.' },
     ],
   },
   {
@@ -66,14 +75,22 @@ export const SECTIONS: SectionDef[] = [
     label: 'A number',
     icon: '📊',
     blurb: 'A number that proves results (e.g. 500+ students). Add a few in a row.',
-    variants: [],
+    variants: [
+      { id: 'oversized', label: 'Big numbers', hint: 'Huge numbers with hairline dividers.' },
+      { id: 'count-up', label: 'Count up', hint: 'Numbers animate up from zero as they scroll in.' },
+      { id: 'interactive-grid', label: 'Interactive', hint: 'A grid where the active stat highlights on hover.' },
+    ],
   },
   {
     type: 'testimonial',
     label: 'Testimonial',
     icon: '💬',
     blurb: 'Something a happy client said.',
-    variants: [],
+    variants: [
+      { id: 'cards', label: 'Cards', hint: 'A clean grid of quote cards.' },
+      { id: 'stagger-deck', label: 'Card deck', hint: 'A fanned deck you flip through — great social proof.' },
+      { id: 'stacked-auto', label: 'Auto slider', hint: 'Auto-advancing testimonials with progress bars.' },
+    ],
   },
   {
     type: 'before_after',

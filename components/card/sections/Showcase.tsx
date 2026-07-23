@@ -6,6 +6,18 @@ import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, arText, type Sect
 import { useEdit } from '../edit/EditContext'
 import { CardImage } from '../CardImage'
 import { EditImage } from '../edit/EditImage'
+import { OppoScroll, GridCards, CardCarousel, SpringCards, StickyCards, ScrollFadeFeatures, TextParallax } from '../motion/registry'
+
+// variant id → lazy motion component (showcase family).
+const MOTION_SHOWCASE: Record<string, React.ComponentType<{ items: unknown[]; accent: string; isRtl: boolean; title?: string }>> = {
+  'oppo-scroll': OppoScroll as never,
+  'grid-cards': GridCards as never,
+  'card-carousel': CardCarousel as never,
+  'spring-cards': SpringCards as never,
+  'sticky-stack': StickyCards as never,
+  'scroll-fade': ScrollFadeFeatures as never,
+  'text-parallax': TextParallax as never,
+}
 
 // SHOWCASE — work presented as CASES, not a photo wall. The developer's core
 // section (also lawyers, consultants). An item is:
@@ -48,6 +60,20 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   const tone = block.tone ?? toneHint ?? 'base'
   const onDark = tone === 'dark'
   const wt = worldType(world)
+
+  // Premium-motion variants: lazy-loaded, wrapped in the editable Band so they
+  // stay swappable. Items get resolved image URLs (motion components take final
+  // urls). Skipped in edit mode for scroll-hijack variants would fight the
+  // builder, so we still render them but they degrade gracefully.
+  const MOTION = MOTION_SHOWCASE[variant]
+  if (MOTION && items.length) {
+    const mItems = items.map(it => ({ ...it, image: mediaUrl(it.image) ?? undefined }))
+    return (
+      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
+        <MOTION items={mItems} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
+      </Band>
+    )
+  }
 
   // Small reusable dev-links row (github + live) — the "projects/github/links" ask.
   const devLinks = (it: (typeof items)[number]) =>

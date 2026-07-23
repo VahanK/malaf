@@ -98,7 +98,7 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
     >
       <Hero page={page} accent={accent} variant={heroVariant} world={world} isRtl={isRtl} />
       {nodes}
-      <SectionFrame blockId="contact" label="Footer" fixed="contact">
+      <SectionFrame blockId="contact" label="Footer" fixed="contact" currentVariant={p.contact_variant || 'cta-band'}>
         <Contact page={page} accent={accent} world={world} isRtl={isRtl} />
       </SectionFrame>
       <ViralMark accent={accent} />

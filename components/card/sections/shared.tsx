@@ -111,6 +111,8 @@ export function Band({
   id,
   frameId,
   frameLabel,
+  frameType,
+  frameVariant,
 }: {
   children: React.ReactNode
   tone?: 'base' | 'soft' | 'dark'
@@ -126,6 +128,9 @@ export function Band({
    *  become editable by just passing its block id + label. */
   frameId?: string
   frameLabel?: string
+  /** Block type + current variant so the swap picker can show layout options. */
+  frameType?: string
+  frameVariant?: string
 }) {
   const bg =
     tone === 'dark'
@@ -144,7 +149,11 @@ export function Band({
     </section>
   )
   if (frameId) {
-    return <SectionFrame blockId={frameId} label={frameLabel ?? 'Section'}>{inner}</SectionFrame>
+    return (
+      <SectionFrame blockId={frameId} label={frameLabel ?? 'Section'} blockType={frameType} currentVariant={frameVariant}>
+        {inner}
+      </SectionFrame>
+    )
   }
   return inner
 }

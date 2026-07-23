@@ -74,15 +74,28 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     supabase.from('portfolio_blocks').update({ variant: next }).eq('id', blockId)
   }
 
+  const setVariant: EditApi['setVariant'] = (blockId, variantId) => {
+    setBlock(blockId, { variant: variantId })
+    supabase.from('portfolio_blocks').update({ variant: variantId }).eq('id', blockId)
+  }
+
   const onSwapFixed: EditApi['onSwapFixed'] = which => {
     if (which === 'hero') {
       const next = cycleVariant(HERO_VARIANTS, page.profile.hero_variant || 'statement')
-      setProfile({ hero_variant: next })
-      supabase.from('profiles').update({ hero_variant: next }).eq('id', profileId)
+      setFixedVariant('hero', next)
     } else {
       const next = cycleVariant(CONTACT_VARIANTS, page.profile.contact_variant || 'cta-band')
-      setProfile({ contact_variant: next })
-      supabase.from('profiles').update({ contact_variant: next }).eq('id', profileId)
+      setFixedVariant('contact', next)
+    }
+  }
+
+  const setFixedVariant: EditApi['setFixedVariant'] = (which, variantId) => {
+    if (which === 'hero') {
+      setProfile({ hero_variant: variantId })
+      supabase.from('profiles').update({ hero_variant: variantId }).eq('id', profileId)
+    } else {
+      setProfile({ contact_variant: variantId })
+      supabase.from('profiles').update({ contact_variant: variantId }).eq('id', profileId)
     }
   }
 
@@ -128,7 +141,7 @@ export function InlineEditor({ page: initialPage, profileId }: { page: PublicPag
     }
   }
 
-  const api: EditApi = { editing: true, onText, onBlockData, onSwap, onSwapFixed, onMove, onRemove, onUpload, firstId, lastId }
+  const api: EditApi = { editing: true, onText, onBlockData, onSwap, setVariant, onSwapFixed, setFixedVariant, onMove, onRemove, onUpload, firstId, lastId }
 
   return (
     <div>

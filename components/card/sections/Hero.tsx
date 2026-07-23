@@ -86,7 +86,7 @@ export function Hero({
   // ── split-portrait: copy column + portrait column (no full-bleed) ──
   if (variant === 'split-portrait' && heroImg) {
     return (
-      <SectionFrame blockId={PROFILE} label="Hero" fixed="hero">
+      <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
         <section className="grid w-full md:min-h-[92vh] md:grid-cols-[1.1fr_0.9fr]" style={{ background: 'var(--card-bg)' }}>
           <div className="flex flex-col justify-center px-6 py-20 lg:px-14">
             {availabilityPill}
@@ -111,7 +111,7 @@ export function Hero({
   // ── statement: no photo — huge name on an aurora wash ──
   if (useStatement) {
     return (
-      <SectionFrame blockId={PROFILE} label="Hero" fixed="hero">
+      <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
         <section
           className="relative w-full overflow-hidden px-6 py-24 lg:px-10 lg:py-32"
           style={{ background: `radial-gradient(80% 60% at 15% -10%, ${a6}22, transparent 55%), radial-gradient(70% 50% at 95% 10%, ${a6}14, transparent 50%), var(--card-bg)` }}
@@ -136,7 +136,7 @@ export function Hero({
   // ── photo-bleed / cinematic: full-bleed photo, name overlaid ──
   const isCinematic = variant === 'cinematic' && featured.length > 1
   return (
-    <SectionFrame blockId={PROFILE} label="Hero" fixed="hero">
+    <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
       <section className="relative flex min-h-[88vh] w-full items-end overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={heroImg ?? undefined} alt={hero.alt} className="absolute inset-0 h-full w-full object-cover" />

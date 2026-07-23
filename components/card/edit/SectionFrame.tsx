@@ -1,13 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import { useEdit } from './EditContext'
+import { SwapPicker, variantsFor } from './SwapPicker'
+import { VariantSchematic } from './VariantSchematic'
 
 // Wraps a section on the page. Public render: passthrough, nothing added. In the
 // builder: on hover (desktop) or tap (mobile) it reveals a floating toolbar with
-// the load-bearing control — SWAP LAYOUT — plus move + remove. This is the
-// founder's "a change-layout icon on every component, make it easy."
+// the load-bearing control — SWAP LAYOUT — plus move + remove. Swap opens a
+// visual picker (VariantSchematic previews) so the user CHOOSES a layout rather
+// than blindly cycling.
 export function SectionFrame({
   blockId,
+  blockType,
+  currentVariant,
   label,
   swappable = true,
   removable = true,
@@ -16,6 +22,9 @@ export function SectionFrame({
   children,
 }: {
   blockId: string
+  /** The section's block type — resolves its variant list for the picker. */
+  blockType?: string
+  currentVariant?: string
   label: string
   swappable?: boolean
   removable?: boolean
@@ -24,30 +33,32 @@ export function SectionFrame({
   fixed?: 'hero' | 'contact'
   children: React.ReactNode
 }) {
-  const { editing, onSwap, onSwapFixed, onMove, onRemove, firstId, lastId } = useEdit()
+  const { editing, setVariant, setFixedVariant, onSwap, onSwapFixed, onMove, onRemove, firstId, lastId } = useEdit()
+  const [picking, setPicking] = useState(false)
   if (!editing) return <>{children}</>
 
-  const swap = () => (fixed ? onSwapFixed(fixed) : onSwap(blockId))
+  const variants = variantsFor({ fixed, blockType })
+  const canPick = swappable && variants.length > 1
+  const applyVariant = (id: string) => (fixed ? setFixedVariant(fixed, id) : setVariant(blockId, id))
+  // Fallback quick-cycle if we somehow have no variant metadata but swap exists.
+  const quickSwap = () => (fixed ? onSwapFixed(fixed) : onSwap(blockId))
 
   return (
     <div className="ww-section group/edit relative">
       {children}
 
-      {/* label chip — top-left, always visible in edit mode so the page reads as
-          a set of editable blocks */}
       <span className="ww-chip pointer-events-none absolute left-3 top-3 z-20 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-white opacity-0 transition-opacity group-hover/edit:opacity-100">
         {label}
       </span>
 
-      {/* toolbar — top-right, reveals on hover/tap */}
       <div className="ww-toolbar absolute right-3 top-3 z-20 flex items-center gap-1.5 opacity-0 transition-opacity group-hover/edit:opacity-100">
         {swappable && (
           <button
-            onClick={swap}
+            onClick={() => (canPick ? setPicking(true) : quickSwap())}
             className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-black shadow-lg ring-1 ring-black/10 hover:bg-neutral-100"
-            title="Switch to a different layout"
+            title="Choose a different layout"
           >
-            <SwapIcon /> Swap layout
+            <SwapIcon /> Change layout
           </button>
         )}
         {movable && !fixed && (
@@ -60,6 +71,17 @@ export function SectionFrame({
           <button onClick={() => onRemove(blockId)} className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-red-600 shadow-lg ring-1 ring-black/10 hover:bg-red-50" title="Remove section">✕</button>
         )}
       </div>
+
+      {picking && (
+        <SwapPicker
+          variants={variants}
+          current={fixed ? (currentVariant ?? variants[0].id) : (currentVariant ?? '')}
+          title={`Choose a ${label.toLowerCase()} layout`}
+          onPick={applyVariant}
+          onClose={() => setPicking(false)}
+          renderMini={id => <VariantSchematic kind={blockType ?? fixed ?? label} variantId={id} />}
+        />
+      )}
     </div>
   )
 }

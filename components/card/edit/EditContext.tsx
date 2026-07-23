@@ -14,12 +14,16 @@ export interface EditApi {
   onText: (blockId: string, field: string, value: string) => void
   /** Merge a partial data object into a block's data (images, list items…). */
   onBlockData: (blockId: string, data: Record<string, unknown>) => void
-  /** Swap a block's layout variant. */
+  /** Cycle a block's layout variant (legacy quick-swap). */
   onSwap: (blockId: string) => void
+  /** Set a block's layout variant directly (from the picker). */
+  setVariant: (blockId: string, variantId: string) => void
   onMove: (blockId: string, dir: -1 | 1) => void
   onRemove: (blockId: string) => void
   /** Fixed bones (hero/contact) live on the profile, keyed by these ids. */
   onSwapFixed: (which: 'hero' | 'contact') => void
+  /** Set a fixed bone's variant directly (from the picker). */
+  setFixedVariant: (which: 'hero' | 'contact', variantId: string) => void
   /** Upload an image, return its stored path. */
   onUpload: (file: File) => Promise<string | null>
   /** The block currently first/last (for disabling move arrows). */
@@ -34,9 +38,11 @@ const EditContext = createContext<EditApi>({
   onText: noop,
   onBlockData: noop,
   onSwap: noop,
+  setVariant: noop,
   onMove: noop,
   onRemove: noop,
   onSwapFixed: noop,
+  setFixedVariant: noop,
   onUpload: async () => null,
 })
 

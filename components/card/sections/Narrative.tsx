@@ -56,7 +56,7 @@ export function Narrative({ block, accent, index, toneHint, world, isRtl }: Sect
 
   if (variant === 'stacked-lead') {
     return (
-      <SectionFrame blockId={block.id} label="About">
+      <SectionFrame blockId={block.id} label="About" blockType="narrative" currentVariant={variant}>
         <Band tone="dark" accent={accent}>
           <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.narrative} accent={accent} onDark />
           <div className={d.center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>

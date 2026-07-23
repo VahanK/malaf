@@ -67,7 +67,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   if (variant === 'numbered-list') {
     const brutal = world === 'brutalist'
     return (
-      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
         <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="divide-y divide-[var(--card-border)]">
           {items.map((it, i) => (
@@ -102,7 +102,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
       big: 'col-span-2 row-span-2',
     }
     return (
-      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
         <SectionKicker index={index} title={kickerTitle} fallback="What sets me apart" accent={accent} onDark={onDark} />
         <div className="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 md:grid-cols-4">
           {items.map((it, i) => (
@@ -130,7 +130,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   // ── logo-strip: brand/client logos ──
   if (variant === 'logo-strip') {
     return (
-      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
         <SectionKicker index={index} title={kickerTitle} fallback="Brands I've worked with" accent={accent} onDark={onDark} />
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 py-2">
           {items.map((it, i) => it.image && (
@@ -146,7 +146,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   // ── card-grid: case cards with dev affordances + hover tilt ──
   if (variant === 'card-grid') {
     return (
-      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
+      <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
         <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
@@ -181,7 +181,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
 
   // ── case-stack (default): big full-width rows, works with zero images ──
   return (
-    <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
+    <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
       <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
       <div className="divide-y divide-[var(--card-border)]">
         {items.map((it, i) => (

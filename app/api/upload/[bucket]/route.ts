@@ -39,5 +39,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ buc
     return NextResponse.json({ error: uploadError.message }, { status: 500 })
   }
 
-  return NextResponse.json({ path: fileName })
+  // Return the BUCKET-QUALIFIED path (e.g. "portfolio/user/…") so mediaUrl builds
+  // …/object/public/portfolio/user/… — the storage host needs the bucket segment.
+  // Without it the public URL 400s and images render as a broken-image icon.
+  return NextResponse.json({ path: `${bucket}/${fileName}` })
 }

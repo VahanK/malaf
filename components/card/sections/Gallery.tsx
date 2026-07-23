@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Band, SectionKicker, TYPE_LABEL, mediaUrl, arText, type SectionProps } from './shared'
 import { Lightbox } from '../layouts/Lightbox'
 import { useEdit } from '../edit/EditContext'
+import { uploadImageWithProgress } from '@/lib/upload-with-progress'
 
 // GALLERY — the visual trade's core. Full-bleed image sections.
 //   - masonry:     edge-to-edge columns, varied heights (editorial)
@@ -12,7 +13,8 @@ import { useEdit } from '../edit/EditContext'
 //   - filmstrip:   a full-bleed horizontal scroller of tall frames (Creacy)
 // data: { images: [{ url, alt }] }
 export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps) {
-  const { editing, onBlockData, onUpload } = useEdit()
+  const { editing, onBlockData } = useEdit()
+  const [uploading, setUploading] = useState<{ done: number; total: number } | null>(null)
   const d = block.data as { images?: { url?: string; alt?: string }[] }
   const rawImages = (d.images ?? []).filter(im => im.url) as { url: string; alt?: string }[]
   const images = rawImages.map(im => ({ url: mediaUrl(im.url), alt: im.alt ?? '' }))
@@ -28,17 +30,30 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
   // Edit-mode photo management: add (multi-select) + remove, written to the block.
   const addPhotos = async (files: FileList | null) => {
     const list = Array.from(files ?? [])
+    if (!list.length) return
+    setUploading({ done: 0, total: list.length })
     const uploaded: { url: string }[] = []
-    for (const f of list) {
-      const p = await onUpload(f)
+    for (let i = 0; i < list.length; i++) {
+      const p = await uploadImageWithProgress(list[i])
       if (p) uploaded.push({ url: p })
+      setUploading({ done: i + 1, total: list.length })
     }
+    setUploading(null)
     if (uploaded.length) onBlockData(block.id, { images: [...rawImages, ...uploaded] })
   }
   const removePhoto = (i: number) => onBlockData(block.id, { images: rawImages.filter((_, j) => j !== i) })
   const AddTile = editing ? (
-    <label className="flex aspect-square w-full cursor-pointer items-center justify-center rounded-[var(--card-radius-md)] border-2 border-dashed border-[var(--card-border)] text-[13px] font-semibold text-[var(--card-muted)] transition hover:border-[var(--card-accent)] hover:text-[var(--card-ink)]">
-      ＋ Add photos
+    <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-[var(--card-radius-md)] border-2 border-dashed border-[var(--card-border)] text-center text-[13px] font-semibold text-[var(--card-muted)] transition hover:border-[var(--card-accent)] hover:text-[var(--card-ink)]">
+      {uploading ? (
+        <>
+          <span>Uploading {uploading.done}/{uploading.total}…</span>
+          <span className="h-1.5 w-4/5 overflow-hidden rounded-full bg-[var(--card-border)]">
+            <span className="block h-full rounded-full bg-[var(--card-accent)] transition-[width]" style={{ width: `${Math.round((uploading.done / uploading.total) * 100)}%` }} />
+          </span>
+        </>
+      ) : (
+        <span>＋ Add photos</span>
+      )}
       <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={e => addPhotos(e.target.files)} />
     </label>
   ) : null

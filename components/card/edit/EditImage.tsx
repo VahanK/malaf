@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { CardImage } from '../CardImage'
 import { useEdit } from './EditContext'
+import { uploadImageWithProgress } from '@/lib/upload-with-progress'
 
 // Inline image editing — the image counterpart to <Editable>. On the public page
 // (no EditProvider) it's just a <CardImage> (robust any-dimension render +
@@ -28,9 +29,10 @@ export function EditImage({
   className?: string
   label?: string
 }) {
-  const { editing, onUpload } = useEdit()
+  const { editing } = useEdit()
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
+  const [progress, setProgress] = useState(0)
 
   if (!editing) {
     return <CardImage src={src} alt={alt} aspect={aspect} rounded={rounded} accent={accent} className={className} />
@@ -40,24 +42,32 @@ export function EditImage({
   const handleFile = async (file: File | undefined) => {
     if (!file) return
     setBusy(true)
-    const path = await onUpload(file)
+    setProgress(0)
+    const path = await uploadImageWithProgress(file, setProgress)
     setBusy(false)
     if (path) onChange(path)
   }
+  const pct = Math.round(progress * 100)
 
   return (
     <div className={`group/img relative ${className}`}>
       <button type="button" onClick={pick} className="block w-full text-left" aria-label={src ? 'Change photo' : label}>
         <CardImage src={src} alt={alt} aspect={aspect} rounded={rounded} accent={accent} label={src ? undefined : label} />
-        {/* hover/upload overlay */}
-        <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-black/0 opacity-0 transition group-hover/img:bg-black/35 group-hover/img:opacity-100">
-          <span className="rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-black shadow-lg">
-            {busy ? 'Uploading…' : src ? '↻ Change photo' : '＋ Add photo'}
+        {/* hover prompt (hidden while uploading) */}
+        {!busy && (
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-black/0 opacity-0 transition group-hover/img:bg-black/35 group-hover/img:opacity-100">
+            <span className="rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-black shadow-lg">
+              {src ? '↻ Change photo' : '＋ Add photo'}
+            </span>
           </span>
-        </span>
+        )}
+        {/* real upload progress */}
         {busy && (
-          <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-black/40 text-[12px] font-bold text-white">
-            Uploading…
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[inherit] bg-black/55 px-6">
+            <span className="text-[12px] font-bold text-white">{pct < 100 ? `Uploading… ${pct}%` : 'Finishing…'}</span>
+            <span className="h-1.5 w-full max-w-[160px] overflow-hidden rounded-full bg-white/25">
+              <span className="block h-full rounded-full bg-white transition-[width] duration-150" style={{ width: `${pct}%` }} />
+            </span>
           </span>
         )}
       </button>

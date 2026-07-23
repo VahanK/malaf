@@ -72,30 +72,45 @@ export const TYPE_LABEL: Record<string, string> = {
   image_grid: 'Work',
 }
 
-/** The numbered kicker + optional title that heads a section (Creacy/OKO move). */
+/** The section header: a small numbered eyebrow ABOVE a big, bold section title.
+ *  Previously this was just a 12px uppercase micro-label, which made every
+ *  section read identically and small on mobile. Now the title is a real heading
+ *  — large (bigger floor on phones) and bold — so sections have presence and
+ *  hierarchy, and each one's own title differentiates it. */
 export function SectionKicker({
   index,
   title,
   fallback,
   accent,
   onDark = false,
+  heading,
 }: {
   index: number
   title?: string
   fallback: string
   accent: string
   onDark?: boolean
+  /** Optional per-world heading class (family/weight/case). */
+  heading?: string
 }) {
   const label = (title && title.trim()) || fallback
   return (
-    <div className="mb-8 flex items-baseline gap-4">
-      <span className="font-mono text-[13px] font-semibold tabular-nums" style={{ color: accent }}>
-        {String(index).padStart(2, '0')}
-      </span>
-      <span className="h-px flex-1 max-w-[3rem]" style={{ background: onDark ? 'rgba(255,255,255,.2)' : 'var(--card-border)' }} />
-      <span className={`text-[12px] font-semibold uppercase tracking-[0.22em] ${onDark ? 'text-white/60' : 'text-[var(--card-muted)]'}`}>
+    <div className="mb-10">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="font-mono text-[13px] font-bold tabular-nums" style={{ color: accent }}>
+          {String(index).padStart(2, '0')}
+        </span>
+        <span className="h-px w-8" style={{ background: accent }} />
+        <span className={`text-[11px] font-bold uppercase tracking-[0.24em] ${onDark ? 'text-white/50' : 'text-[var(--card-muted)]'}`}>
+          {fallback}
+        </span>
+      </div>
+      <h2
+        className={`${heading ?? 'font-sans font-black tracking-[-0.03em]'} leading-[0.98]`}
+        style={{ fontSize: 'clamp(30px,7vw,54px)' }}
+      >
         {label}
-      </span>
+      </h2>
     </div>
   )
 }

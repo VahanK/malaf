@@ -22,5 +22,8 @@ export default async function FounderPage() {
     .select('id, profile_id, body, status, founder_note, created_at, profiles(handle, full_name)')
     .order('created_at', { ascending: false })
 
-  return <FounderView freelancers={freelancers ?? []} requests={requests ?? []} />
+  // Platform-wide leads (traction) — founder-gated RPC.
+  const { data: leads } = await supabase.rpc('founder_all_leads', { p_limit: 100 })
+
+  return <FounderView freelancers={freelancers ?? []} requests={requests ?? []} leads={leads ?? []} />
 }

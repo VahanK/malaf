@@ -42,7 +42,19 @@ function one<T>(v: T | T[] | null): T | null {
   return Array.isArray(v) ? v[0] ?? null : v
 }
 
-export function FounderView({ freelancers, requests }: { freelancers: Freelancer[]; requests: FeatureRequest[] }) {
+interface Lead {
+  id: string
+  created_at: string
+  status: string
+  name: string | null
+  contact: string | null
+  service: string | null
+  budget: string | null
+  handle: string
+  full_name: string | null
+}
+
+export function FounderView({ freelancers, requests, leads = [] }: { freelancers: Freelancer[]; requests: FeatureRequest[]; leads?: Lead[] }) {
   const router = useRouter()
   const supabase = createClient()
   const [busyId, setBusyId] = useState<string | null>(null)
@@ -93,12 +105,13 @@ export function FounderView({ freelancers, requests }: { freelancers: Freelancer
       <p className="mt-1 text-sm text-dash-muted">Everyone on WorkWith — where they are, and who needs a nudge.</p>
 
       {/* summary */}
-      <div className="mt-4 grid grid-cols-4 gap-3">
+      <div className="mt-4 grid grid-cols-5 gap-3">
         {[
           { n: freelancers.length, l: 'Total' },
           { n: liveCount, l: 'Live pages' },
           { n: buildingCount, l: 'Building' },
           { n: paidCount, l: 'Paid' },
+          { n: leads.length, l: 'Leads' },
         ].map(s => (
           <div key={s.l} className="rounded-xl border border-dash-border bg-dash-surface p-3">
             <div className="text-xl font-semibold text-dash-ink">{s.n}</div>
@@ -106,6 +119,26 @@ export function FounderView({ freelancers, requests }: { freelancers: Freelancer
           </div>
         ))}
       </div>
+
+      {/* Platform-wide leads — traction between freelancers and their clients.
+          This is the "deal flow" picture: which pages are actually getting leads. */}
+      {leads.length > 0 && (
+        <>
+          <h2 className="mt-8 text-sm font-medium text-dash-ink">Recent leads ({leads.length})</h2>
+          <div className="mt-2 space-y-1.5">
+            {leads.slice(0, 20).map(l => (
+              <div key={l.id} className="flex items-center gap-3 rounded-lg border border-dash-border bg-dash-surface px-3 py-2 text-[13px]">
+                <span className="font-semibold text-dash-ink">{l.name || 'Someone'}</span>
+                <span className="text-dash-muted">→</span>
+                <a href={`/${l.handle}`} target="_blank" rel="noopener noreferrer" className="font-medium text-dash-accent">@{l.handle}</a>
+                {l.service && <span className="truncate text-dash-muted">· {l.service}</span>}
+                {l.budget && <span className="ml-auto shrink-0 rounded-full bg-dash-accent/10 px-2 py-0.5 text-[11px] font-bold text-dash-accent">{l.budget}</span>}
+                <span className="shrink-0 text-[11px] text-dash-muted">{new Date(l.created_at).toLocaleDateString()}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       <h2 className="mt-8 text-sm font-medium text-dash-ink">Everyone ({freelancers.length})</h2>
       <div className="mt-2 space-y-2">

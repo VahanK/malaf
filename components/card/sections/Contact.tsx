@@ -1,6 +1,7 @@
 'use client'
 
 import { QuoteForm } from '../QuoteForm'
+import { LeadForm } from '../LeadForm'
 import { mediaUrl } from '../layouts/shared'
 import { normalizeAccent } from '@/lib/card-templates'
 import { worldType, type World } from './shared'
@@ -58,15 +59,16 @@ export function Contact({
       }
   const availLine = c.avail
 
+  // The engaging multi-step lead form (Typeform-style) is the primary contact
+  // path — captures a real lead + gives the client a one-tap wa.me. QuoteForm
+  // stays imported for the on-platform quote flow elsewhere.
   const form = (
-    <QuoteForm
+    <LeadForm
       handle={p.handle}
-      services={page.services}
       accent={a6}
-      avatarUrl={mediaUrl(p.avatar_url)}
-      firstName={firstName}
-      replyHours={p.reply_hours}
-      corner="soft"
+      whatsapp={p.whatsapp_number}
+      freelancerName={firstName}
+      isRtl={isRtl}
     />
   )
   const waLink = wa && (

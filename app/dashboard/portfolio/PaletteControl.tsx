@@ -38,9 +38,10 @@ export function PaletteControl({ current, onPick }: { current?: string; onPick: 
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute right-0 z-50 mt-2 w-64 rounded-2xl border border-dash-border bg-white p-3 shadow-2xl">
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-[12px] font-bold text-dash-muted">Pick a color</p>
+              <p className="text-[12px] font-bold text-dash-muted">Your page color</p>
               <button onClick={() => { shuffle(); }} className="text-[12px] font-bold text-dash-accent">🎲 Surprise me</button>
             </div>
+            <p className="mb-2 text-[11px] text-dash-muted">Recolors your whole page.</p>
             <div className="grid grid-cols-8 gap-1.5">
               {ACCENTS.map(a => {
                 const active = a.hex.toLowerCase() === (current ?? '').toLowerCase()

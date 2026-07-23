@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { useEdit } from './EditContext'
 import { uploadImageWithProgress } from '@/lib/upload-with-progress'
+import { CropUploadModal } from './CropUploadModal'
 
 // A floating "add/change photo" pill for image slots where an inline EditImage
 // doesn't fit — e.g. the hero, whose photo is a full-bleed background rendered
@@ -24,10 +25,12 @@ export function EditImageButton({
   const { editing } = useEdit()
   const inputRef = useRef<HTMLInputElement>(null)
   const [pct, setPct] = useState<number | null>(null)
+  const [cropFile, setCropFile] = useState<File | null>(null)
   if (!editing) return null
 
-  const handle = async (file: File | undefined) => {
-    if (!file) return
+  const handle = (file: File | undefined) => { if (file) setCropFile(file) }
+  const doUpload = async (file: File) => {
+    setCropFile(null)
     setPct(0)
     const path = await uploadImageWithProgress(file, f => setPct(Math.round(f * 100)))
     setPct(null)
@@ -55,8 +58,11 @@ export function EditImageButton({
         type="file"
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
-        onChange={e => handle(e.target.files?.[0])}
+        onChange={e => { handle(e.target.files?.[0]); e.target.value = '' }}
       />
+      {cropFile && (
+        <CropUploadModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
+      )}
     </div>
   )
 }

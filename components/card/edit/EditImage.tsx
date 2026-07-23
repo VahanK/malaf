@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { CardImage } from '../CardImage'
 import { useEdit } from './EditContext'
 import { uploadImageWithProgress } from '@/lib/upload-with-progress'
+import { CropUploadModal } from './CropUploadModal'
 
 // Inline image editing — the image counterpart to <Editable>. On the public page
 // (no EditProvider) it's just a <CardImage> (robust any-dimension render +
@@ -33,14 +34,17 @@ export function EditImage({
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [cropFile, setCropFile] = useState<File | null>(null)
 
   if (!editing) {
     return <CardImage src={src} alt={alt} aspect={aspect} rounded={rounded} accent={accent} className={className} />
   }
 
   const pick = () => inputRef.current?.click()
-  const handleFile = async (file: File | undefined) => {
-    if (!file) return
+  // Picking a file opens the crop modal; confirming there uploads the cropped result.
+  const handleFile = (file: File | undefined) => { if (file) setCropFile(file) }
+  const doUpload = async (file: File) => {
+    setCropFile(null)
     setBusy(true)
     setProgress(0)
     const path = await uploadImageWithProgress(file, setProgress)
@@ -76,8 +80,11 @@ export function EditImage({
         type="file"
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
-        onChange={e => handleFile(e.target.files?.[0])}
+        onChange={e => { handleFile(e.target.files?.[0]); e.target.value = '' }}
       />
+      {cropFile && (
+        <CropUploadModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={doUpload} />
+      )}
     </div>
   )
 }

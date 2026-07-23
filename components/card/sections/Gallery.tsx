@@ -49,6 +49,8 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     if (uploaded.length) onBlockData(block.id, { images: [...rawImages, ...uploaded] })
   }
   const removePhoto = (i: number) => onBlockData(block.id, { images: rawImages.filter((_, j) => j !== i) })
+  // Edit a photo's caption (shown on swipe-deck cards + as figcaptions).
+  const setCaption = (i: number, alt: string) => onBlockData(block.id, { images: rawImages.map((im, j) => (j === i ? { ...im, alt } : im)) })
   // Reorder: swap photo i with its neighbor (founder: "let me swap image places").
   const movePhoto = (i: number, dir: -1 | 1) => {
     const j = i + dir
@@ -80,9 +82,9 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
   if (MOTION && images.length) {
     const imgs = images.filter(im => im.url).map(im => ({ url: im.url as string, alt: im.alt }))
     return (
-      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
+      <Band tone={tone} accent={accent} className="!px-0" bleed frameId={block.id} frameLabel="Gallery" frameType="gallery" frameVariant={variant}>
         <MOTION images={imgs} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
-        {editing && <ManagePhotosStrip images={images} onRemove={removePhoto} onMove={movePhoto} addTile={AddTile} />}
+        {editing && <ManagePhotosStrip images={images} onRemove={removePhoto} onMove={movePhoto} onCaption={setCaption} addTile={AddTile} />}
       </Band>
     )
   }
@@ -198,29 +200,38 @@ function PhotoControls({ onRemove, onLeft, onRight, isFirst, isLast, isRtl }: {
 // Builder-only thumbnail strip for the motion gallery variants (swipe-deck,
 // horizontal-scroll) whose animated view can't host inline add/remove controls.
 // Lets the user reorder / remove / add photos while still previewing the motion.
-function ManagePhotosStrip({ images, onRemove, onMove, addTile }: {
+function ManagePhotosStrip({ images, onRemove, onMove, onCaption, addTile }: {
   images: { url: string | null; alt?: string }[]
   onRemove: (i: number) => void
   onMove: (i: number, dir: -1 | 1) => void
+  onCaption: (i: number, alt: string) => void
   addTile: React.ReactNode
 }) {
   return (
-    <div className="border-t border-white/10 bg-black/40 px-4 py-3">
-      <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-white/60">Manage photos</p>
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="mx-auto max-w-2xl border-t border-white/10 bg-black/40 px-4 py-3">
+      <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-white/60">Manage photos &amp; captions</p>
+      <div className="flex flex-col gap-2">
         {images.map((im, i) => (
-          <div key={i} className="group/thumb relative h-14 w-14 shrink-0 overflow-hidden rounded-lg ring-1 ring-white/20">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={im.url ?? undefined} alt={im.alt} className="h-full w-full object-cover" />
-            <div className="absolute inset-0 flex items-center justify-between px-0.5 opacity-0 transition group-hover/thumb:opacity-100">
-              <button onClick={() => onMove(i, -1)} disabled={i === 0} className="rounded bg-black/70 px-1 text-[10px] text-white disabled:opacity-30">◀</button>
-              <button onClick={() => onRemove(i)} className="rounded bg-black/70 px-1 text-[10px] text-white hover:bg-red-600">✕</button>
-              <button onClick={() => onMove(i, 1)} disabled={i === images.length - 1} className="rounded bg-black/70 px-1 text-[10px] text-white disabled:opacity-30">▶</button>
+          <div key={i} className="flex items-center gap-2 rounded-lg bg-white/5 p-1.5">
+            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-md ring-1 ring-white/20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={im.url ?? undefined} alt={im.alt} className="h-full w-full object-cover" />
+            </div>
+            <input
+              defaultValue={im.alt ?? ''}
+              onBlur={e => onCaption(i, e.target.value)}
+              placeholder="Add a caption…"
+              className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/40"
+            />
+            <div className="flex shrink-0 items-center gap-1">
+              <button onClick={() => onMove(i, -1)} disabled={i === 0} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white disabled:opacity-30">↑</button>
+              <button onClick={() => onMove(i, 1)} disabled={i === images.length - 1} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white disabled:opacity-30">↓</button>
+              <button onClick={() => onRemove(i)} className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-[12px] text-white hover:bg-red-600">✕</button>
             </div>
           </div>
         ))}
-        <div className="h-14 w-14 shrink-0 [&_label]:!aspect-auto [&_label]:!h-14 [&_label]:!w-14 [&_label]:!text-[10px]">{addTile}</div>
       </div>
+      <div className="mt-2 [&_label]:!aspect-auto [&_label]:!h-10 [&_label]:!flex-row [&_label]:!gap-2">{addTile}</div>
     </div>
   )
 }

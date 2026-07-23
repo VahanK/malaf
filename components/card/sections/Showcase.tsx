@@ -69,7 +69,7 @@ export function Showcase({ block, accent, index, toneHint, world, isRtl }: Secti
   if (MOTION && items.length) {
     const mItems = items.map(it => ({ ...it, image: mediaUrl(it.image) ?? undefined }))
     return (
-      <Band tone={tone} accent={accent} className="!px-0 !py-0" bleed frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
+      <Band tone={tone} accent={accent} className="!px-0" bleed frameId={block.id} frameLabel="Work" frameType="showcase" frameVariant={variant}>
         <MOTION items={mItems} accent={accent} isRtl={!!isRtl} title={kickerTitle} />
       </Band>
     )

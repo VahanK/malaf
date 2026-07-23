@@ -1,119 +1,83 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { twMerge } from 'tailwind-merge'
 import { useReducedMotion } from '../motion/gates'
 
 interface SpinningBoxTextProps {
   words: string[]
   accent: string
-  isRtl: boolean
+  isRtl?: boolean
   title?: string
 }
 
-// Faces are laid out around a cube whose depth is 5rem (translateZ base of -5rem
-// keeps rotation centered). Each face is placed on a ring by rotateX and pushed
-// out along its own normal with translateZ(5rem).
-const FACE_TRANSFORMS = [
-  'rotateX(0deg) translateZ(5rem)',
-  'rotateX(-90deg) translateZ(5rem)',
-  'rotateX(-180deg) translateZ(5rem)',
-  'rotateX(-270deg) translateZ(5rem)',
-]
+// A 3D word-cube that rotates on the X axis through up to 4 faces (the words),
+// like a flip-clock reel. Sized to the TEXT (an inline-ish word), not a big
+// full-width block — it reads as a rotating word in a headline. Each face sits on
+// the front of a cube of half-height H, placed by rotateX(i*-90) + translateZ(H).
+// The reel holds on each face, then rotates to the next; loops forever.
+const H = 44 // px — half the cube height; face line-height ≈ 2*H
 
 export function SpinningBoxText({ words, accent, isRtl, title }: SpinningBoxTextProps) {
   const reduced = useReducedMotion()
-  const faces = (words ?? []).filter(Boolean).slice(0, 4)
+  const faces = (words ?? []).map(w => w.trim()).filter(Boolean).slice(0, 4)
   if (faces.length === 0) return null
 
-  const first = faces[0]
-
-  // Reduced motion: first word, static, no cube, no loop.
-  if (reduced) {
+  // Reduced motion (or a single word): show the first word statically.
+  if (reduced || faces.length === 1) {
     return (
-      <div
-        dir={isRtl ? 'rtl' : 'ltr'}
-        className="flex w-full max-w-full flex-col items-center gap-3 py-6 text-center"
-      >
-        {title ? (
-          <span className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--card-muted)]">
-            {title}
-          </span>
-        ) : null}
-        <span
-          className="text-4xl font-black leading-none sm:text-5xl"
-          style={{ color: accent }}
-        >
-          {first}
-        </span>
-      </div>
+      <span className="inline-block font-black" style={{ color: accent, fontSize: `${H * 0.85}px`, lineHeight: `${H * 2}px` }} dir={isRtl ? 'rtl' : 'ltr'}>
+        {faces[0]}
+      </span>
     )
   }
 
-  // rotateX steps: 0 -> -90 -> -180 -> -270, holding on each face.
   const count = faces.length
-  const stops = Array.from({ length: count }, (_, i) => i * -90)
-  // Build keyframes: hold each face, rotate to next. Loop returns to a full turn.
-  const keyframes: number[] = []
+  // Keyframes: hold each face, then rotate -90° to the next; close on a full turn.
+  const kf: number[] = []
   const times: number[] = []
-  const hold = 0.16 // fraction of cycle each face rests
-  const step = 1 / count
-  stops.forEach((deg, i) => {
-    const base = i * step
-    keyframes.push(deg, deg)
-    times.push(base, base + step * (1 - hold))
-  })
-  // close the loop back to a full -360 turn landing on face 0
-  keyframes.push(-360)
+  const hold = 0.55 // fraction of each face's slot spent holding still
+  for (let i = 0; i < count; i++) {
+    const slot = i / count
+    kf.push(i * -90, i * -90)
+    times.push(slot, slot + (1 / count) * hold)
+  }
+  kf.push(count * -90)
   times.push(1)
 
   return (
-    <div
+    <span
+      className="relative inline-block align-baseline"
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="flex w-full max-w-full flex-col items-center gap-4 py-6 text-center"
+      style={{ height: `${H * 2}px`, perspective: '600px', minWidth: '1ch' }}
+      aria-label={faces.join(', ')}
     >
-      {title ? (
-        <span className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--card-muted)]">
-          {title}
-        </span>
-      ) : null}
-      <div
-        className="relative h-[10rem] w-full max-w-full select-none"
-        style={{ perspective: '900px' }}
-        aria-label={faces.join(', ')}
+      <motion.span
+        className="absolute left-0 top-0 block"
+        style={{ transformStyle: 'preserve-3d', transformOrigin: `center center -${H}px` }}
+        animate={{ rotateX: kf }}
+        transition={{ duration: Math.max(6, count * 2.4), times, ease: 'easeInOut', repeat: Infinity, repeatType: 'loop' }}
       >
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            transformStyle: 'preserve-3d',
-            transformOrigin: 'center center -5rem',
-          }}
-          animate={{ rotateX: keyframes }}
-          transition={{
-            duration: Math.max(8, count * 2.5),
-            times,
-            ease: 'easeInOut',
-            repeat: Infinity,
-          }}
-        >
-          {faces.map((word, i) => (
-            <div
-              key={i}
-              className={twMerge(
-                'absolute inset-0 flex items-center justify-center',
-                'text-4xl font-black leading-none sm:text-5xl',
-              )}
-              style={{
-                transform: FACE_TRANSFORMS[i],
-                backfaceVisibility: 'hidden',
-                color: i === 0 ? accent : 'var(--card-ink)',
-              }}
-            >
-              <span className="max-w-full truncate px-2">{word}</span>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-    </div>
+        {faces.map((word, i) => (
+          <span
+            key={i}
+            className="absolute left-0 top-0 flex items-center whitespace-nowrap font-black"
+            style={{
+              transform: `rotateX(${i * 90}deg) translateZ(${H}px)`,
+              backfaceVisibility: 'hidden',
+              height: `${H * 2}px`,
+              fontSize: `${H * 0.85}px`,
+              lineHeight: `${H * 2}px`,
+              color: i === 0 ? accent : 'var(--card-ink)',
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </motion.span>
+      {/* invisible sizer so the inline box takes the widest word's width */}
+      <span className="invisible whitespace-nowrap font-black" style={{ fontSize: `${H * 0.85}px`, lineHeight: `${H * 2}px` }}>
+        {faces.reduce((a, b) => (b.length > a.length ? b : a), '')}
+      </span>
+    </span>
   )
 }

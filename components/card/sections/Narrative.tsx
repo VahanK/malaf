@@ -1,6 +1,6 @@
 'use client'
 
-import { Band, SectionKicker, TYPE_LABEL, worldType, type SectionProps } from './shared'
+import { Band, SectionKicker, TYPE_LABEL, worldType, arText, type SectionProps } from './shared'
 import { Editable } from '../edit/Editable'
 import { SectionFrame } from '../edit/SectionFrame'
 import { useEdit } from '../edit/EditContext'
@@ -13,7 +13,7 @@ import { useEdit } from '../edit/EditContext'
 // The statement's WEIGHT/FAMILY comes from the world (worldType) — so the same
 // section reads visibly different per template (the "typography isn't the same"
 // fix). data: { bold_line, body?, accent_word?, chips?[], center? }
-export function Narrative({ block, accent, index, toneHint, world }: SectionProps) {
+export function Narrative({ block, accent, index, toneHint, world, isRtl }: SectionProps) {
   const d = block.data as {
     bold_line?: string
     body?: string
@@ -22,7 +22,8 @@ export function Narrative({ block, accent, index, toneHint, world }: SectionProp
     center?: boolean
   }
   const { editing } = useEdit()
-  const boldLine = d.bold_line ?? block.intro ?? ''
+  const kickerTitle = arText(isRtl, block.title, block.title_ar)
+  const boldLine = d.bold_line ?? (isRtl && block.intro_ar ? block.intro_ar : block.intro) ?? ''
   const body = d.body ?? ''
   const chips = d.chips ?? []
   const variant = block.variant || 'split-statement'
@@ -57,7 +58,7 @@ export function Narrative({ block, accent, index, toneHint, world }: SectionProp
     return (
       <SectionFrame blockId={block.id} label="About">
         <Band tone="dark" accent={accent}>
-          <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.narrative} accent={accent} onDark />
+          <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.narrative} accent={accent} onDark />
           <div className={d.center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
             {statement(`${wt.heading} text-[clamp(30px,5vw,56px)] leading-[1.06]`)}
             {bodyEl(`mt-6 max-w-xl text-[16px] leading-relaxed text-white/70 ${d.center ? 'mx-auto' : ''}`)}
@@ -80,7 +81,7 @@ export function Narrative({ block, accent, index, toneHint, world }: SectionProp
   return (
     <SectionFrame blockId={block.id} label="About">
       <Band tone={tone} accent={accent}>
-        <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.narrative} accent={accent} onDark={tone === 'dark'} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.narrative} accent={accent} onDark={tone === 'dark'} />
         <div className="grid gap-8 md:grid-cols-[0.7fr_1.7fr] md:gap-16">
           <div>
             {bodyEl('text-[13px] leading-relaxed text-[var(--card-muted)]')}

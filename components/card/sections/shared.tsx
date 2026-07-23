@@ -24,6 +24,13 @@ export interface SectionProps {
   index: number // 1-based, for the numbered kicker
   toneHint?: 'base' | 'soft' | 'dark' // cadence tone from the layout (flexible variants use it)
   world?: World // type identity — sections read this for per-world headings
+  isRtl?: boolean // Arabic page — sections prefer *_ar fields + inherit RTL from <main>
+}
+
+/** Resolve the display string for a section, preferring the Arabic value on an
+ *  RTL page and falling back to the English one. */
+export function arText(isRtl: boolean | undefined, en?: string, ar?: string): string {
+  return ((isRtl && ar ? ar : en) ?? '')
 }
 
 /** Per-world heading treatment. The single source of the "type isn't the same"

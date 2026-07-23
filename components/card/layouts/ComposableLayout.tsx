@@ -5,7 +5,7 @@ import { Contact } from '../sections/Contact'
 import { Narrative } from '../sections/Narrative'
 import { Showcase } from '../sections/Showcase'
 import { Gallery } from '../sections/Gallery'
-import { Band, SectionKicker, TYPE_LABEL, Marquee, type World } from '../sections/shared'
+import { Band, SectionKicker, TYPE_LABEL, Marquee, arText, type World } from '../sections/shared'
 import { SectionFrame } from '../edit/SectionFrame'
 import { BeforeAfter } from '../blocks'
 import { mediaUrl } from './shared'
@@ -26,6 +26,12 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
   const p = page.profile
   const world = (tpl.world ?? 'editorial-dark') as World
   const heroVariant = p.hero_variant || 'photo-bleed'
+  // Arabic pages render right-to-left with the Arabic display font. The dir/lang
+  // live on this subtree's <main> (app/layout.tsx's <html> stays LTR) — the same
+  // scoping the zero-login document pages use. title_ar/intro_ar fall back per
+  // block; a plain helper resolves the right one.
+  const isRtl = p.page_language === 'ar'
+  const arText = (en?: string, ar?: string) => (isRtl && ar ? ar : en) ?? ''
 
   // Group the block list: consecutive legacy same-type blocks fold into one
   // section; new section types stand alone. Preserves page order.
@@ -60,34 +66,39 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
   groups.forEach((g, gi) => {
     let node: React.ReactNode = null
     if (g.kind === 'stats') {
-      node = <StatsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} world={world} />
+      node = <StatsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} world={world} isRtl={isRtl} />
     } else if (g.kind === 'testimonials') {
-      node = <TestimonialsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={nextTone()} />
+      node = <TestimonialsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={nextTone()} isRtl={isRtl} />
     } else if (g.kind === 'comparison') {
-      node = <ComparisonBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} />
+      node = <ComparisonBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} isRtl={isRtl} />
     } else {
       const b = g.blocks[0]
       idx++
       const toneHint = nextTone()
-      if (b.type === 'narrative') node = <Narrative key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
-      else if (b.type === 'showcase') node = <Showcase key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
-      else if (b.type === 'gallery' || b.type === 'image_grid') node = <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
+      if (b.type === 'narrative') node = <Narrative key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
+      else if (b.type === 'showcase') node = <Showcase key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
+      else if (b.type === 'gallery' || b.type === 'image_grid') node = <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
     }
     if (!node) return
     nodes.push(node)
     // OKO signature: an oversized scrolling word between bands — brutalist only,
     // never after the final band.
     if (world === 'brutalist' && gi < groups.length - 1) {
-      nodes.push(<Marquee key={`mq-${gi}`} word={g.blocks[0].title || TYPE_LABEL[g.blocks[0].type] || 'work'} accent={accent} />)
+      nodes.push(<Marquee key={`mq-${gi}`} word={arText(g.blocks[0].title, g.blocks[0].title_ar) || TYPE_LABEL[g.blocks[0].type] || 'work'} accent={accent} />)
     }
   })
 
   return (
-    <main className="text-[var(--card-ink)]" style={{ ...vars, background: 'var(--card-bg)' }}>
-      <Hero page={page} accent={accent} variant={heroVariant} world={world} />
+    <main
+      dir={isRtl ? 'rtl' : 'ltr'}
+      lang={isRtl ? 'ar' : 'en'}
+      className={`text-[var(--card-ink)] ${isRtl ? 'font-[family-name:var(--font-tajawal)]' : ''}`}
+      style={{ ...vars, background: 'var(--card-bg)' }}
+    >
+      <Hero page={page} accent={accent} variant={heroVariant} world={world} isRtl={isRtl} />
       {nodes}
       <SectionFrame blockId="contact" label="Footer" fixed="contact">
-        <Contact page={page} accent={accent} world={world} />
+        <Contact page={page} accent={accent} world={world} isRtl={isRtl} />
       </SectionFrame>
     </main>
   )
@@ -116,7 +127,7 @@ function normalizeImageGrid(b: PublicBlock): PublicBlock {
 }
 
 // ---- grouped legacy bands ----
-function StatsBand({ blocks, accent, index, tone, world }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone; world: World }) {
+function StatsBand({ blocks, accent, index, tone, world, isRtl }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone; world: World; isRtl?: boolean }) {
   const items = blocks.map(b => ({ value: (b.data.value as string) ?? '', label: (b.data.label as string) ?? '' })).filter(s => s.value)
   if (!items.length) return null
   const onDark = tone === 'dark'
@@ -124,7 +135,7 @@ function StatsBand({ blocks, accent, index, tone, world }: { blocks: PublicBlock
   // is the whole design; a small stat row reads like a dashboard, not a page.
   return (
     <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Numbers">
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.stat_card} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.stat_card} accent={accent} onDark={onDark} />
       <div className="grid grid-cols-2 divide-x divide-[var(--card-border)] sm:grid-cols-3">
         {items.slice(0, 3).map((s, i) => (
           <div key={i} className="px-6 first:pl-0">
@@ -137,13 +148,13 @@ function StatsBand({ blocks, accent, index, tone, world }: { blocks: PublicBlock
   )
 }
 
-function TestimonialsBand({ blocks, accent, index, tone }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone }) {
+function TestimonialsBand({ blocks, accent, index, tone, isRtl }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone; isRtl?: boolean }) {
   const quotes = blocks.map(b => ({ text: (b.data.text as string) ?? '', attribution: (b.data.attribution as string) ?? '', date_label: (b.data.date_label as string) ?? '' })).filter(q => q.text)
   if (!quotes.length) return null
   const onDark = tone === 'dark'
   return (
     <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Testimonials">
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />
       <div className="grid gap-5 sm:grid-cols-2">
         {quotes.map((q, i) => (
           <div key={i} className={`rounded-[var(--card-radius-lg)] border p-6 ${onDark ? 'border-white/15 bg-white/5' : 'border-[var(--card-border)] bg-[var(--card-surface)]'}`}>
@@ -156,10 +167,10 @@ function TestimonialsBand({ blocks, accent, index, tone }: { blocks: PublicBlock
   )
 }
 
-function ComparisonBand({ blocks, accent, index, tone }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone }) {
+function ComparisonBand({ blocks, accent, index, tone, isRtl }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone; isRtl?: boolean }) {
   return (
     <Band tone={tone} accent={accent} frameId={blocks[0].id} frameLabel="Before / after">
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.before_after} accent={accent} onDark={tone === 'dark'} />
+      <SectionKicker index={index} title={arText(isRtl, blocks[0].title, blocks[0].title_ar)} fallback={TYPE_LABEL.before_after} accent={accent} onDark={tone === 'dark'} />
       <div className="space-y-6">
         {blocks.map(b => (
           <BeforeAfter key={b.id} data={b.data} accent={accent} radiusClass="rounded-[var(--card-radius-lg)]" />

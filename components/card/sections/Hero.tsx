@@ -26,13 +26,18 @@ export function Hero({
   accent,
   variant,
   world,
+  isRtl,
 }: {
   page: PublicPage
   accent: string
   variant: string
   world?: World
+  isRtl?: boolean
 }) {
   const p = page.profile
+  // On an Arabic page, prefer the Arabic role/title. full_name and bio have no
+  // _ar column, so they render as-is.
+  const roleText = isRtl && p.title_ar ? p.title_ar : p.title
   const hero = heroImage(page)
   const featured = collectImages(page)
   const wa = p.whatsapp_number ? `https://wa.me/${p.whatsapp_number.replace(/[^\d]/g, '')}` : null
@@ -52,7 +57,7 @@ export function Hero({
     </span>
   )
   const Title = ({ className, style }: { className: string; style?: React.CSSProperties }) => (
-    <Editable as="p" blockId={PROFILE} field="title" value={p.title} placeholder="What you do" className={className} style={style} />
+    <Editable as="p" blockId={PROFILE} field="title" value={roleText} placeholder="What you do" className={className} style={style} />
   )
   const Bio = ({ className }: { className: string }) => (
     <Editable as="p" blockId={PROFILE} field="bio" value={p.bio} placeholder="A line about you (optional)" multiline className={className} />

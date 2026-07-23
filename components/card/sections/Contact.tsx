@@ -18,10 +18,12 @@ export function Contact({
   page,
   accent,
   world,
+  isRtl,
 }: {
   page: PublicPage
   accent: string
   world?: World
+  isRtl?: boolean
 }) {
   const p = page.profile
   const firstName = p.full_name.split(' ')[0] || p.handle
@@ -29,6 +31,32 @@ export function Contact({
   const a6 = normalizeAccent(accent)
   const wt = worldType(world)
   const variant = p.contact_variant || 'cta-band'
+
+  // Bilingual closer copy — dialect-leaning Arabic on RTL pages.
+  const c = isRtl
+    ? {
+        avail: p.availability_status === 'busy' ? 'عم نحجز للفترة الجاية' : 'جاهز لشغل جديد هلّق',
+        heading: 'خلّينا نشتغل سوا.',
+        tell: (name: string) => `خبّر ${name} شو ببالك — تاريخ، ميزانية، فكرة بسيطة.`,
+        replies: (h: number) => ` عادةً بيردّ خلال ${h} ساعة.`,
+        wa: '💬 أو راسلني على واتساب',
+        workWith: (name: string) => name,
+        workWithLead: 'اشتغل مع',
+        services: 'الخدمات',
+        reachMe: 'تواصل معي',
+      }
+    : {
+        avail: p.availability_status === 'busy' ? 'Booking the next opening' : 'Taking on new work now',
+        heading: "Let's work together.",
+        tell: (name: string) => `Tell ${name} what you have in mind — a date, a budget, a rough idea.`,
+        replies: (h: number) => ` Usually replies within ${h}h.`,
+        wa: '💬 Or message on WhatsApp',
+        workWith: (name: string) => name,
+        workWithLead: 'Work with',
+        services: 'Services',
+        reachMe: 'Reach me',
+      }
+  const availLine = c.avail
 
   const form = (
     <QuoteForm
@@ -43,11 +71,9 @@ export function Contact({
   )
   const waLink = wa && (
     <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-3 flex items-center justify-center gap-2 rounded-2xl border border-white/20 py-3 text-[13px] font-bold text-white">
-      💬 Or message on WhatsApp
+      {c.wa}
     </a>
   )
-  const availLine =
-    p.availability_status === 'busy' ? 'Booking the next opening' : 'Taking on new work now'
 
   // ── big-type: oversized "work with {name}" as the closer (brutalist/OKO) ──
   if (variant === 'big-type') {
@@ -56,7 +82,7 @@ export function Contact({
         <div className="mx-auto max-w-5xl">
           <span className="text-[12px] font-semibold uppercase tracking-[0.28em]" style={{ color: a6 }}>{availLine}</span>
           <h2 className={`mt-4 ${wt.heading} leading-[0.9]`} style={{ fontSize: 'clamp(44px,10vw,140px)' }}>
-            Work with<br />{firstName}
+            {c.workWithLead}<br />{firstName}
             <span style={{ color: a6 }}>.</span>
           </h2>
           <div className="mt-10 max-w-lg">
@@ -79,11 +105,11 @@ export function Contact({
               {availLine}
             </div>
             <h2 className={`${wt.heading} leading-tight`} style={{ fontSize: 'clamp(30px,5vw,56px)' }}>
-              Let&apos;s work together.
+              {c.heading}
             </h2>
             <p className="mt-3 max-w-md text-[15px] leading-relaxed text-white/60">
-              Tell {firstName} what you have in mind — a date, a budget, a rough idea.
-              {p.reply_hours ? <> Usually replies within {p.reply_hours}h.</> : null}
+              {c.tell(firstName)}
+              {p.reply_hours ? c.replies(p.reply_hours) : null}
             </p>
             <div className="mt-8 max-w-md">
               {form}
@@ -93,14 +119,14 @@ export function Contact({
           <div className="flex flex-col gap-8 text-[14px] md:pt-16">
             {links.length > 0 && (
               <div>
-                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">Services</p>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">{c.services}</p>
                 <ul className="space-y-2 text-white/80">
-                  {links.map(s => <li key={s.id}>{s.title}</li>)}
+                  {links.map(s => <li key={s.id}>{isRtl && s.title_ar ? s.title_ar : s.title}</li>)}
                 </ul>
               </div>
             )}
             <div>
-              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">Reach me</p>
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">{c.reachMe}</p>
               <ul className="space-y-2 text-white/80">
                 {wa && <li><a href={wa} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>}
                 {p.areas_served && p.areas_served.length > 0 && <li>{p.areas_served.slice(0, 3).join(' · ')}</li>}
@@ -121,13 +147,13 @@ export function Contact({
           {availLine}
         </div>
         <h2 className={`${wt.heading} leading-tight`} style={{ fontSize: 'clamp(30px,5vw,52px)' }}>
-          Let&apos;s work together.
+          {c.heading}
         </h2>
         <p className="mt-3 text-[15px] leading-relaxed text-white/60">
-          Tell {firstName} what you have in mind — a date, a budget, a rough idea.
-          {p.reply_hours ? <> Usually replies within {p.reply_hours}h.</> : null}
+          {c.tell(firstName)}
+          {p.reply_hours ? c.replies(p.reply_hours) : null}
         </p>
-        <div className="mt-8 text-left">
+        <div className={`mt-8 ${isRtl ? 'text-right' : 'text-left'}`}>
           {form}
           {waLink}
         </div>

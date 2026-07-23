@@ -2,7 +2,7 @@
 
 import { AiFillGithub, AiOutlineExport } from 'react-icons/ai'
 import { Reveal } from '../Reveal'
-import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, type SectionProps } from './shared'
+import { Band, SectionKicker, TYPE_LABEL, mediaUrl, worldType, arText, type SectionProps } from './shared'
 import { useEdit } from '../edit/EditContext'
 
 // SHOWCASE — work presented as CASES, not a photo wall. The developer's core
@@ -15,7 +15,7 @@ import { useEdit } from '../edit/EditContext'
 //   - numbered-list: big serif numbered credibility rows (no images) — Anthony/OKO
 //   - bento:         a mosaic of varied-span panels — the "dev with no photos" answer
 //   - logo-strip:    a row of client/brand logos (reuses items[].image)
-export function Showcase({ block, accent, index, toneHint, world }: SectionProps) {
+export function Showcase({ block, accent, index, toneHint, world, isRtl }: SectionProps) {
   const d = block.data as {
     items?: {
       image?: string
@@ -31,6 +31,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
     }[]
   }
   const { editing } = useEdit()
+  const kickerTitle = arText(isRtl, block.title, block.title_ar)
   const items = (d.items ?? []).filter(i => i.title || i.image)
   // Public page hides an empty section; the builder shows a placeholder so it
   // stays swappable/removable and prompts the user to add content.
@@ -66,7 +67,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
     const brutal = world === 'brutalist'
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
-        <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="divide-y divide-[var(--card-border)]">
           {items.map((it, i) => (
             <Reveal key={i}>
@@ -101,7 +102,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
     }
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
-        <SectionKicker index={index} title={block.title} fallback="What sets me apart" accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback="What sets me apart" accent={accent} onDark={onDark} />
         <div className="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 md:grid-cols-4">
           {items.map((it, i) => (
             <Reveal key={i} className={`${SPAN[it.size ?? 'sm']} flex flex-col rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] p-5`}>
@@ -129,7 +130,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   if (variant === 'logo-strip') {
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
-        <SectionKicker index={index} title={block.title} fallback="Brands I've worked with" accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback="Brands I've worked with" accent={accent} onDark={onDark} />
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 py-2">
           {items.map((it, i) => it.image && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -145,7 +146,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   if (variant === 'card-grid') {
     return (
       <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
-        <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((it, i) => (
             <Reveal key={i} className="group flex flex-col overflow-hidden rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] transition-transform duration-300 hover:-translate-y-1">
@@ -185,7 +186,7 @@ export function Showcase({ block, accent, index, toneHint, world }: SectionProps
   // ── case-stack (default): big full-width rows, works with zero images ──
   return (
     <Band tone={tone} accent={accent} frameId={block.id} frameLabel="Work">
-      <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.showcase} accent={accent} onDark={onDark} />
       <div className="divide-y divide-[var(--card-border)]">
         {items.map((it, i) => (
           <Reveal key={i}>

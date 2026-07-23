@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Band, SectionKicker, TYPE_LABEL, mediaUrl, type SectionProps } from './shared'
+import { Band, SectionKicker, TYPE_LABEL, mediaUrl, arText, type SectionProps } from './shared'
 import { Lightbox } from '../layouts/Lightbox'
 
 // GALLERY — the visual trade's core. Full-bleed image sections.
@@ -10,7 +10,7 @@ import { Lightbox } from '../layouts/Lightbox'
 //   - offset-rows: 12-col rows with per-image vertical offset + number (Agnieszka)
 //   - filmstrip:   a full-bleed horizontal scroller of tall frames (Creacy)
 // data: { images: [{ url, alt }] }
-export function Gallery({ block, accent, index, toneHint }: SectionProps) {
+export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps) {
   const d = block.data as { images?: { url?: string; alt?: string }[] }
   const images = (d.images ?? [])
     .filter(im => im.url)
@@ -20,6 +20,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
   const variant = block.variant || 'masonry'
   const tone = block.tone ?? toneHint ?? 'base'
   const onDark = tone === 'dark'
+  const kickerTitle = arText(isRtl, block.title, block.title_ar)
 
   // ── offset-rows: editorial 12-col grid, each image a different span + drop ──
   if (variant === 'offset-rows') {
@@ -28,7 +29,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
     const rows = chunk(images, 3)
     return (
       <Band tone={tone} accent={accent} className="!py-20" frameId={block.id} frameLabel="Gallery">
-        <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
+        <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
         {rows.map((row, ri) => (
           <div key={ri} className="mb-12 grid grid-cols-12 items-end gap-4">
             {row.map((im, ci) => {
@@ -59,7 +60,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
     return (
       <Band tone="dark" accent={accent} bleed className="!py-20">
         <div className="px-6 lg:px-10">
-          <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.gallery} accent={accent} onDark />
+          <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark />
         </div>
         <div className="mt-6 flex snap-x gap-3 overflow-x-auto px-6 lg:px-10 [&>*]:snap-center">
           {images.map((im, i) => (
@@ -76,7 +77,7 @@ export function Gallery({ block, accent, index, toneHint }: SectionProps) {
 
   return (
     <Band tone={tone} accent={accent} className="!py-16" frameId={block.id} frameLabel="Gallery">
-      <SectionKicker index={index} title={block.title} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
+      <SectionKicker index={index} title={kickerTitle} fallback={TYPE_LABEL.gallery} accent={accent} onDark={onDark} />
       {variant === 'grid-3' ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {images.map((im, i) => (

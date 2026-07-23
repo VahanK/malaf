@@ -225,10 +225,15 @@ export default function Home() {
               <span className="absolute -top-3 start-6 rounded-full bg-[#e8623d] px-3 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-white">
                 Free · everything
               </span>
-              <h3 className="text-[17px] font-semibold">Your page</h3>
-              <p className="mt-2">
+              <h3 className="text-[15px] font-semibold text-[#8a8477]">Your own link, live</h3>
+              {/* The URL is the headline value — you GET work-withme.com/yourname. */}
+              <p className="mt-1.5 flex flex-wrap items-baseline gap-x-1 font-serif text-[clamp(20px,3vw,26px)] font-semibold tracking-tight">
+                <span className="text-[#171310]">work-withme.com/</span>
+                <span className="text-[#e8623d]">yourname</span>
+              </p>
+              <p className="mt-3">
                 <span className="text-[36px] font-semibold text-[#e8623d]">$0</span>
-                <span className="text-[14px] text-[#5c574c]"> — always</span>
+                <span className="text-[14px] text-[#5c574c]"> — always yours</span>
               </p>
               <ul className="mt-5 space-y-2.5">
                 {[
@@ -295,14 +300,12 @@ export default function Home() {
       {/* ================= FINAL CTA (dark) ================= */}
       <section className="border-t border-[#c9a45c]/40 bg-[#0e0f13] py-28 text-center text-[#f4f2ec]">
         <div className="mx-auto max-w-2xl px-6">
-          <p className="font-[family-name:var(--font-tajawal)] text-[15px] text-[#e8623d]" dir="rtl" lang="ar">شغلك مرتّب، وحقّك بلا إحراج</p>
-          <h2 className="mt-3 font-serif text-[clamp(30px,4vw,40px)] font-semibold tracking-[-0.015em] text-[#f4f2ec]">
-            Stop running your business in your DMs.
+          <h2 className="font-serif text-[clamp(32px,4.5vw,46px)] font-semibold tracking-[-0.015em] text-[#f4f2ec]">
+            Your work deserves a page that respects it.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[16px] leading-[1.55] text-white/70">
-            The page brings clients in. WorkWith carries the job from first message to paid — quote,
-            invoice, reminder, done — all in one place, so nothing lives in your chat history anymore.
-            Free to start.
+            Claim your link, add your work, and be live in minutes — <span className="text-[#e8623d]">work-withme.com/yourname</span>.
+            Free, and it stays yours.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link

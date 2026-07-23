@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { mediaUrl } from '@/lib/media'
 import { CARD_TEMPLATES, type CardTemplateId } from '@/lib/card-templates'
@@ -41,6 +41,10 @@ export function ProfileForm({ profile }: { profile: Profile }) {
   })
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url)
   const [voiceUrl, setVoiceUrl] = useState(profile.voice_intro_url)
+  // The handle IS their public URL (work-withme.com/handle) — editable here, with
+  // a live availability check so they always know + can change their link.
+  const [handle, setHandle] = useState(profile.handle ?? '')
+  const [handleStatus, setHandleStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid'>('idle')
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const avatarInput = useRef<HTMLInputElement>(null)
@@ -63,19 +67,46 @@ export function ProfileForm({ profile }: { profile: Profile }) {
     if (json.path) setVoiceUrl(json.path)
   }
 
+  // Normalize + check the handle as they type (skip if unchanged).
+  const normalizeHandle = (v: string) => v.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40)
+  const onHandleChange = (v: string) => {
+    const h = normalizeHandle(v)
+    setHandle(h)
+    if (h === (profile.handle ?? '')) { setHandleStatus('idle'); return }
+    if (h.length < 3) { setHandleStatus('invalid'); return }
+    setHandleStatus('checking')
+  }
+  useEffect(() => {
+    if (handleStatus !== 'checking') return
+    const t = setTimeout(async () => {
+      const { data } = await supabase.rpc('is_handle_available', { candidate: handle })
+      setHandleStatus(data ? 'available' : 'taken')
+    }, 400)
+    return () => clearTimeout(t)
+  }, [handle, handleStatus, supabase])
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (handleStatus === 'taken' || handleStatus === 'invalid') {
+      setError('Please choose an available link (3+ letters/numbers).')
+      return
+    }
     setStatus('saving')
     setError(null)
 
+    const patch: Record<string, unknown> = {
+      ...form,
+      areas_served: form.areas_served.split(',').map(s => s.trim()).filter(Boolean),
+      avatar_url: avatarUrl,
+      voice_intro_url: voiceUrl,
+    }
+    // Only send handle if they changed it to a valid, available one.
+    if (handle && handle !== (profile.handle ?? '') && handleStatus === 'available') {
+      patch.handle = handle
+    }
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({
-        ...form,
-        areas_served: form.areas_served.split(',').map(s => s.trim()).filter(Boolean),
-        avatar_url: avatarUrl,
-        voice_intro_url: voiceUrl,
-      })
+      .update(patch)
       .eq('id', profile.id)
 
     if (updateError) {
@@ -88,8 +119,38 @@ export function ProfileForm({ profile }: { profile: Profile }) {
     setTimeout(() => setStatus('idle'), 2000)
   }
 
+  const handleHint =
+    handleStatus === 'checking' ? '…' :
+    handleStatus === 'available' ? '✓ available' :
+    handleStatus === 'taken' ? '✕ taken' :
+    handleStatus === 'invalid' ? '3+ letters/numbers' : ''
+  const handleHintColor =
+    handleStatus === 'available' ? 'text-green-600' :
+    handleStatus === 'taken' || handleStatus === 'invalid' ? 'text-red-600' : 'text-dash-muted'
+
   return (
     <form onSubmit={submit} className="mt-6 max-w-lg space-y-5">
+      {/* YOUR LINK — the public URL, always visible + editable. This is what they share. */}
+      <div className="rounded-xl border border-dash-accent/30 bg-dash-accent/5 p-4">
+        <label className="text-[13px] font-bold text-dash-ink">Your link</label>
+        <p className="mb-2 text-[12px] text-dash-muted">This is the page you share. Clients open it — no app, no login.</p>
+        <div className="flex items-center overflow-hidden rounded-lg border border-dash-border bg-white">
+          <span className="shrink-0 py-2.5 pl-3 text-[13px] text-dash-muted">work-withme.com/</span>
+          <input
+            value={handle}
+            onChange={e => onHandleChange(e.target.value)}
+            placeholder="yourname"
+            className="min-w-0 flex-1 bg-transparent py-2.5 pr-3 text-[14px] font-semibold text-dash-ink outline-none"
+          />
+          {handleHint && <span className={`shrink-0 pr-3 text-[12px] font-semibold ${handleHintColor}`}>{handleHint}</span>}
+        </div>
+        {profile.handle && (
+          <a href={`/${profile.handle}`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[12px] font-semibold text-dash-accent">
+            Open your live page ↗
+          </a>
+        )}
+      </div>
+
       <div className="flex items-center gap-4">
         <button
           type="button"

@@ -5,6 +5,7 @@ import { Nav } from '../sections/Nav'
 import { Contact } from '../sections/Contact'
 import { Narrative } from '../sections/Narrative'
 import { Showcase } from '../sections/Showcase'
+import { Services } from '../sections/Services'
 import { Gallery } from '../sections/Gallery'
 import { Band, SectionKicker, TYPE_LABEL, Marquee, arText, type World } from '../sections/shared'
 import { SectionFrame } from '../edit/SectionFrame'
@@ -89,6 +90,7 @@ export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
       const toneHint = nextTone()
       if (b.type === 'narrative') node = <Narrative key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
       else if (b.type === 'showcase') node = <Showcase key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
+      else if (b.type === 'services') node = <Services key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
       else if (b.type === 'gallery' || b.type === 'image_grid') node = <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} isRtl={isRtl} />
     }
     if (!node) return

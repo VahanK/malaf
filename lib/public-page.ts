@@ -15,7 +15,7 @@ export interface PublicService {
 
 export type BlockType =
   | 'image_grid' | 'before_after' | 'stat_card' | 'video_link' | 'case_card' | 'testimonial'
-  | 'narrative' | 'showcase' | 'gallery'
+  | 'narrative' | 'showcase' | 'gallery' | 'services'
 
 export interface PublicBlock {
   id: string

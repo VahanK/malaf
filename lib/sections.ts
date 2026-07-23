@@ -56,6 +56,18 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
+    type: 'services',
+    label: 'Services & Pricing',
+    icon: '💲',
+    blurb: 'Your price list on the page. Prices come from Services — add an optional intro here.',
+    bestFor: ['photographer', 'designer', 'developer', 'consultant', 'coach', 'trainer'],
+    variants: [
+      { id: 'list', label: 'Price list', hint: 'Stacked rows with the price on the right.' },
+      { id: 'cards', label: 'Price cards', hint: 'A grid of price cards.' },
+      { id: 'menu', label: 'Menu', hint: 'A menu look with dotted leaders to the price.' },
+    ],
+  },
+  {
     type: 'gallery',
     label: 'Photo gallery',
     icon: '🖼️',

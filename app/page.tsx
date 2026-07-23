@@ -46,7 +46,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: 'Can I see real pages before I sign up?',
-    a: "Yes — browse real published pages on the Discover page. That's exactly what your own page can look like.",
+    a: "Yes — see real example pages before you sign up. That's exactly what your own page can look like.",
   },
 ]
 
@@ -95,7 +95,7 @@ export default function Home() {
               Build mine free →
             </Link>
             <Link
-              href="/discover"
+              href="/examples"
               className="rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-[15px] font-semibold text-[#FAFAF7] transition-colors hover:bg-white/10"
             >
               See real pages ↗
@@ -194,7 +194,7 @@ export default function Home() {
 
           <div className="mt-10 text-center">
             <Link
-              href="/discover"
+              href="/examples"
               className="inline-block rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-[14px] font-semibold text-[#FAFAF7] transition-colors hover:bg-white/10"
             >
               Browse real pages ↗
@@ -314,14 +314,16 @@ export default function Home() {
             >
               Start building — free
             </Link>
-            <Link
-              href="/discover"
+            <a
+              href={buildFounderWa("Hi — I'd like to talk about a custom / elevated presence.")}
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-xl border border-white/20 px-6 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-white/5"
             >
-              Discover freelancers ↗
-            </Link>
+              Message us for a custom ↗
+            </a>
           </div>
-          <p className="mt-6 text-[13px] text-white/50">Free to build and publish · your own link · clients never sign in</p>
+          <p className="mt-6 text-[13px] text-white/50">Free to build and publish · your own link · we elevate brands that want more</p>
         </div>
       </section>
 
@@ -349,7 +351,6 @@ export default function Home() {
               <p className="text-[12px] font-semibold uppercase tracking-wider text-[rgba(250,250,247,0.5)]">Product</p>
               <ul className="mt-3 space-y-2 text-[14px] text-[rgba(250,250,247,0.72)]">
                 <li><Link href="/auth/signup" className="hover:text-[#FAFAF7]">Make your page</Link></li>
-                <li><Link href="/discover" className="hover:text-[#FAFAF7]">Discover freelancers</Link></li>
                 <li><a href="#showcase" className="hover:text-[#FAFAF7]">The showcase</a></li>
                 <li><a href="#pricing" className="hover:text-[#FAFAF7]">Pricing</a></li>
               </ul>

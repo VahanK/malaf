@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { starterFor } from '@/lib/sections'
 
 // Owner-authenticated, one-shot: claims a handle + preset, seeds starter
 // services/blocks from the preset config. Not anonymous, so no rate limit
@@ -33,6 +34,10 @@ export async function POST(request: Request) {
     .single()
   if (!preset) return NextResponse.json({ ok: false, error: 'unknown preset' }, { status: 400 })
 
+  // Every new page is a composed "real website" — the trade sets the starter
+  // hero + section stack so they never land on a blank builder.
+  const starter = starterFor(preset.key)
+
   const { error: profileError } = await supabase
     .from('profiles')
     .update({
@@ -42,13 +47,15 @@ export async function POST(request: Request) {
       full_name: fullName,
       title: title || preset.label,
       whatsapp_number: whatsapp,
+      composable: true,
+      hero_variant: starter.hero,
+      contact_variant: 'band',
     })
     .eq('id', user.id)
   if (profileError) return NextResponse.json({ ok: false, error: profileError.message }, { status: 400 })
 
   const config = preset.config as {
     sample_services?: { title: string; title_ar?: string; price: number; unit: string; starting_from?: boolean; package_qty?: number }[]
-    block_order?: string[]
   }
 
   if (config.sample_services?.length) {
@@ -66,14 +73,18 @@ export async function POST(request: Request) {
     )
   }
 
-  if (config.block_order?.length) {
+  // Seed the trade's starter composed sections — ACTIVE, so the page reads as
+  // a real website from minute one; the freelancer just fills in the text.
+  if (starter.sections.length) {
     await supabase.from('portfolio_blocks').insert(
-      config.block_order.map((type, i) => ({
+      starter.sections.map((s, i) => ({
         profile_id: user.id,
-        type,
+        type: s.type,
+        variant: s.variant,
+        title: s.title,
         position: i,
         data: {},
-        active: false, // empty starter blocks stay hidden until the freelancer fills them in
+        active: true,
       }))
     )
   }

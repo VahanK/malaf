@@ -83,3 +83,85 @@ export const SECTIONS: SectionDef[] = [
 export function sectionDef(type: string): SectionDef | undefined {
   return SECTIONS.find(s => s.type === type)
 }
+
+// ---- trade → composable starter page ----
+// A new user should land on a GOOD, trade-appropriate composed page — not a
+// blank builder. Each trade gets a hero style + an ordered set of starter
+// sections (with sensible default variants), seeded ACTIVE so their page reads
+// as a real website immediately; they just fill in the text.
+export interface StarterSection {
+  type: string
+  variant: string
+  title: string
+}
+export interface TradeStarter {
+  hero: 'photo-bleed' | 'statement'
+  sections: StarterSection[]
+}
+
+// Visual trades → photo hero + gallery. Text/credibility trades → statement
+// hero + narrative + showcase (works with zero images).
+const VISUAL = new Set(['photographer', 'designer', 'makeup_artist', 'videographer', 'event_planner', 'architect'])
+
+const STARTERS: Record<string, TradeStarter> = {
+  developer: {
+    hero: 'statement',
+    sections: [
+      { type: 'narrative', variant: 'stacked-lead', title: 'About' },
+      { type: 'showcase', variant: 'case-stack', title: 'Selected Work' },
+      { type: 'stat_card', variant: '', title: '' },
+      { type: 'testimonial', variant: '', title: 'Kind Words' },
+    ],
+  },
+  lawyer: {
+    hero: 'statement',
+    sections: [
+      { type: 'narrative', variant: 'split-statement', title: 'About' },
+      { type: 'showcase', variant: 'case-stack', title: 'Areas of Practice' },
+      { type: 'stat_card', variant: '', title: '' },
+      { type: 'testimonial', variant: '', title: 'Client Words' },
+    ],
+  },
+  writer: {
+    hero: 'statement',
+    sections: [
+      { type: 'narrative', variant: 'stacked-lead', title: 'About' },
+      { type: 'showcase', variant: 'card-grid', title: 'Selected Writing' },
+      { type: 'testimonial', variant: '', title: 'Kind Words' },
+    ],
+  },
+  consultant: {
+    hero: 'statement',
+    sections: [
+      { type: 'narrative', variant: 'split-statement', title: 'About' },
+      { type: 'stat_card', variant: '', title: '' },
+      { type: 'showcase', variant: 'case-stack', title: 'How I Help' },
+      { type: 'testimonial', variant: '', title: 'Client Words' },
+    ],
+  },
+}
+
+/** The starter page for a trade. Falls back to a good generic composed page. */
+export function starterFor(preset: string): TradeStarter {
+  if (STARTERS[preset]) return STARTERS[preset]
+  if (VISUAL.has(preset)) {
+    return {
+      hero: 'photo-bleed',
+      sections: [
+        { type: 'narrative', variant: 'split-statement', title: 'About' },
+        { type: 'gallery', variant: 'masonry', title: 'Selected Work' },
+        { type: 'stat_card', variant: '', title: '' },
+        { type: 'testimonial', variant: '', title: 'Kind Words' },
+      ],
+    }
+  }
+  // generic (coach, trainer, tutor, marketer, translator, event_planner…)
+  return {
+    hero: 'statement',
+    sections: [
+      { type: 'narrative', variant: 'split-statement', title: 'About' },
+      { type: 'stat_card', variant: '', title: '' },
+      { type: 'testimonial', variant: '', title: 'Kind Words' },
+    ],
+  }
+}

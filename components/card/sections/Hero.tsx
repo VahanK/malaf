@@ -7,6 +7,7 @@ import { worldType, type World } from './shared'
 import { Editable } from '../edit/Editable'
 import { SectionFrame } from '../edit/SectionFrame'
 import { EditImageButton } from '../edit/EditImageButton'
+import { MotionTextEditor } from '../edit/MotionTextEditor'
 import { useEdit } from '../edit/EditContext'
 import { DotGridHero, Typewrite, SpinningBoxText, SplitFlapDisplay } from '../motion/registry'
 import type { PublicPage } from '@/lib/public-page'
@@ -131,8 +132,10 @@ export function Hero({
   // Words/phrases derive from real data (services + title) so they're personal.
   if (variant === 'typewriter' || variant === 'word-cube' || variant === 'split-flap') {
     const serviceTitles = (page.services ?? []).map(s => (isRtl && s.title_ar ? s.title_ar : s.title)).filter(Boolean) as string[]
-    const phrases = serviceTitles.length ? serviceTitles : [roleText].filter(Boolean) as string[]
-    const words = serviceTitles.length ? serviceTitles.slice(0, 4) : (roleText ? roleText.split(/[·,/]/).map(s => s.trim()).filter(Boolean).slice(0, 4) : [])
+    // Custom text (editable in the builder) wins; else derive from services/title.
+    const flapText = p.hero_flap_text || p.full_name || p.handle
+    const phrases = (p.hero_type_phrases?.length ? p.hero_type_phrases : (serviceTitles.length ? serviceTitles : [roleText].filter(Boolean) as string[]))
+    const words = (p.hero_cube_words?.length ? p.hero_cube_words : (serviceTitles.length ? serviceTitles.slice(0, 4) : (roleText ? roleText.split(/[·,/]/).map(s => s.trim()).filter(Boolean).slice(0, 4) : [])))
     return (
       <SectionFrame blockId={PROFILE} label="Hero" fixed="hero" currentVariant={variant}>
         {heroPhotoBtn}
@@ -147,7 +150,8 @@ export function Hero({
               <div className="mt-8">
                 {/* accessible name for SEO / screen readers; the flap board is decorative */}
                 <h1 className="sr-only">{p.full_name || p.handle}</h1>
-                <SplitFlapDisplay text={p.full_name || p.handle} accent={a6} isRtl={!!isRtl} />
+                <SplitFlapDisplay text={flapText} accent={a6} isRtl={!!isRtl} />
+                <MotionTextEditor variant="split-flap" value={p.hero_flap_text ?? ''} placeholder={p.full_name || 'Text to display'} onChange={v => onProfileData({ hero_flap_text: v || null })} />
                 <Title className="mt-4 text-center text-[clamp(16px,2vw,22px)] font-bold" style={{ color: a6 }} />
               </div>
             ) : (
@@ -159,10 +163,16 @@ export function Hero({
                     <SpinningBoxText words={words} accent={a6} isRtl={!!isRtl} />
                   </div>
                 )}
+                {variant === 'word-cube' && (
+                  <MotionTextEditor variant="word-cube" value={(p.hero_cube_words ?? []).join(', ')} placeholder="e.g. Design, Build, Ship, Grow" onChange={v => onProfileData({ hero_cube_words: v ? v.split(',').map(s => s.trim()).filter(Boolean) : null })} />
+                )}
                 {variant === 'typewriter' && phrases.length > 0 && (
                   <div className="mt-4 text-[clamp(16px,2.4vw,26px)] font-bold" style={{ color: a6 }}>
                     <Typewrite phrases={phrases} accent={a6} isRtl={!!isRtl} />
                   </div>
+                )}
+                {variant === 'typewriter' && (
+                  <MotionTextEditor variant="typewriter" value={(p.hero_type_phrases ?? []).join(', ')} placeholder="Phrases to cycle, comma-separated" onChange={v => onProfileData({ hero_type_phrases: v ? v.split(',').map(s => s.trim()).filter(Boolean) : null })} />
                 )}
               </>
             )}

@@ -60,6 +60,14 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
     if (uploaded.length) onBlockData(block.id, { images: [...rawImages, ...uploaded] })
   }
   const removePhoto = (i: number) => onBlockData(block.id, { images: rawImages.filter((_, j) => j !== i) })
+  // Reorder: swap photo i with its neighbor (founder: "let me swap image places").
+  const movePhoto = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= rawImages.length) return
+    const next = [...rawImages]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onBlockData(block.id, { images: next })
+  }
   const AddTile = editing ? (
     <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-[var(--card-radius-md)] border-2 border-dashed border-[var(--card-border)] text-center text-[13px] font-semibold text-[var(--card-muted)] transition hover:border-[var(--card-accent)] hover:text-[var(--card-ink)]">
       {uploading ? (
@@ -140,7 +148,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </button>
-              {editing && <RemoveBtn onClick={() => removePhoto(i)} />}
+              {editing && <PhotoControls onRemove={() => removePhoto(i)} onLeft={() => movePhoto(i, -1)} onRight={() => movePhoto(i, 1)} isFirst={i === 0} isLast={i === images.length - 1} isRtl={!!isRtl} />}
             </div>
           ))}
           {AddTile}
@@ -153,7 +161,7 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={im.url ?? undefined} alt={im.alt} loading="lazy" className="w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]" />
               </button>
-              {editing && <RemoveBtn onClick={() => removePhoto(i)} />}
+              {editing && <PhotoControls onRemove={() => removePhoto(i)} onLeft={() => movePhoto(i, -1)} onRight={() => movePhoto(i, 1)} isFirst={i === 0} isLast={i === images.length - 1} isRtl={!!isRtl} />}
             </div>
           ))}
           {AddTile}
@@ -165,14 +173,21 @@ export function Gallery({ block, accent, index, toneHint, isRtl }: SectionProps)
 }
 
 // Small remove control shown on hover over a photo in the builder.
-function RemoveBtn({ onClick }: { onClick: () => void }) {
+// Edit-mode controls on each gallery photo: reorder (◀ ▶) + remove (✕).
+// Always visible on touch (no hover), reveal on hover on desktop.
+function PhotoControls({ onRemove, onLeft, onRight, isFirst, isLast, isRtl }: {
+  onRemove: () => void; onLeft: () => void; onRight: () => void; isFirst: boolean; isLast: boolean; isRtl: boolean
+}) {
+  const stop = (fn: () => void) => (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); fn() }
+  const btn = 'flex h-7 w-7 items-center justify-center rounded-full bg-black/75 text-[13px] text-white shadow-lg disabled:opacity-30'
+  // In RTL "previous" is visually on the right; keep the arrows pointing where they move.
   return (
-    <button
-      onClick={e => { e.stopPropagation(); onClick() }}
-      className="absolute right-2 top-2 z-10 hidden h-7 w-7 items-center justify-center rounded-full bg-black/70 text-[13px] text-white shadow-lg group-hover:flex"
-      aria-label="Remove photo"
-    >
-      ✕
-    </button>
+    <div className="ww-toolbar absolute inset-x-2 top-2 z-10 flex items-center justify-between opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="flex gap-1.5">
+        <button onClick={stop(onLeft)} disabled={isFirst} className={btn} aria-label="Move earlier">{isRtl ? '▶' : '◀'}</button>
+        <button onClick={stop(onRight)} disabled={isLast} className={btn} aria-label="Move later">{isRtl ? '◀' : '▶'}</button>
+      </div>
+      <button onClick={stop(onRemove)} className={`${btn} bg-black/75 hover:bg-red-600`} aria-label="Remove photo">✕</button>
+    </div>
   )
 }

@@ -22,7 +22,7 @@ export function PublicCard({ page }: { page: PublicPage }) {
     page,
     accent,
     vars,
-    tpl: { layout: tpl.layout, corner: tpl.corner, motion: tpl.motion, headingFont: tpl.headingFont, wash: tpl.wash },
+    tpl: { layout: tpl.layout, corner: tpl.corner, motion: tpl.motion, headingFont: tpl.headingFont, wash: tpl.wash, world: tpl.world },
   }
 
   // Feature flag: composable pages render the new section composer; everything

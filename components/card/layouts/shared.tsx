@@ -23,9 +23,13 @@ export interface HeroMedia {
 export function collectImages(page: PublicPage): HeroMedia[] {
   const out: HeroMedia[] = []
   for (const b of page.blocks) {
-    if (b.type === 'image_grid') {
+    if (b.type === 'image_grid' || b.type === 'gallery') {
       const imgs = (b.data.images as { url?: string; alt?: string }[] | undefined) ?? []
       for (const im of imgs) if (im.url) out.push({ url: mediaUrl(im.url), alt: im.alt ?? '' })
+    } else if (b.type === 'showcase') {
+      // showcase cases can carry images too — the cinematic hero strip draws on them.
+      const items = (b.data.items as { image?: string; title?: string }[] | undefined) ?? []
+      for (const it of items) if (it.image) out.push({ url: mediaUrl(it.image), alt: it.title ?? '' })
     } else if (b.type === 'before_after') {
       const after = b.data.after as { url?: string } | undefined
       const before = b.data.before as { url?: string } | undefined

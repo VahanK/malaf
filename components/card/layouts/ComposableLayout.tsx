@@ -5,11 +5,13 @@ import { Contact } from '../sections/Contact'
 import { Narrative } from '../sections/Narrative'
 import { Showcase } from '../sections/Showcase'
 import { Gallery } from '../sections/Gallery'
-import { Band, SectionKicker, TYPE_LABEL } from '../sections/shared'
+import { Band, SectionKicker, TYPE_LABEL, Marquee, type World } from '../sections/shared'
 import { BeforeAfter } from '../blocks'
 import { mediaUrl } from './shared'
 import type { LayoutProps } from './types'
 import type { PublicBlock } from '@/lib/public-page'
+
+type Tone = 'base' | 'soft' | 'dark'
 
 // COMPOSABLE — renders a page as an ordered stack of typed SECTIONS (Hero →
 // sections → Contact), each a full-bleed band. This is the "real website"
@@ -19,44 +21,71 @@ import type { PublicBlock } from '@/lib/public-page'
 // components. Legacy per-item blocks (stat_card/testimonial/before_after) are
 // GROUPED here — consecutive runs collapse into one band — so no data migration
 // was needed.
-export function ComposableLayout({ page, accent, vars }: LayoutProps) {
+export function ComposableLayout({ page, accent, vars, tpl }: LayoutProps) {
   const p = page.profile
+  const world = (tpl.world ?? 'editorial-dark') as World
   const heroVariant = p.hero_variant || 'photo-bleed'
 
   // Group the block list: consecutive legacy same-type blocks fold into one
   // section; new section types stand alone. Preserves page order.
   const groups = groupBlocks(page.blocks)
 
+  // Stateful tone cadence (the Ivory move). A blind idx%4 cycle collides because
+  // several variants force a fixed tone; instead we track the LAST band's actual
+  // tone and hand each flexible section the next cadence tone that DIFFERS — so
+  // no two touching bands ever share a background. Sections that force their own
+  // tone report it back via fixTone() to keep the chain honest.
+  const CADENCE: Tone[] = ['base', 'soft', 'base', 'dark']
+  let cadencePtr = 0
+  let lastTone: Tone = 'base'
+  const nextTone = (): Tone => {
+    for (let k = 0; k < CADENCE.length; k++) {
+      const t = CADENCE[(cadencePtr + k) % CADENCE.length]
+      if (t !== lastTone) {
+        cadencePtr = (cadencePtr + k + 1) % CADENCE.length
+        lastTone = t
+        return t
+      }
+    }
+    return lastTone
+  }
+  const fixTone = (t: Tone): Tone => {
+    lastTone = t
+    return t
+  }
+
   let idx = 0
+  const nodes: React.ReactNode[] = []
+  groups.forEach((g, gi) => {
+    let node: React.ReactNode = null
+    if (g.kind === 'stats') {
+      node = <StatsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} world={world} />
+    } else if (g.kind === 'testimonials') {
+      node = <TestimonialsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={nextTone()} />
+    } else if (g.kind === 'comparison') {
+      node = <ComparisonBand key={gi} blocks={g.blocks} accent={accent} index={++idx} tone={fixTone('soft')} />
+    } else {
+      const b = g.blocks[0]
+      idx++
+      const toneHint = nextTone()
+      if (b.type === 'narrative') node = <Narrative key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
+      else if (b.type === 'showcase') node = <Showcase key={gi} block={b} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
+      else if (b.type === 'gallery' || b.type === 'image_grid') node = <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} toneHint={toneHint} world={world} />
+    }
+    if (!node) return
+    nodes.push(node)
+    // OKO signature: an oversized scrolling word between bands — brutalist only,
+    // never after the final band.
+    if (world === 'brutalist' && gi < groups.length - 1) {
+      nodes.push(<Marquee key={`mq-${gi}`} word={g.blocks[0].title || TYPE_LABEL[g.blocks[0].type] || 'work'} accent={accent} />)
+    }
+  })
+
   return (
     <main className="text-[var(--card-ink)]" style={{ ...vars, background: 'var(--card-bg)' }}>
-      <Hero page={page} accent={accent} variant={heroVariant} />
-
-      {groups.map((g, gi) => {
-        // stats / testimonials / comparison render grouped; the rest advance the
-        // numbered kicker index.
-        if (g.kind === 'stats') {
-          return <StatsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} />
-        }
-        if (g.kind === 'testimonials') {
-          return <TestimonialsBand key={gi} blocks={g.blocks} accent={accent} index={++idx} />
-        }
-        if (g.kind === 'comparison') {
-          return <ComparisonBand key={gi} blocks={g.blocks} accent={accent} index={++idx} />
-        }
-        // single new-type section
-        const b = g.blocks[0]
-        idx++
-        if (b.type === 'narrative') return <Narrative key={gi} block={b} page={page} accent={accent} index={idx} />
-        if (b.type === 'showcase') return <Showcase key={gi} block={b} page={page} accent={accent} index={idx} />
-        if (b.type === 'gallery' || b.type === 'image_grid') {
-          // image_grid legacy blocks render through Gallery too.
-          return <Gallery key={gi} block={normalizeImageGrid(b)} page={page} accent={accent} index={idx} />
-        }
-        return null
-      })}
-
-      <Contact page={page} accent={accent} />
+      <Hero page={page} accent={accent} variant={heroVariant} world={world} />
+      {nodes}
+      <Contact page={page} accent={accent} world={world} />
     </main>
   )
 }
@@ -84,17 +113,20 @@ function normalizeImageGrid(b: PublicBlock): PublicBlock {
 }
 
 // ---- grouped legacy bands ----
-function StatsBand({ blocks, accent, index }: { blocks: PublicBlock[]; accent: string; index: number }) {
+function StatsBand({ blocks, accent, index, tone, world }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone; world: World }) {
   const items = blocks.map(b => ({ value: (b.data.value as string) ?? '', label: (b.data.label as string) ?? '' })).filter(s => s.value)
   if (!items.length) return null
+  const onDark = tone === 'dark'
+  // Oversized numbers with hairline dividers (OKO/Anthony) — the scale contrast
+  // is the whole design; a small stat row reads like a dashboard, not a page.
   return (
-    <Band tone="soft" accent={accent}>
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.stat_card} accent={accent} />
-      <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+    <Band tone={tone} accent={accent}>
+      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.stat_card} accent={accent} onDark={onDark} />
+      <div className="grid grid-cols-2 divide-x divide-[var(--card-border)] sm:grid-cols-3">
         {items.slice(0, 3).map((s, i) => (
-          <div key={i}>
-            <div className="font-serif text-[clamp(36px,5vw,56px)] font-black leading-none" style={{ color: accent }}>{s.value}</div>
-            <div className="mt-2 text-[13px] text-[var(--card-muted)]">{s.label}</div>
+          <div key={i} className="px-6 first:pl-0">
+            <div className="font-serif text-[clamp(44px,8vw,84px)] font-black leading-none" style={{ color: accent }}>{s.value}</div>
+            <div className={`mt-2 text-[13px] ${onDark ? 'text-white/60' : 'text-[var(--card-muted)]'}`}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -102,17 +134,18 @@ function StatsBand({ blocks, accent, index }: { blocks: PublicBlock[]; accent: s
   )
 }
 
-function TestimonialsBand({ blocks, accent, index }: { blocks: PublicBlock[]; accent: string; index: number }) {
+function TestimonialsBand({ blocks, accent, index, tone }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone }) {
   const quotes = blocks.map(b => ({ text: (b.data.text as string) ?? '', attribution: (b.data.attribution as string) ?? '', date_label: (b.data.date_label as string) ?? '' })).filter(q => q.text)
   if (!quotes.length) return null
+  const onDark = tone === 'dark'
   return (
-    <Band tone="base" accent={accent}>
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.testimonial} accent={accent} />
+    <Band tone={tone} accent={accent}>
+      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.testimonial} accent={accent} onDark={onDark} />
       <div className="grid gap-5 sm:grid-cols-2">
         {quotes.map((q, i) => (
-          <div key={i} className="rounded-[var(--card-radius-lg)] border border-[var(--card-border)] bg-[var(--card-surface)] p-6">
+          <div key={i} className={`rounded-[var(--card-radius-lg)] border p-6 ${onDark ? 'border-white/15 bg-white/5' : 'border-[var(--card-border)] bg-[var(--card-surface)]'}`}>
             <p className="text-[16px] leading-relaxed">“{q.text}”</p>
-            <p className="mt-3 text-[12px] font-semibold text-[var(--card-muted)]">{q.attribution}{q.date_label ? ` · ${q.date_label}` : ''}</p>
+            <p className={`mt-3 text-[12px] font-semibold ${onDark ? 'text-white/50' : 'text-[var(--card-muted)]'}`}>{q.attribution}{q.date_label ? ` · ${q.date_label}` : ''}</p>
           </div>
         ))}
       </div>
@@ -120,10 +153,10 @@ function TestimonialsBand({ blocks, accent, index }: { blocks: PublicBlock[]; ac
   )
 }
 
-function ComparisonBand({ blocks, accent, index }: { blocks: PublicBlock[]; accent: string; index: number }) {
+function ComparisonBand({ blocks, accent, index, tone }: { blocks: PublicBlock[]; accent: string; index: number; tone: Tone }) {
   return (
-    <Band tone="soft" accent={accent}>
-      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.before_after} accent={accent} />
+    <Band tone={tone} accent={accent}>
+      <SectionKicker index={index} title={blocks[0].title} fallback={TYPE_LABEL.before_after} accent={accent} onDark={tone === 'dark'} />
       <div className="space-y-6">
         {blocks.map(b => (
           <BeforeAfter key={b.id} data={b.data} accent={accent} radiusClass="rounded-[var(--card-radius-lg)]" />

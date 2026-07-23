@@ -1,20 +1,42 @@
 'use client'
 
 import { VoicePlayer } from '../VoicePlayer'
-import { heroImage, mediaUrl } from '../layouts/shared'
+import { collectImages, heroImage, mediaUrl } from '../layouts/shared'
 import { normalizeAccent } from '@/lib/card-templates'
+import { worldType, type World } from './shared'
 import type { PublicPage } from '@/lib/public-page'
 
-// HERO (fixed bone). Two variants:
-//   - photo-bleed: full-bleed hero photo, name overlaid huge (visual trades).
-//   - statement: no photo needed — huge name + statement on the wash, an
-//     aurora behind it (developers/lawyers/text-forward).
-export function Hero({ page, accent, variant }: { page: PublicPage; accent: string; variant: string }) {
+// HERO (fixed bone, many faces). The founder's #1 "everything looks the same"
+// fix: the hero is the most-seen block, so it must vary by real levers — layout
+// (variant) AND type (world). Variants:
+//   - statement:      huge name + statement on an aurora wash (text-forward trades)
+//   - photo-bleed:    full-bleed hero photo, name overlaid huge (visual trades)
+//   - cinematic:      photo-bleed + an overlapping filmstrip of featured work (Creacy)
+//   - split-portrait: two-column — copy left, portrait right (Anthony/Alona)
+// The `world` prop drives the heading family/weight/case via worldType(), so the
+// SAME variant reads visibly different across templates.
+export function Hero({
+  page,
+  accent,
+  variant,
+  world,
+}: {
+  page: PublicPage
+  accent: string
+  variant: string
+  world?: World
+}) {
   const p = page.profile
   const hero = heroImage(page)
+  const featured = collectImages(page)
   const wa = p.whatsapp_number ? `https://wa.me/${p.whatsapp_number.replace(/[^\d]/g, '')}` : null
   const a6 = normalizeAccent(accent)
-  const useStatement = variant === 'statement' || !hero.url
+  const wt = worldType(world)
+
+  // An explicit hero image beats the auto-picked first gallery photo when set.
+  const heroImg = (p.hero_image_url && mediaUrl(p.hero_image_url)) || hero.url
+  const wantsPhoto = variant === 'photo-bleed' || variant === 'cinematic' || variant === 'split-portrait'
+  const useStatement = variant === 'statement' || (!heroImg && wantsPhoto)
 
   const availabilityPill = p.availability_status !== 'away' && (
     <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-medium ${useStatement ? 'border border-[var(--card-border)] bg-[var(--card-surface)]' : 'border border-white/25 bg-black/30 text-white backdrop-blur'}`}>
@@ -36,6 +58,32 @@ export function Hero({ page, accent, variant }: { page: PublicPage; accent: stri
     </div>
   )
 
+  // ── split-portrait: copy column + portrait column (no full-bleed) ──
+  if (variant === 'split-portrait' && heroImg) {
+    return (
+      <section className="grid w-full md:min-h-[92vh] md:grid-cols-[1.1fr_0.9fr]" style={{ background: 'var(--card-bg)' }}>
+        <div className="flex flex-col justify-center px-6 py-20 lg:px-14">
+          {availabilityPill}
+          <span className="mt-6 text-[13px] uppercase tracking-[0.28em]" style={{ color: a6 }}>{p.title}</span>
+          <span className="mt-4 h-px w-16" style={{ background: a6 }} />
+          <h1 className={`mt-5 max-w-xl ${wt.heading} leading-[1.02]`} style={{ fontSize: `clamp(40px,6vw,${Math.min(wt.heroMax, 84)}px)` }}>
+            {p.full_name}
+          </h1>
+          {p.bio && <p className="mt-5 max-w-md text-[16px] leading-relaxed text-[var(--card-muted)]">{p.bio}</p>}
+          {ctas(false)}
+          {p.voice_intro_url && (
+            <div className="mt-8 max-w-sm">
+              <VoicePlayer src={mediaUrl(p.voice_intro_url)} label="Hear from me" accent={a6} radiusClass="rounded-[var(--card-radius-lg)]" />
+            </div>
+          )}
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImg} alt={hero.alt} className="h-64 w-full object-cover object-top md:h-full" />
+      </section>
+    )
+  }
+
+  // ── statement: no photo — huge name on an aurora wash ──
   if (useStatement) {
     return (
       <section
@@ -44,7 +92,7 @@ export function Hero({ page, accent, variant }: { page: PublicPage; accent: stri
       >
         <div className="mx-auto max-w-5xl">
           {availabilityPill}
-          <h1 className="mt-6 max-w-4xl font-serif text-[clamp(44px,9vw,104px)] font-semibold leading-[0.95] tracking-[-0.03em]">
+          <h1 className={`mt-6 max-w-4xl ${wt.heading} leading-[0.95]`} style={{ fontSize: `clamp(44px,9vw,${wt.heroMax}px)` }}>
             {p.full_name}
           </h1>
           <p className="mt-4 text-[clamp(16px,2vw,22px)] font-bold" style={{ color: a6 }}>{p.title}</p>
@@ -60,21 +108,32 @@ export function Hero({ page, accent, variant }: { page: PublicPage; accent: stri
     )
   }
 
-  // photo-bleed
+  // ── photo-bleed / cinematic: full-bleed photo, name overlaid ──
+  const isCinematic = variant === 'cinematic' && featured.length > 1
   return (
-    <section className="relative flex min-h-[88vh] w-full items-end overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={hero.url ?? undefined} alt={hero.alt} className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
-      <div className="relative mx-auto w-full max-w-5xl px-6 pb-14 lg:px-10 lg:pb-20">
-        {availabilityPill}
-        <h1 className="mt-5 max-w-4xl text-[13vw] font-black leading-[0.9] tracking-[-0.03em] text-white sm:text-[64px] lg:text-[92px]">
-          {p.full_name}
-        </h1>
-        <p className="mt-4 text-[17px] font-semibold" style={{ color: a6 }}>{p.title}</p>
-        {p.bio && <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75">{p.bio}</p>}
-        {ctas(true)}
-      </div>
-    </section>
+    <>
+      <section className="relative flex min-h-[88vh] w-full items-end overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImg ?? undefined} alt={hero.alt} className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40" />
+        <div className="relative mx-auto w-full max-w-5xl px-6 pb-14 lg:px-10 lg:pb-20">
+          {availabilityPill}
+          <h1 className={`mt-5 max-w-4xl ${wt.heading} leading-[0.9] text-white`} style={{ fontSize: `clamp(40px,13vw,${Math.min(wt.heroMax, 100)}px)` }}>
+            {p.full_name}
+          </h1>
+          <p className="mt-4 text-[17px] font-semibold" style={{ color: a6 }}>{p.title}</p>
+          {p.bio && <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75">{p.bio}</p>}
+          {ctas(true)}
+        </div>
+      </section>
+      {isCinematic && (
+        <div className="relative z-10 -mt-10 flex snap-x gap-4 overflow-x-auto px-6 pb-8 lg:px-10 [&>*]:snap-start" style={{ background: 'var(--card-bg)' }}>
+          {featured.slice(0, 4).map((im, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} src={im.url ?? undefined} alt={im.alt} className="aspect-[3/4] w-[200px] shrink-0 rounded-[var(--card-radius-lg)] object-cover shadow-[var(--card-shadow)]" />
+          ))}
+        </div>
+      )}
+    </>
   )
 }

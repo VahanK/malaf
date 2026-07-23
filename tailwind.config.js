@@ -14,6 +14,13 @@ module.exports = {
         // Homepage display serif — H1/H2 only. Exposed as --font-serif by the
         // Fraunces loader in app/layout.tsx.
         serif: ["var(--font-serif)", "Georgia", "serif"],
+        // Body/UI sans — was only reaching pages via an inline <body style>, so
+        // `font-sans` fell back to Tailwind's default. Wire it to Inter (loaded
+        // as --font-inter) so per-world `font-sans` type choices actually apply.
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        // Numbered kickers / mono accents. `font-mono` had no config, rendering
+        // the browser default monospace — now an explicit stack.
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
         // Malaf card palette (docs/card-visuals.html) — client-facing public card pages

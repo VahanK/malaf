@@ -28,6 +28,10 @@ export interface PublicBlock {
   intro: string
   intro_ar: string
   variant: string
+  // Optional explicit band tone. When unset, the layout's stateful cadence
+  // decides. Not yet a DB column — reads as undefined until one is added, so no
+  // RPC change is required for the foundation.
+  tone?: 'base' | 'soft' | 'dark'
 }
 
 export interface PublicProfile {
@@ -37,6 +41,7 @@ export interface PublicProfile {
   title_ar: string
   bio: string
   avatar_url: string | null
+  hero_image_url: string | null
   voice_intro_url: string | null
   accent_color: string | null
   preset: string | null
@@ -82,7 +87,7 @@ export async function getOwnPagePreview(): Promise<PublicPage | null> {
 
   const { data: prof } = await supabase
     .from('profiles')
-    .select('handle, full_name, title, title_ar, bio, avatar_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours, hero_variant, contact_variant, composable')
+    .select('handle, full_name, title, title_ar, bio, avatar_url, hero_image_url, voice_intro_url, accent_color, preset, card_template, availability_status, availability_note, whatsapp_number, areas_served, page_language, noindex, reply_hours, hero_variant, contact_variant, composable')
     .eq('id', user.id)
     .single()
   if (!prof) return null

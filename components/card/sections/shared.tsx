@@ -7,11 +7,48 @@ import type { PublicPage, PublicBlock } from '@/lib/public-page'
 // layouts): sections are FULL-BLEED bands with numbered kickers and asymmetric
 // composition — the moves that make a page read as a real website, not app UI.
 
+// A "world" is the visual identity a template belongs to (1:1 with card_template
+// id). It drives per-world TYPE — the founder's "typography isn't the same for
+// anything" fix. Each world differs from the others by a real lever (family OR
+// weight OR case), never a tracking nudge, so the eye catches the difference.
+export type World =
+  | 'editorial-dark' | 'minimal-light' | 'warm-gradient'
+  | 'glassmorphism' | 'midnight' | 'clean-gradient'
+  | 'brutalist' | 'bento'
+
 export interface SectionProps {
   block: PublicBlock
   page: PublicPage
   accent: string
   index: number // 1-based, for the numbered kicker
+  toneHint?: 'base' | 'soft' | 'dark' // cadence tone from the layout (flexible variants use it)
+  world?: World // type identity — sections read this for per-world headings
+}
+
+/** Per-world heading treatment. The single source of the "type isn't the same"
+ *  differentiation: returns the heading class string (family/weight/case), the
+ *  hero max font size, and whether kickers uppercase — each world moves at least
+ *  one full lever from the others. */
+export function worldType(world?: World): { heading: string; heroMax: number; kickerUpper: boolean } {
+  switch (world) {
+    case 'brutalist':
+      return { heading: 'font-sans font-black uppercase tracking-[-0.04em]', heroMax: 200, kickerUpper: true }
+    case 'minimal-light':
+      return { heading: 'font-serif font-normal tracking-[-0.04em]', heroMax: 120, kickerUpper: false }
+    case 'warm-gradient':
+      return { heading: 'font-serif font-medium tracking-[-0.01em]', heroMax: 100, kickerUpper: false }
+    case 'bento':
+      return { heading: 'font-serif font-bold tracking-normal', heroMax: 72, kickerUpper: false }
+    case 'midnight':
+      return { heading: 'font-sans font-extrabold uppercase tracking-[-0.03em]', heroMax: 104, kickerUpper: true }
+    case 'glassmorphism':
+      return { heading: 'font-sans font-semibold tracking-[-0.02em]', heroMax: 96, kickerUpper: false }
+    case 'clean-gradient':
+      return { heading: 'font-sans font-extrabold tracking-[-0.025em] card-gradient-text', heroMax: 96, kickerUpper: false }
+    case 'editorial-dark':
+    default:
+      return { heading: 'font-sans font-black tracking-[-0.03em]', heroMax: 104, kickerUpper: false }
+  }
 }
 
 // Human-readable default label per section type, used when the user leaves the
@@ -62,11 +99,18 @@ export function Band({
   tone = 'base',
   accent,
   className = '',
+  bleed = false,
+  id,
 }: {
   children: React.ReactNode
   tone?: 'base' | 'soft' | 'dark'
   accent?: string
   className?: string
+  /** Skip the horizontal padding + centered max-width container so a variant
+   *  can run truly edge-to-edge (filmstrips, marquees). The variant supplies
+   *  its own padding. */
+  bleed?: boolean
+  id?: string
 }) {
   const bg =
     tone === 'dark'
@@ -77,11 +121,34 @@ export function Band({
   const text = tone === 'dark' ? { color: 'var(--card-bg)' } : undefined
   return (
     <section
-      className={`w-full px-6 py-16 sm:py-20 lg:px-10 ${className}`}
+      id={id}
+      className={`w-full py-16 sm:py-20 ${bleed ? '' : 'px-6 lg:px-10'} ${className}`}
       style={{ background: bg, ...text }}
     >
-      <div className="mx-auto max-w-5xl">{children}</div>
+      {bleed ? children : <div className="mx-auto max-w-5xl">{children}</div>}
     </section>
+  )
+}
+
+/** OKO-style marquee divider — an oversized word scrolling between bands, half
+ *  outline / half fill. Hidden on mobile (3G budget) and capped in length so a
+ *  long title can't blow the layout. `motion-reduce` stops the scroll. */
+export function Marquee({ word, accent }: { word: string; accent: string }) {
+  const w = (word || 'work').length > 12 ? word.slice(0, 12).trim() : word || 'work'
+  return (
+    <div className="hidden overflow-hidden border-y border-[var(--card-border)] py-5 sm:block" aria-hidden>
+      <div className="flex whitespace-nowrap [animation:card-marquee_28s_linear_infinite] motion-reduce:[animation:none]">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <span
+            key={i}
+            className="mx-6 font-sans text-[clamp(36px,7vw,88px)] font-black uppercase tracking-[-0.02em]"
+            style={i % 2 ? { WebkitTextStroke: '2px var(--card-ink)', color: 'transparent' } : { color: accent }}
+          >
+            {w}
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }
 

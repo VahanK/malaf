@@ -88,11 +88,26 @@ body {
   animation: chat-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* ---- composable sections: gradient text-fill + marquee/float motion ---- */
+/* clean-gradient world fills its headings with an accent gradient (worldType). */
+.card-gradient-text {
+  background: linear-gradient(120deg, var(--card-accent), var(--card-accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@keyframes card-marquee { to { transform: translateX(-50%); } }
+@keyframes card-float {
+  0%, 100% { transform: translateY(-10px); }
+  50% { transform: translateY(10px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-reveal { animation: none; }
   .wave-playing i { animation: none; }
   .reveal, .reveal .stagger { opacity: 1; transform: none; transition: none; }
   .glow-breathe, .handle-nudge, .chat-pop { animation: none; }
+  [style*="card-marquee"], [style*="card-float"] { animation: none !important; }
 }
 
 /* ---- glassmorphism template (GlassLayout) — frosted translucent surfaces ---- */

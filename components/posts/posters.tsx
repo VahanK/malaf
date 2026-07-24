@@ -221,15 +221,20 @@ function PhoneMock({ width = 330, tilt = 0 }: { width?: number; tilt?: number })
   )
 }
 
-// The mock phone with a small caption, so it always reads as an illustration.
+// The mock phone captioned with the personal link the scroller would OWN —
+// the whole pitch is "a link + page that belong to you", so we show it.
 function PhoneExample({ width = 330, tilt = 0, on = 'ink' as Variant }: { width?: number; tilt?: number; on?: Variant }) {
   const s = SURFACES[on]
   return (
-    <div style={{ width, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, flexShrink: 0 }}>
+    <div style={{ width, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, flexShrink: 0 }}>
       <PhoneMock width={width} tilt={tilt} />
-      <span style={{ fontSize: 22, fontWeight: 600, letterSpacing: '0.02em', color: s.mute, textAlign: 'center' }}>
-        your page — example
-      </span>
+      <div style={{ textAlign: 'center', lineHeight: 1.3, whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '0.02em', color: s.mute }}>your own link</div>
+        <div style={{ fontSize: 21, fontWeight: 700 }}>
+          <span style={{ color: s.mute }}>work-withme.com/</span>
+          <span style={{ color: s.accent }}>yourname</span>
+        </div>
+      </div>
     </div>
   )
 }
@@ -278,7 +283,7 @@ function Brand() {
           </span>
         </div>
         <p style={{ margin: '56px auto 0', maxWidth: 760, fontSize: 34, lineHeight: 1.4, color: MUTE_L, fontWeight: 500 }}>
-          The freelancer&apos;s front office. Your page, your quotes, your money — from one link.
+          Your own page, at your own link — the professional home for freelancers in Lebanon.
         </p>
       </div>
     </Frame>
@@ -303,15 +308,15 @@ function Hook() {
 
 // 3. What it is — feature list + phone.
 function WhatItIs() {
-  const items = ['Your work, up front', 'Prices — only if you want', 'A face and your own accent color', 'One-tap Arabic version']
+  const items = ['Your work, up front', 'Prices — only if you want', 'Your own accent color', 'One-tap Arabic version']
   return (
     <Frame variant="panel" tag="Your page, free">
       <div style={{ display: 'flex', alignItems: 'center', gap: 70 }}>
         <div style={{ flex: 1 }}>
-          <h1 style={{ fontFamily: SERIF, fontSize: 68, lineHeight: 1.08, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
-            A professional page.
+          <h1 style={{ fontFamily: SERIF, fontSize: 70, lineHeight: 1.06, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
+            Your own page.
             <br />
-            <span style={{ color: LIME }}>Live at your own link.</span>
+            <span style={{ color: LIME }}>Your own link.</span>
           </h1>
           <div style={{ marginTop: 44, display: 'flex', flexDirection: 'column', gap: 26 }}>
             {items.map(t => (
@@ -342,7 +347,7 @@ function Tick() {
 function HowItWorks() {
   const steps = [
     ['01', 'Pick a look', 'A real design — no builder, no code.'],
-    ['02', 'Add your work', 'Photos, a voice intro, prices if you want.'],
+    ['02', 'Add your work', 'Photos, prices, your availability.'],
     ['03', 'Share your link', 'Bio, QR, or straight into a chat.'],
     ['04', 'Get booked', 'Clients open it and message you on WhatsApp.'],
   ]
@@ -415,6 +420,10 @@ function Qr() {
           <p style={{ marginTop: 34, fontSize: 32, lineHeight: 1.45, color: MUTE_L, maxWidth: 480 }}>
             Print it, post it, put it on the counter. Anyone who scans lands on your work — no app, no typing.
           </p>
+          <div style={{ marginTop: 28, display: 'inline-flex', alignItems: 'center', gap: 12, background: PAPER, border: '1px solid rgba(11,11,12,0.1)', borderRadius: 999, padding: '14px 24px', fontSize: 27, fontWeight: 700 }}>
+            <span style={{ color: MUTE_L }}>work-withme.com/</span>
+            <span style={{ color: LIME_DK, marginLeft: -6 }}>yourname</span>
+          </div>
         </div>
         <div
           style={{

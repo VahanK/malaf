@@ -53,6 +53,9 @@ const SANS = 'var(--font-inter), system-ui, sans-serif'
 const ARABIC = 'var(--font-tajawal), sans-serif'
 
 const SITE = 'work-withme.com'
+// Show what a real freelancer's link looks like, not a "/you" placeholder.
+// `rami` matches the demo page used in the phone mockups.
+const HANDLE = 'rami'
 
 type Variant = 'ink' | 'lime' | 'cream' | 'panel'
 
@@ -132,9 +135,12 @@ function Frame({
       </div>
 
       {footer && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Wordmark size={30} on={variant} />
-          <span style={{ fontSize: 24, color: s.mute, fontWeight: 500 }}>{SITE}</span>
+        <div style={{ display: 'flex' }}>
+          {/* one quiet mark — the sample link doubles as the brand (it carries
+              "work-withme"), so no need to fill the other corners too */}
+          <span style={{ fontSize: 27, fontWeight: 600, letterSpacing: '-0.01em', color: s.mute }}>
+            {SITE}/<span style={{ color: s.accent }}>{HANDLE}</span>
+          </span>
         </div>
       )}
     </div>
@@ -236,13 +242,13 @@ function Brand() {
 function Hook() {
   return (
     <Frame variant="ink" tag="For freelancers in Lebanon">
-      <h1 style={{ fontFamily: SERIF, fontSize: 92, lineHeight: 1.04, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
-        If you can post on Instagram,
+      <h1 style={{ fontFamily: SERIF, fontSize: 96, lineHeight: 1.04, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
+        Your work is studio-level.
         <br />
-        <span style={{ color: LIME }}>you can build the page that gets you booked.</span>
+        <span style={{ color: LIME }}>Is your link?</span>
       </h1>
       <p style={{ marginTop: 44, fontSize: 34, lineHeight: 1.45, color: MUTE_D, maxWidth: 820 }}>
-        Your work, up front, at your own link — the page that makes clients take you seriously.
+        One page with your work, your prices, and a way to book — the moment a client taps.
       </p>
     </Frame>
   )
@@ -250,7 +256,7 @@ function Hook() {
 
 // 3. What it is — feature list + phone.
 function WhatItIs() {
-  const items = ['Your work, up front', 'Prices — only if you want', 'A face, a voice, an accent color', 'One-tap Arabic version']
+  const items = ['Your work, up front', 'Prices — only if you want', 'A face and your own accent color', 'One-tap Arabic version']
   return (
     <Frame variant="panel" tag="Your page, free">
       <div style={{ display: 'flex', alignItems: 'center', gap: 70 }}>
@@ -606,7 +612,7 @@ function Cta() {
               borderRadius: 999,
             }}
           >
-            {SITE}
+            {SITE}/{HANDLE}
           </div>
         </div>
         <Phone src="/mockups/rami-hero.webp" width={330} tilt={-2} />

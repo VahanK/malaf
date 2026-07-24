@@ -155,20 +155,18 @@ function Wordmark({ size = 30, on = 'ink' }: { size?: number; on?: Variant }) {
   )
 }
 
-// A portrait phone showing a real product screenshot. Uses a plain <img> (not
-// next/image) so the fixed-size poster layout is exact under the screenshotter.
-function Phone({
-  src,
-  width = 360,
-  tilt = 0,
-  shadow = true,
-}: {
-  src: string
-  width?: number
-  tilt?: number
-  shadow?: boolean
-}) {
+// The phone with a small "example" caption, so the freelancer page inside it
+// reads as an illustration of what YOUR page looks like — never as this
+// account's own identity.
+// A rendered mock of a WorkWith page — NOT a real person's screenshot. The name
+// is a lime "Your Name" placeholder so it reads as a template of what YOUR page
+// looks like. Everything scales off the phone width (u = width/330).
+function PhoneMock({ width = 330, tilt = 0 }: { width?: number; tilt?: number }) {
   const h = Math.round(width * 2.06)
+  const u = width / 330
+  const CARD_BG = '#0e0f13'
+  const CARD_PANEL = '#191c23'
+  const CARD_MUTED = '#9aa0ae'
   return (
     <div
       style={{
@@ -177,44 +175,79 @@ function Phone({
         borderRadius: width * 0.13,
         background: '#000',
         padding: width * 0.03,
-        boxShadow: shadow ? '0 50px 90px -40px rgba(0,0,0,0.6)' : 'none',
+        boxShadow: '0 50px 90px -40px rgba(0,0,0,0.6)',
         transform: tilt ? `rotate(${tilt}deg)` : undefined,
         flexShrink: 0,
       }}
     >
-      <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: width * 0.1, overflow: 'hidden', background: '#111' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-        {/* notch */}
+      <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: width * 0.1, overflow: 'hidden', background: CARD_BG, display: 'flex', flexDirection: 'column' }}>
+        {/* hero */}
         <div
           style={{
-            position: 'absolute',
-            top: width * 0.045,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: width * 0.34,
-            height: width * 0.055,
-            borderRadius: 999,
-            background: '#000',
+            height: '54%',
+            padding: 22 * u,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            background: 'radial-gradient(120% 80% at 25% 15%, rgba(201,247,59,0.16), transparent 55%), linear-gradient(160deg, #23262f, #0e0f13)',
           }}
-        />
+        >
+          <div style={{ width: 66 * u, height: 66 * u, borderRadius: 999, marginBottom: 14 * u, background: 'linear-gradient(135deg,#2c303b,#15171d)', border: `${2 * u}px solid rgba(255,255,255,0.16)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width={30 * u} height={30 * u} viewBox="0 0 24 24" fill={CARD_MUTED}><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" /></svg>
+          </div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 * u, alignSelf: 'flex-start', background: 'rgba(0,0,0,0.45)', borderRadius: 999, padding: `${5 * u}px ${12 * u}px`, fontSize: 12 * u, color: '#f4f2ec', marginBottom: 12 * u }}>
+            <span style={{ width: 7 * u, height: 7 * u, borderRadius: 999, background: GREEN }} /> Available this month
+          </div>
+          <div style={{ fontFamily: SANS, fontWeight: 800, fontSize: 36 * u, lineHeight: 1, color: LIME }}>Your Name</div>
+          <div style={{ marginTop: 7 * u, fontSize: 15 * u, color: GOLD, fontWeight: 600 }}>Your craft · Your city</div>
+        </div>
+        {/* body */}
+        <div style={{ flex: 1, padding: 22 * u, display: 'flex', flexDirection: 'column', gap: 13 * u }}>
+          <div style={{ fontSize: 14 * u, lineHeight: 1.4, color: CARD_MUTED }}>A line about what you do — and who you do it for.</div>
+          <div style={{ display: 'flex', gap: 10 * u }}>
+            <div style={{ flex: 1, textAlign: 'center', background: LIME, color: INK, borderRadius: 999, padding: `${12 * u}px 0`, fontSize: 14 * u, fontWeight: 700 }}>Request a quote</div>
+            <div style={{ flex: 1, textAlign: 'center', background: 'transparent', color: '#f4f2ec', border: `${1.5 * u}px solid rgba(255,255,255,0.2)`, borderRadius: 999, padding: `${12 * u}px 0`, fontSize: 14 * u, fontWeight: 700 }}>WhatsApp</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 * u, marginTop: 2 * u }}>
+            {[0, 1, 2, 3, 4, 5].map(i => (
+              <div key={i} style={{ aspectRatio: '1 / 1', borderRadius: 10 * u, background: `linear-gradient(150deg, ${CARD_PANEL}, #0e0f13)` }} />
+            ))}
+          </div>
+        </div>
+        {/* notch */}
+        <div style={{ position: 'absolute', top: width * 0.045, left: '50%', transform: 'translateX(-50%)', width: width * 0.34, height: width * 0.055, borderRadius: 999, background: '#000' }} />
       </div>
     </div>
   )
 }
 
-// The phone with a small "example" caption, so the freelancer page inside it
-// reads as an illustration of what YOUR page looks like — never as this
-// account's own identity.
-function PhoneExample({ src, width = 330, tilt = 0, on = 'ink' as Variant }: { src: string; width?: number; tilt?: number; on?: Variant }) {
+// The mock phone with a small caption, so it always reads as an illustration.
+function PhoneExample({ width = 330, tilt = 0, on = 'ink' as Variant }: { width?: number; tilt?: number; on?: Variant }) {
   const s = SURFACES[on]
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, flexShrink: 0 }}>
-      <Phone src={src} width={width} tilt={tilt} />
-      <span style={{ fontSize: 22, fontWeight: 600, letterSpacing: '0.02em', color: s.mute }}>
-        ↑ an example page
+    <div style={{ width, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, flexShrink: 0 }}>
+      <PhoneMock width={width} tilt={tilt} />
+      <span style={{ fontSize: 22, fontWeight: 600, letterSpacing: '0.02em', color: s.mute, textAlign: 'center' }}>
+        your page — example
       </span>
     </div>
+  )
+}
+
+// --- inline icons (replace emoji in the art; emoji lives only in the bio) ----
+function ArrowUpIcon({ size = 26, color = INK }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 19V5M6 11l6-6 6 6" />
+    </svg>
+  )
+}
+function LinkIcon({ size = 40, color = INK }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1" />
+      <path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" />
+    </svg>
   )
 }
 
@@ -289,7 +322,7 @@ function WhatItIs() {
             ))}
           </div>
         </div>
-        <PhoneExample src="/mockups/rami-hero.webp" width={330} tilt={2} on="panel" />
+        <PhoneExample width={330} tilt={2} on="panel" />
       </div>
     </Frame>
   )
@@ -408,7 +441,7 @@ function VsLink() {
     <Frame variant="ink" tag="Not just a link">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-          <span style={{ fontSize: 40, opacity: 0.5 }}>🔗</span>
+          <span style={{ opacity: 0.5, display: 'inline-flex' }}><LinkIcon size={44} color={PAPER} /></span>
           <p style={{ fontFamily: SERIF, fontSize: 56, fontWeight: 500, color: MUTE_D, margin: 0, textDecoration: 'line-through', textDecorationColor: 'rgba(255,255,255,0.25)' }}>
             &quot;Here&apos;s my stuff.&quot;
           </p>
@@ -515,7 +548,7 @@ const CATEGORIES: Category[] = [
     tag: 'For tutors',
     pain: (
       <>
-        “What do you teach? What’s your rate? Which days?” <span style={{ color: LIME }}>Every parent, from scratch.</span>
+        “What do you teach? What’s your rate? Which days?” <span style={{ color: LIME }}>Every parent.</span>
       </>
     ),
     fix: 'Put your subjects, rates and free slots on one link — send it once, to every parent.',
@@ -583,23 +616,25 @@ const CATEGORIES: Category[] = [
 // so it points to the bio. Free is said once, here.
 function CtaPill({ format, variant }: { format: Format; variant: Variant }) {
   const onLight = variant === 'lime' || variant === 'cream'
-  const text = format === 'story' ? 'Tap the link — your page is free' : 'Free — link in bio 👆'
+  const fg = onLight ? LIME : INK
+  const story = format === 'story'
   return (
     <span
       style={{
         alignSelf: 'flex-start',
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 12,
+        gap: 14,
         background: onLight ? INK : LIME,
-        color: onLight ? LIME : INK,
-        fontSize: format === 'story' ? 36 : 30,
+        color: fg,
+        fontSize: story ? 36 : 30,
         fontWeight: 700,
-        padding: format === 'story' ? '22px 40px' : '18px 34px',
+        padding: story ? '22px 40px' : '18px 34px',
         borderRadius: 999,
       }}
     >
-      {text}
+      {story ? <LinkIcon size={34} color={fg} /> : <ArrowUpIcon size={28} color={fg} />}
+      {story ? 'Tap the link — it’s free' : 'Free — link in bio'}
     </span>
   )
 }
@@ -657,11 +692,11 @@ function Cta() {
               borderRadius: 999,
             }}
           >
-            👆 Link in bio
+            <ArrowUpIcon size={30} color={INK} /> Link in bio
           </div>
           <p style={{ marginTop: 22, fontSize: 26, color: MUTE_D }}>{SITE}</p>
         </div>
-        <PhoneExample src="/mockups/rami-hero.webp" width={330} tilt={-2} />
+        <PhoneExample width={330} tilt={-2} />
       </div>
     </Frame>
   )

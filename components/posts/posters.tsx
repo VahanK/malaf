@@ -501,10 +501,10 @@ const CATEGORIES: Category[] = [
     tag: 'For tutors',
     pain: (
       <>
-        “Which subjects? What’s the rate? What times?” <span style={{ color: LIME }}>Every parent.</span>
+        “What do you teach? What’s your rate? Which days?” <span style={{ color: LIME }}>Every parent, from scratch.</span>
       </>
     ),
-    fix: 'Answer it once. Send the same link to every parent who asks.',
+    fix: 'Put your subjects, rates and free slots on one link — send it once, to every parent.',
     variant: 'panel',
   },
   {
@@ -564,20 +564,49 @@ const CATEGORIES: Category[] = [
   },
 ]
 
-function CategoryStory({ tag, pain, fix, variant }: Omit<Category, 'slug'>) {
-  const s = SURFACES[variant]
+// A CTA pill whose wording matches what's actually tappable on the surface:
+// a story gets a real link sticker → "tap the link"; a feed post can't link,
+// so it points to the bio. Free is said once, here.
+function CtaPill({ format, variant }: { format: Format; variant: Variant }) {
+  const onLight = variant === 'lime' || variant === 'cream'
+  const text = format === 'story' ? 'Tap the link — your page is free' : 'Free — link in bio 👆'
   return (
-    <Frame variant={variant} format="story" tag={tag} pad={96}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 52 }}>
-        <div style={{ fontFamily: SERIF, fontSize: 200, lineHeight: 0.3, height: 90, color: s.accent }}>“</div>
-        <h1 style={{ fontFamily: SERIF, fontSize: 100, lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
+    <span
+      style={{
+        alignSelf: 'flex-start',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 12,
+        background: onLight ? INK : LIME,
+        color: onLight ? LIME : INK,
+        fontSize: format === 'story' ? 36 : 30,
+        fontWeight: 700,
+        padding: format === 'story' ? '22px 40px' : '18px 34px',
+        borderRadius: 999,
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+
+// One per-trade card, rendered as either a tall story or a square feed post.
+function CategoryCard({ tag, pain, fix, variant, format }: Omit<Category, 'slug'> & { format: Format }) {
+  const s = SURFACES[variant]
+  const story = format === 'story'
+  return (
+    <Frame variant={variant} format={format} tag={tag} pad={story ? 96 : 84}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: story ? 46 : 30 }}>
+        <div style={{ fontFamily: SERIF, fontSize: story ? 200 : 130, lineHeight: 0.3, height: story ? 90 : 58, color: s.accent }}>“</div>
+        <h1 style={{ fontFamily: SERIF, fontSize: story ? 100 : 66, lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
           {pain}
         </h1>
-        <div style={{ height: 3, width: 240, background: variant === 'lime' || variant === 'cream' ? 'rgba(11,11,12,0.15)' : 'rgba(255,255,255,0.16)' }} />
-        <p style={{ fontSize: 46, lineHeight: 1.4, fontWeight: 500, color: s.mute, margin: 0, maxWidth: 880 }}>
+        <div style={{ height: 3, width: story ? 240 : 180, background: s.accent, opacity: 0.7 }} />
+        <p style={{ fontSize: story ? 46 : 30, lineHeight: 1.4, fontWeight: 500, color: s.mute, margin: 0, maxWidth: 880 }}>
           <span style={{ color: s.accent, fontWeight: 700 }}>Your page fixes it. </span>
           {fix}
         </p>
+        <CtaPill format={format} variant={variant} />
       </div>
     </Frame>
   )
@@ -598,6 +627,8 @@ function Cta() {
           <p style={{ marginTop: 26, fontSize: 30, color: MUTE_D, fontWeight: 500 }}>
             Free to build · live in minutes · yours to keep.
           </p>
+          {/* The action, in Instagram's terms: a feed post can't carry a tap-
+              able link, so send them to the one place that can — the bio. */}
           <div
             style={{
               marginTop: 44,
@@ -606,16 +637,45 @@ function Cta() {
               gap: 16,
               background: LIME,
               color: INK,
-              fontSize: 36,
+              fontSize: 34,
               fontWeight: 700,
               padding: '22px 44px',
               borderRadius: 999,
             }}
           >
-            {SITE}/{HANDLE}
+            👆 Link in bio
           </div>
+          <p style={{ marginTop: 22, fontSize: 26, color: MUTE_D }}>{SITE}/{HANDLE}</p>
         </div>
         <Phone src="/mockups/rami-hero.webp" width={330} tilt={-2} />
+      </div>
+    </Frame>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Brand assets — logo for the profile picture + a wordmark lockup.
+// ---------------------------------------------------------------------------
+function LogoAvatar() {
+  // Profile-pic monogram: reads inside Instagram's circular crop at any size.
+  return (
+    <Frame variant="ink" footer={false} pad={0}>
+      <div style={{ margin: 'auto' }}>
+        <span style={{ fontFamily: SERIF, fontSize: 460, fontWeight: 600, letterSpacing: '-0.04em', color: PAPER }}>
+          W<span style={{ color: LIME }}>.</span>
+        </span>
+      </div>
+    </Frame>
+  )
+}
+
+function LogoWordmark() {
+  return (
+    <Frame variant="cream" footer={false} pad={0}>
+      <div style={{ margin: 'auto' }}>
+        <span style={{ fontFamily: SERIF, fontSize: 150, fontWeight: 600, letterSpacing: '-0.03em', color: INK }}>
+          WorkWith<span style={{ color: LIME_DK }}>.</span>
+        </span>
       </div>
     </Frame>
   )
@@ -646,16 +706,31 @@ const FEED: PosterMeta[] = [
   { slug: 'cta', title: 'CTA end-card', note: 'Closes every set — product visual + link', format: 'square', Component: Cta },
 ]
 
-// Per-trade STORY posts (1080×1920) — the "each audience sees their own" series.
+// Brand assets — download these for the profile pic / wordmark.
+const LOGOS: PosterMeta[] = [
+  { slug: 'logo', title: 'Logo — profile pic', note: 'Square monogram for the IG avatar', format: 'square', Component: LogoAvatar },
+  { slug: 'logo-wordmark', title: 'Logo — wordmark', note: 'Full WorkWith. lockup', format: 'square', Component: LogoWordmark },
+]
+
+// Per-trade posts — each trade in BOTH a square feed post and a tall story, so
+// the audience meets "their" post in the grid and in stories.
+const CAT_LABEL = (c: Category) => c.tag.replace(/^For /, '')
 const STORIES: PosterMeta[] = CATEGORIES.map(c => ({
   slug: c.slug,
-  title: c.tag.replace(/^For /, ''),
-  note: `Story · real pain a page solves for ${c.tag.replace(/^For /, '').toLowerCase()}`,
+  title: `${CAT_LABEL(c)} — story`,
+  note: `Story (1080×1920) · pain a page solves for ${CAT_LABEL(c).toLowerCase()}`,
   format: 'story' as const,
-  Component: () => <CategoryStory tag={c.tag} pain={c.pain} fix={c.fix} variant={c.variant} />,
+  Component: () => <CategoryCard tag={c.tag} pain={c.pain} fix={c.fix} variant={c.variant} format="story" />,
+}))
+const CAT_POSTS: PosterMeta[] = CATEGORIES.map(c => ({
+  slug: `${c.slug}-post`,
+  title: `${CAT_LABEL(c)} — post`,
+  note: `Feed post (1080×1080) · pain a page solves for ${CAT_LABEL(c).toLowerCase()}`,
+  format: 'square' as const,
+  Component: () => <CategoryCard tag={c.tag} pain={c.pain} fix={c.fix} variant={c.variant} format="square" />,
 }))
 
-export const POSTERS: PosterMeta[] = [...FEED, ...STORIES]
+export const POSTERS: PosterMeta[] = [...LOGOS, ...FEED, ...CAT_POSTS, ...STORIES]
 
 export function getPoster(slug: string): PosterMeta | undefined {
   return POSTERS.find(p => p.slug === slug)

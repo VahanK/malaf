@@ -28,14 +28,18 @@ API and gallery all size to it. Content sits in the middle band so Story UI
 (profile row on top, reply bar on the bottom) never covers it.
 
 ## The set
+**Brand assets:** `logo` (profile-pic monogram) · `logo-wordmark` — also saved
+to `public/brand/*.png`.
+
 **Feed (square):** `brand` · `hook` · `what-it-is` · `how-it-works` ·
 `found-booked` · `qr` · `vs-linktree` · `founder` · `arabic` · `cta`
 
-**Per-trade stories:** `cat-photographer` · `cat-makeup` · `cat-tutor` ·
-`cat-designer` · `cat-videographer` · `cat-trainer` · `cat-nailtech` ·
-`cat-smm` — one post per audience, each opening on a real pain that trade
-lives (drawn from `docs/ad-templates.md`) and resolving with "Your page fixes
-it." So each freelancer sees *their* post in a story.
+**Per-trade:** photographer · makeup · tutor · designer · videographer ·
+trainer · nail tech · SMM — each in **both** a feed post (`cat-*-post`) and a
+story (`cat-*`). Each opens on a real pain that trade lives (from
+`docs/ad-templates.md`) and resolves with "Your page fixes it." + a CTA whose
+wording matches the surface (story → "Tap the link"; feed → "Link in bio").
+See `docs/START-HERE-instagram.md` for the account-launch playbook.
 
 The offer post (`founder`) sells **exposure** — the first 50 get featured —
 not a discount. Nothing advertises features that aren't live (no payments, no

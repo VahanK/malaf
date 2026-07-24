@@ -155,18 +155,33 @@ function Wordmark({ size = 30, on = 'ink' }: { size?: number; on?: Variant }) {
   )
 }
 
-// The phone with a small "example" caption, so the freelancer page inside it
-// reads as an illustration of what YOUR page looks like — never as this
-// account's own identity.
-// A rendered mock of a WorkWith page — NOT a real person's screenshot. The name
-// is a lime "Your Name" placeholder so it reads as a template of what YOUR page
-// looks like. Everything scales off the phone width (u = width/330).
+// A polished, FILLED mock of a WorkWith link-in-bio page — the kind of clean
+// centred profile the category leaders show in their heroes, but in our brand.
+// "Your Name" + the personal link make it read as a template that's YOURS.
+// Everything scales off the phone width (u = width/330).
 function PhoneMock({ width = 330, tilt = 0 }: { width?: number; tilt?: number }) {
   const h = Math.round(width * 2.06)
   const u = width / 330
   const CARD_BG = '#0e0f13'
-  const CARD_PANEL = '#191c23'
-  const CARD_MUTED = '#9aa0ae'
+  const btn = (label: string, filled: boolean) => (
+    <div
+      key={label}
+      style={{
+        width: '100%',
+        textAlign: 'center',
+        boxSizing: 'border-box',
+        background: filled ? LIME : 'rgba(255,255,255,0.04)',
+        color: filled ? INK : '#f4f2ec',
+        border: filled ? 'none' : `${1.5 * u}px solid rgba(255,255,255,0.14)`,
+        borderRadius: 999,
+        padding: `${13 * u}px 0`,
+        fontSize: 15 * u,
+        fontWeight: 700,
+      }}
+    >
+      {label}
+    </div>
+  )
   return (
     <div
       style={{
@@ -180,60 +195,46 @@ function PhoneMock({ width = 330, tilt = 0 }: { width?: number; tilt?: number })
         flexShrink: 0,
       }}
     >
-      <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: width * 0.1, overflow: 'hidden', background: CARD_BG, display: 'flex', flexDirection: 'column' }}>
-        {/* hero */}
-        <div
-          style={{
-            height: '54%',
-            padding: 22 * u,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            background: 'radial-gradient(120% 80% at 25% 15%, rgba(201,247,59,0.16), transparent 55%), linear-gradient(160deg, #23262f, #0e0f13)',
-          }}
-        >
-          <div style={{ width: 66 * u, height: 66 * u, borderRadius: 999, marginBottom: 14 * u, background: 'linear-gradient(135deg,#2c303b,#15171d)', border: `${2 * u}px solid rgba(255,255,255,0.16)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width={30 * u} height={30 * u} viewBox="0 0 24 24" fill={CARD_MUTED}><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" /></svg>
-          </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 * u, alignSelf: 'flex-start', background: 'rgba(0,0,0,0.45)', borderRadius: 999, padding: `${5 * u}px ${12 * u}px`, fontSize: 12 * u, color: '#f4f2ec', marginBottom: 12 * u }}>
-            <span style={{ width: 7 * u, height: 7 * u, borderRadius: 999, background: GREEN }} /> Available this month
-          </div>
-          <div style={{ fontFamily: SANS, fontWeight: 800, fontSize: 36 * u, lineHeight: 1, color: LIME }}>Your Name</div>
-          <div style={{ marginTop: 7 * u, fontSize: 15 * u, color: GOLD, fontWeight: 600 }}>Your craft · Your city</div>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          borderRadius: width * 0.1,
+          overflow: 'hidden',
+          background: `radial-gradient(130% 60% at 50% 0%, rgba(201,247,59,0.16), transparent 55%), linear-gradient(180deg, #171a21, ${CARD_BG})`,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: `${52 * u}px ${26 * u}px ${26 * u}px`,
+          boxSizing: 'border-box',
+          textAlign: 'center',
+        }}
+      >
+        {/* avatar */}
+        <div style={{ width: 92 * u, height: 92 * u, borderRadius: 999, background: 'conic-gradient(from 210deg, #c9f73b, #3ddc84, #c9a45c, #c9f73b)', padding: 3 * u }}>
+          <div style={{ width: '100%', height: '100%', borderRadius: 999, background: 'linear-gradient(150deg,#2b2f3a,#14161c)' }} />
         </div>
-        {/* body */}
-        <div style={{ flex: 1, padding: 22 * u, display: 'flex', flexDirection: 'column', gap: 13 * u }}>
-          <div style={{ fontSize: 14 * u, lineHeight: 1.4, color: CARD_MUTED }}>A line about what you do — and who you do it for.</div>
-          <div style={{ display: 'flex', gap: 10 * u }}>
-            <div style={{ flex: 1, textAlign: 'center', background: LIME, color: INK, borderRadius: 999, padding: `${12 * u}px 0`, fontSize: 14 * u, fontWeight: 700 }}>Request a quote</div>
-            <div style={{ flex: 1, textAlign: 'center', background: 'transparent', color: '#f4f2ec', border: `${1.5 * u}px solid rgba(255,255,255,0.2)`, borderRadius: 999, padding: `${12 * u}px 0`, fontSize: 14 * u, fontWeight: 700 }}>WhatsApp</div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 * u, marginTop: 2 * u }}>
-            {[0, 1, 2, 3, 4, 5].map(i => (
-              <div key={i} style={{ aspectRatio: '1 / 1', borderRadius: 10 * u, background: `linear-gradient(150deg, ${CARD_PANEL}, #0e0f13)` }} />
-            ))}
-          </div>
+        <div style={{ marginTop: 16 * u, fontFamily: SANS, fontWeight: 800, fontSize: 30 * u, lineHeight: 1, color: '#f4f2ec' }}>Your Name</div>
+        <div style={{ marginTop: 8 * u, fontSize: 15 * u, fontWeight: 700, color: LIME }}>work-withme.com/yourname</div>
+        <div style={{ marginTop: 6 * u, fontSize: 14 * u, color: GOLD, fontWeight: 600 }}>Your craft · Your city</div>
+        <div style={{ marginTop: 12 * u, display: 'inline-flex', alignItems: 'center', gap: 6 * u, background: 'rgba(255,255,255,0.06)', borderRadius: 999, padding: `${5 * u}px ${12 * u}px`, fontSize: 12 * u, color: '#f4f2ec' }}>
+          <span style={{ width: 7 * u, height: 7 * u, borderRadius: 999, background: GREEN }} /> Available this month
+        </div>
+        {/* buttons */}
+        <div style={{ width: '100%', marginTop: 22 * u, display: 'flex', flexDirection: 'column', gap: 11 * u }}>
+          {btn('See my work', false)}
+          {btn('Prices & packages', false)}
+          {btn('Message me on WhatsApp', true)}
+        </div>
+        {/* socials */}
+        <div style={{ marginTop: 20 * u, display: 'flex', gap: 12 * u }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 34 * u, height: 34 * u, borderRadius: 999, border: `${1.5 * u}px solid rgba(255,255,255,0.16)` }} />
+          ))}
         </div>
         {/* notch */}
         <div style={{ position: 'absolute', top: width * 0.045, left: '50%', transform: 'translateX(-50%)', width: width * 0.34, height: width * 0.055, borderRadius: 999, background: '#000' }} />
-      </div>
-    </div>
-  )
-}
-
-// The mock phone captioned with the personal link the scroller would OWN —
-// the whole pitch is "a link + page that belong to you", so we show it.
-function PhoneExample({ width = 330, tilt = 0, on = 'ink' as Variant }: { width?: number; tilt?: number; on?: Variant }) {
-  const s = SURFACES[on]
-  return (
-    <div style={{ width, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, flexShrink: 0 }}>
-      <PhoneMock width={width} tilt={tilt} />
-      <div style={{ textAlign: 'center', lineHeight: 1.3, whiteSpace: 'nowrap' }}>
-        <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '0.02em', color: s.mute }}>your own link</div>
-        <div style={{ fontSize: 21, fontWeight: 700 }}>
-          <span style={{ color: s.mute }}>work-withme.com/</span>
-          <span style={{ color: s.accent }}>yourname</span>
-        </div>
       </div>
     </div>
   )
@@ -306,42 +307,36 @@ function Hook() {
   )
 }
 
-// 3. What it is — feature list + phone.
+// 3. What it is — airy: headline + phone carries the detail (references lead
+// with the phone and lots of whitespace, not a wall of bullet text).
 function WhatItIs() {
-  const items = ['Your work, up front', 'Prices — only if you want', 'Your own accent color', 'One-tap Arabic version']
+  const chips = ['Your work', 'Your prices (optional)', 'English or Arabic']
   return (
     <Frame variant="panel" tag="Your page, free">
-      <div style={{ display: 'flex', alignItems: 'center', gap: 70 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 72 }}>
         <div style={{ flex: 1 }}>
-          <h1 style={{ fontFamily: SERIF, fontSize: 70, lineHeight: 1.06, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
+          <h1 style={{ fontFamily: SERIF, fontSize: 82, lineHeight: 1.04, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
             Your own page.
             <br />
             <span style={{ color: LIME }}>Your own link.</span>
           </h1>
-          <div style={{ marginTop: 44, display: 'flex', flexDirection: 'column', gap: 26 }}>
-            {items.map(t => (
-              <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 20, fontSize: 32, fontWeight: 500 }}>
-                <Tick />
+          <p style={{ marginTop: 34, fontSize: 32, lineHeight: 1.45, color: MUTE_D, maxWidth: 440 }}>
+            Everything a client needs to book you — on one link.
+          </p>
+          <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+            {chips.map(t => (
+              <span key={t} style={{ fontSize: 24, fontWeight: 600, padding: '13px 24px', borderRadius: 999, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 {t}
-              </div>
+              </span>
             ))}
           </div>
         </div>
-        <PhoneExample width={330} tilt={2} on="panel" />
+        <PhoneMock width={338} tilt={2} />
       </div>
     </Frame>
   )
 }
 
-function Tick() {
-  return (
-    <span style={{ width: 44, height: 44, borderRadius: 999, background: LIME, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 6L9 17l-5-5" />
-      </svg>
-    </span>
-  )
-}
 
 // 4. How it works — editorial vertical rail (not the generic card grid).
 function HowItWorks() {
@@ -705,7 +700,7 @@ function Cta() {
           </div>
           <p style={{ marginTop: 22, fontSize: 26, color: MUTE_D }}>{SITE}</p>
         </div>
-        <PhoneExample width={330} tilt={-2} />
+        <PhoneMock width={330} tilt={-2} />
       </div>
     </Frame>
   )

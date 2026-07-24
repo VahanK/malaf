@@ -24,7 +24,17 @@
 import type { CSSProperties, ReactNode } from 'react'
 import QRCode from 'react-qr-code'
 
-export const SIZE = 1080 // Instagram feed square, physical px
+export const SIZE = 1080 // Instagram feed square width, physical px
+
+// Two post shapes: the square feed tile and the tall story/reel canvas. The
+// per-trade posts are authored as stories (that's how they get rolled out);
+// everything else is a square feed post. Each poster declares its format so the
+// render surface, the export API and the gallery all size to it.
+export const FORMATS = {
+  square: { w: 1080, h: 1080 },
+  story: { w: 1080, h: 1920 },
+} as const
+export type Format = keyof typeof FORMATS
 
 // --- brand tokens (mirrors the homepage / Nav) ----------------------------
 const INK = '#0B0B0C'
@@ -59,6 +69,7 @@ const SURFACES: Record<Variant, { bg: string; ink: string; mute: string; accent:
 // ---------------------------------------------------------------------------
 function Frame({
   variant = 'ink',
+  format = 'square',
   tag,
   footer = true,
   pad = 84,
@@ -66,6 +77,7 @@ function Frame({
   style,
 }: {
   variant?: Variant
+  format?: Format
   tag?: string
   footer?: boolean
   pad?: number
@@ -73,12 +85,13 @@ function Frame({
   style?: CSSProperties
 }) {
   const s = SURFACES[variant]
+  const dim = FORMATS[format]
   return (
     <div
       style={{
         position: 'relative',
-        width: SIZE,
-        height: SIZE,
+        width: dim.w,
+        height: dim.h,
         background: s.bg,
         color: s.ink,
         fontFamily: SANS,
@@ -427,7 +440,7 @@ function Founder() {
 // 9. Arabic-forward poster (RTL, Tajawal).
 function Arabic() {
   return (
-    <Frame variant="ink" footer tag="نسخة عربية بضغطة">
+    <Frame variant="ink" footer tag="نسخة عربية بكبسة">
       <div dir="rtl" style={{ fontFamily: ARABIC, textAlign: 'right' }}>
         <h1 style={{ fontSize: 104, lineHeight: 1.12, fontWeight: 900, margin: 0 }}>
           صفحتك المهنية
@@ -435,102 +448,168 @@ function Arabic() {
           <span style={{ color: LIME }}>بثواني.</span>
         </h1>
         <p style={{ marginTop: 40, fontSize: 40, lineHeight: 1.5, color: MUTE_D, fontWeight: 500, maxWidth: 820 }}>
-          شغلك، أسعارك، وعرض السعر — برابط واحد. وتحصيل بلا إحراج.
+          شغلك، أسعارك، وعرض السعر — برابط واحد.
         </p>
       </div>
     </Frame>
   )
 }
 
-// 10. Voice intro — the personal flagship.
-function Voice() {
+// Per-trade STORY series (1080×1920). One post per audience, each opening on a
+// real, specific pain that freelancer lives — the kind a portfolio page
+// actually solves — so they see "their" post in a story and feel seen. Pains
+// are drawn from the trade hooks in docs/ad-templates.md, not invented.
+type Category = {
+  slug: string
+  tag: string
+  pain: ReactNode
+  fix: string
+  variant: Variant
+}
+
+const CATEGORIES: Category[] = [
+  {
+    slug: 'cat-photographer',
+    tag: 'For photographers',
+    pain: (
+      <>
+        “Stunning shots. So… <span style={{ color: LIME }}>how much?</span>”
+      </>
+    ),
+    fix: 'Your rates should sit next to your work — not disappear into your DMs.',
+    variant: 'ink',
+  },
+  {
+    slug: 'cat-makeup',
+    tag: 'For makeup artists',
+    pain: (
+      <>
+        The bride shouldn’t scroll <span style={{ color: LIME_DK }}>40 stories</span> to book you.
+      </>
+    ),
+    fix: 'Your looks, your packages, your open dates — on one page she opens once.',
+    variant: 'cream',
+  },
+  {
+    slug: 'cat-tutor',
+    tag: 'For tutors',
+    pain: (
+      <>
+        “Which subjects? What’s the rate? What times?” <span style={{ color: LIME }}>Every parent.</span>
+      </>
+    ),
+    fix: 'Answer it once. Send the same link to every parent who asks.',
+    variant: 'panel',
+  },
+  {
+    slug: 'cat-designer',
+    tag: 'For designers',
+    pain: (
+      <>
+        The <span style={{ color: LIME }}>40 MB portfolio PDF</span> that never opened.
+      </>
+    ),
+    fix: 'Your work opens in a second, on any phone — one link, no download.',
+    variant: 'ink',
+  },
+  {
+    slug: 'cat-videographer',
+    tag: 'For videographers',
+    pain: (
+      <>
+        You made everyone else go viral. <span style={{ color: LIME_DK }}>Where’s your page?</span>
+      </>
+    ),
+    fix: 'Your reels, your rates, your bookings — finally in your own bio.',
+    variant: 'cream',
+  },
+  {
+    slug: 'cat-trainer',
+    tag: 'For trainers',
+    pain: (
+      <>
+        “How much is the subscription?” — <span style={{ color: LIME }}>for the tenth time today.</span>
+      </>
+    ),
+    fix: 'Programs, prices and real transformations — one link answers it while you train.',
+    variant: 'panel',
+  },
+  {
+    slug: 'cat-nailtech',
+    tag: 'For nail techs',
+    pain: (
+      <>
+        Your work beats the salons. Your prices are a <span style={{ color: LIME }}>secret.</span>
+      </>
+    ),
+    fix: 'Show the work and the price list — a salon look, straight from home.',
+    variant: 'ink',
+  },
+  {
+    slug: 'cat-smm',
+    tag: 'For social media managers',
+    pain: (
+      <>
+        You run six accounts. Your own bio is <span style={{ color: LIME_DK }}>empty.</span>
+      </>
+    ),
+    fix: 'Your packages and results, on the page — before the client even asks.',
+    variant: 'cream',
+  },
+]
+
+function CategoryStory({ tag, pain, fix, variant }: Omit<Category, 'slug'>) {
+  const s = SURFACES[variant]
   return (
-    <Frame variant="panel" tag="Voice intro">
-      <div style={{ margin: 'auto', textAlign: 'center', maxWidth: 820 }}>
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            borderRadius: 999,
-            margin: '0 auto 48px',
-            background: LIME,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 0 24px rgba(201,247,59,0.12)',
-          }}
-        >
-          <svg width="70" height="70" viewBox="0 0 24 24" fill={INK}>
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-        <h1 style={{ fontFamily: SERIF, fontSize: 84, lineHeight: 1.08, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
-          Your page, in <span style={{ color: LIME }}>your own voice.</span>
+    <Frame variant={variant} format="story" tag={tag} pad={96}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 52 }}>
+        <div style={{ fontFamily: SERIF, fontSize: 200, lineHeight: 0.3, height: 90, color: s.accent }}>“</div>
+        <h1 style={{ fontFamily: SERIF, fontSize: 100, lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
+          {pain}
         </h1>
-        <p style={{ marginTop: 36, fontSize: 34, lineHeight: 1.45, color: MUTE_D }}>
-          A 20-second voice note at the top of your page. Something no template tool can copy.
+        <div style={{ height: 3, width: 240, background: variant === 'lime' || variant === 'cream' ? 'rgba(11,11,12,0.15)' : 'rgba(255,255,255,0.16)' }} />
+        <p style={{ fontSize: 46, lineHeight: 1.4, fontWeight: 500, color: s.mute, margin: 0, maxWidth: 880 }}>
+          <span style={{ color: s.accent, fontWeight: 700 }}>Your page fixes it. </span>
+          {fix}
         </p>
       </div>
     </Frame>
   )
 }
 
-// 11. Who it's for — trades.
-function ForWho() {
-  const trades = ['Photographers', 'Tutors', 'Designers', 'Trainers', 'Makeup artists', 'Videographers', 'Nail techs', 'Social managers', 'Home services']
-  return (
-    <Frame variant="cream" tag="Made for">
-      <h1 style={{ fontFamily: SERIF, fontSize: 78, lineHeight: 1.06, fontWeight: 600, letterSpacing: '-0.02em', margin: '0 0 44px' }}>
-        Built for the way <span style={{ color: LIME_DK }}>you</span> work.
-      </h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
-        {trades.map(t => (
-          <span
-            key={t}
-            style={{
-              fontSize: 36,
-              fontWeight: 600,
-              padding: '20px 34px',
-              borderRadius: 999,
-              background: PAPER,
-              border: '1px solid rgba(11,11,12,0.08)',
-            }}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-    </Frame>
-  )
-}
-
-// 12. CTA end-card — closes every set (brand-consistency end-card).
+// 12. CTA end-card — closes every set. Product as the visual, "free" said once.
 function Cta() {
   return (
     <Frame variant="ink" footer={false}>
-      <div style={{ margin: 'auto', textAlign: 'center' }}>
-        <Wordmark size={44} on="ink" />
-        <h1 style={{ fontFamily: SERIF, fontSize: 108, lineHeight: 1.04, fontWeight: 600, letterSpacing: '-0.02em', margin: '40px 0 0' }}>
-          Make your page.
-          <br />
-          <span style={{ color: LIME }}>It&apos;s free.</span>
-        </h1>
-        <div
-          style={{
-            marginTop: 56,
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 16,
-            background: LIME,
-            color: INK,
-            fontSize: 40,
-            fontWeight: 700,
-            padding: '26px 52px',
-            borderRadius: 999,
-          }}
-        >
-          {SITE}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 64 }}>
+        <div style={{ flex: 1 }}>
+          <Wordmark size={40} on="ink" />
+          <h1 style={{ fontFamily: SERIF, fontSize: 88, lineHeight: 1.02, fontWeight: 600, letterSpacing: '-0.02em', margin: '30px 0 0' }}>
+            Your page is
+            <br />
+            <span style={{ color: LIME }}>waiting.</span>
+          </h1>
+          <p style={{ marginTop: 26, fontSize: 30, color: MUTE_D, fontWeight: 500 }}>
+            Free to build · live in minutes · yours to keep.
+          </p>
+          <div
+            style={{
+              marginTop: 44,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 16,
+              background: LIME,
+              color: INK,
+              fontSize: 36,
+              fontWeight: 700,
+              padding: '22px 44px',
+              borderRadius: 999,
+            }}
+          >
+            {SITE}
+          </div>
         </div>
+        <Phone src="/mockups/rami-hero.webp" width={330} tilt={-2} />
       </div>
     </Frame>
   )
@@ -543,23 +622,34 @@ export type PosterMeta = {
   slug: string
   title: string
   note: string
+  format: Format
   Component: () => ReactNode
 }
 
-export const POSTERS: PosterMeta[] = [
-  { slug: 'brand', title: 'Brand cover', note: 'Grid cover — the wordmark tile', Component: Brand },
-  { slug: 'hook', title: 'The hook', note: 'Category line — post on Instagram → run your business', Component: Hook },
-  { slug: 'what-it-is', title: 'What it is', note: 'A professional page, free — feature list + phone', Component: WhatItIs },
-  { slug: 'how-it-works', title: 'How it works', note: 'Four numbered steps', Component: HowItWorks },
-  { slug: 'found-booked', title: 'Found → booked', note: 'Exposure → conversion line', Component: FoundBooked },
-  { slug: 'qr', title: 'QR business card', note: 'One scan → your whole page (live feature)', Component: Qr },
-  { slug: 'vs-linktree', title: 'Not just a link', note: 'Positioning vs Linktree/Carrd', Component: VsLink },
-  { slug: 'founder', title: 'Founders get featured', note: 'First 50 featured — exposure, not a discount', Component: Founder },
-  { slug: 'arabic', title: 'Arabic', note: 'RTL Arabic-forward variant', Component: Arabic },
-  { slug: 'voice', title: 'Voice intro', note: 'Personal flagship — your own voice', Component: Voice },
-  { slug: 'for-who', title: 'Who it’s for', note: 'Trades grid', Component: ForWho },
-  { slug: 'cta', title: 'CTA end-card', note: 'Closes every set', Component: Cta },
+// Square feed posts (1080×1080) — the grid.
+const FEED: PosterMeta[] = [
+  { slug: 'brand', title: 'Brand cover', note: 'Grid cover — the wordmark tile', format: 'square', Component: Brand },
+  { slug: 'hook', title: 'The hook', note: 'Post on Instagram → build the page that gets you booked', format: 'square', Component: Hook },
+  { slug: 'what-it-is', title: 'What it is', note: 'A professional page, free — feature list + phone', format: 'square', Component: WhatItIs },
+  { slug: 'how-it-works', title: 'How it works', note: 'From link to booked — editorial steps', format: 'square', Component: HowItWorks },
+  { slug: 'found-booked', title: 'Found → booked', note: 'Exposure → conversion line', format: 'square', Component: FoundBooked },
+  { slug: 'qr', title: 'QR business card', note: 'One scan → your whole page (live feature)', format: 'square', Component: Qr },
+  { slug: 'vs-linktree', title: 'Not just a link', note: 'Positioning vs Linktree/Carrd', format: 'square', Component: VsLink },
+  { slug: 'founder', title: 'Founders get featured', note: 'First 50 featured — exposure, not a discount', format: 'square', Component: Founder },
+  { slug: 'arabic', title: 'Arabic', note: 'RTL Arabic-forward variant', format: 'square', Component: Arabic },
+  { slug: 'cta', title: 'CTA end-card', note: 'Closes every set — product visual + link', format: 'square', Component: Cta },
 ]
+
+// Per-trade STORY posts (1080×1920) — the "each audience sees their own" series.
+const STORIES: PosterMeta[] = CATEGORIES.map(c => ({
+  slug: c.slug,
+  title: c.tag.replace(/^For /, ''),
+  note: `Story · real pain a page solves for ${c.tag.replace(/^For /, '').toLowerCase()}`,
+  format: 'story' as const,
+  Component: () => <CategoryStory tag={c.tag} pain={c.pain} fix={c.fix} variant={c.variant} />,
+}))
+
+export const POSTERS: PosterMeta[] = [...FEED, ...STORIES]
 
 export function getPoster(slug: string): PosterMeta | undefined {
   return POSTERS.find(p => p.slug === slug)

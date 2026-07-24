@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getPoster, POSTERS, SIZE } from '@/components/posts/posters'
+import { getPoster, POSTERS, FORMATS } from '@/components/posts/posters'
 
 // Isolated render surface for ONE poster at exactly SIZE×SIZE. This is the URL
 // the PNG screenshotter (app/api/poster/[slug]) navigates to, and it's also
@@ -17,6 +17,7 @@ export default async function PosterRenderPage({ params }: { params: Promise<{ s
   const poster = getPoster(slug)
   if (!poster) notFound()
   const { Component } = poster
+  const dim = FORMATS[poster.format]
   return (
     <main
       style={{
@@ -28,7 +29,7 @@ export default async function PosterRenderPage({ params }: { params: Promise<{ s
         minHeight: '100vh',
       }}
     >
-      <div id="poster" style={{ width: SIZE, height: SIZE }}>
+      <div id="poster" style={{ width: dim.w, height: dim.h }}>
         <Component />
       </div>
     </main>

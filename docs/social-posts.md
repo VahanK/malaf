@@ -19,13 +19,28 @@ ink / lime / cream palette. No rounded geometric sans, no yellow.
   `@sparticuz/chromium` on Vercel, a local Chrome otherwise
   (`CHROME_EXECUTABLE_PATH`).
 
-## The set (12)
-`brand` · `hook` · `what-it-is` · `how-it-works` · `money-chaser` · `get-paid`
-· `vs-linktree` · `founder` · `arabic` · `voice` · `for-who` · `cta`
+## Two formats
+- **Square feed posts** (1080×1080) — the grid.
+- **Story posts** (1080×1920) — the per-trade series, sized for Stories/Reels.
 
-The money-chaser is the paid-engine post; the free page is the hook. Per the
-homepage rules there are **no fabricated usage stats or testimonials** — the
-"milestone" tile is the real `$29/yr founder offer`, not an invented count.
+Each poster declares its `format` in the registry; the render surface, export
+API and gallery all size to it. Content sits in the middle band so Story UI
+(profile row on top, reply bar on the bottom) never covers it.
+
+## The set
+**Feed (square):** `brand` · `hook` · `what-it-is` · `how-it-works` ·
+`found-booked` · `qr` · `vs-linktree` · `founder` · `arabic` · `cta`
+
+**Per-trade stories:** `cat-photographer` · `cat-makeup` · `cat-tutor` ·
+`cat-designer` · `cat-videographer` · `cat-trainer` · `cat-nailtech` ·
+`cat-smm` — one post per audience, each opening on a real pain that trade
+lives (drawn from `docs/ad-templates.md`) and resolving with "Your page fixes
+it." So each freelancer sees *their* post in a story.
+
+The offer post (`founder`) sells **exposure** — the first 50 get featured —
+not a discount. Nothing advertises features that aren't live (no payments, no
+money-chaser). Per the homepage rules there are **no fabricated usage stats or
+testimonials**.
 
 ## Adding / editing a poster
 Everything lives in `components/posts/posters.tsx`:

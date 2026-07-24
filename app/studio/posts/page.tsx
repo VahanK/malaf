@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { POSTERS, SIZE } from '@/components/posts/posters'
+import { POSTERS, FORMATS } from '@/components/posts/posters'
 
 // Marketing-post studio: a live gallery of every WorkWith social post, each
 // downloadable as a 1080×1080 PNG rendered by /api/poster/[slug] (headless
@@ -9,8 +9,7 @@ import { POSTERS, SIZE } from '@/components/posts/posters'
 // links to the isolated /studio/posts/[slug] surface as a screenshot/print
 // fallback for environments where the server renderer isn't wired up.
 
-const THUMB = 300
-const SCALE = THUMB / SIZE
+const THUMB = 300 // thumbnail width; height follows each poster's aspect
 
 function pngHref(slug: string) {
   return `/api/poster/${slug}?dl=1`
@@ -78,12 +77,15 @@ export default function PostsStudioPage() {
             gap: 28,
           }}
         >
-          {POSTERS.map(({ slug, title, note, Component }) => (
+          {POSTERS.map(({ slug, title, note, format, Component }) => {
+            const dim = FORMATS[format]
+            const scale = THUMB / dim.w
+            return (
             <div key={slug} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div
                 style={{
                   width: '100%',
-                  aspectRatio: '1 / 1',
+                  aspectRatio: `${dim.w} / ${dim.h}`,
                   borderRadius: 16,
                   overflow: 'hidden',
                   border: '1px solid rgba(250,250,247,0.1)',
@@ -91,13 +93,13 @@ export default function PostsStudioPage() {
                   background: '#141417',
                 }}
               >
-                {/* Live poster, scaled down. Rendered at true 1080 then transform-scaled
-                    so the thumbnail is a pixel-honest preview of the export. */}
+                {/* Live poster, rendered at true size then transform-scaled so the
+                    thumbnail is a pixel-honest preview of the export. */}
                 <div
                   style={{
-                    width: SIZE,
-                    height: SIZE,
-                    transform: `scale(${SCALE})`,
+                    width: dim.w,
+                    height: dim.h,
+                    transform: `scale(${scale})`,
                     transformOrigin: 'top left',
                     position: 'absolute',
                     top: 0,
@@ -152,7 +154,8 @@ export default function PostsStudioPage() {
                 </a>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </main>

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer-core'
 import chromium from '@sparticuz/chromium'
-import { getPoster, SIZE } from '@/components/posts/posters'
+import { getPoster, FORMATS } from '@/components/posts/posters'
 
 export const maxDuration = 30 // cold Chromium boot + render budget
 
@@ -28,9 +28,11 @@ async function getBrowser() {
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  if (!getPoster(slug)) {
+  const poster = getPoster(slug)
+  if (!poster) {
     return NextResponse.json({ error: 'Unknown poster' }, { status: 404 })
   }
+  const dim = FORMATS[poster.format]
 
   const { searchParams } = new URL(request.url)
   const download = searchParams.get('dl') === '1'
@@ -44,7 +46,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   try {
     browser = await getBrowser()
     const page = await browser.newPage()
-    await page.setViewport({ width: SIZE, height: SIZE, deviceScaleFactor: 2 })
+    await page.setViewport({ width: dim.w, height: dim.h, deviceScaleFactor: 2 })
     await page.goto(targetUrl, { waitUntil: 'networkidle0', timeout: 20000 })
     // Web fonts (Fraunces / Inter / Tajawal) must be laid out before the shot,
     // or the serif headlines fall back to Georgia in the export.

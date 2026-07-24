@@ -53,9 +53,6 @@ const SANS = 'var(--font-inter), system-ui, sans-serif'
 const ARABIC = 'var(--font-tajawal), sans-serif'
 
 const SITE = 'work-withme.com'
-// Show what a real freelancer's link looks like, not a "/you" placeholder.
-// `rami` matches the demo page used in the phone mockups.
-const HANDLE = 'rami'
 
 type Variant = 'ink' | 'lime' | 'cream' | 'panel'
 
@@ -135,11 +132,13 @@ function Frame({
       </div>
 
       {footer && (
-        <div style={{ display: 'flex' }}>
-          {/* one quiet mark — the sample link doubles as the brand (it carries
-              "work-withme"), so no need to fill the other corners too */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* This is the BRAND account talking, so the footer is the brand's
+              own domain — not a personal handle, which would read as "this
+              account belongs to that person". */}
+          <span style={{ width: 12, height: 12, borderRadius: 999, background: s.accent }} />
           <span style={{ fontSize: 27, fontWeight: 600, letterSpacing: '-0.01em', color: s.mute }}>
-            {SITE}/<span style={{ color: s.accent }}>{HANDLE}</span>
+            {SITE}
           </span>
         </div>
       )}
@@ -200,6 +199,21 @@ function Phone({
           }}
         />
       </div>
+    </div>
+  )
+}
+
+// The phone with a small "example" caption, so the freelancer page inside it
+// reads as an illustration of what YOUR page looks like — never as this
+// account's own identity.
+function PhoneExample({ src, width = 330, tilt = 0, on = 'ink' as Variant }: { src: string; width?: number; tilt?: number; on?: Variant }) {
+  const s = SURFACES[on]
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, flexShrink: 0 }}>
+      <Phone src={src} width={width} tilt={tilt} />
+      <span style={{ fontSize: 22, fontWeight: 600, letterSpacing: '0.02em', color: s.mute }}>
+        ↑ an example page
+      </span>
     </div>
   )
 }
@@ -275,7 +289,7 @@ function WhatItIs() {
             ))}
           </div>
         </div>
-        <Phone src="/mockups/rami-hero.webp" width={330} tilt={2} />
+        <PhoneExample src="/mockups/rami-hero.webp" width={330} tilt={2} on="panel" />
       </div>
     </Frame>
   )
@@ -645,9 +659,9 @@ function Cta() {
           >
             👆 Link in bio
           </div>
-          <p style={{ marginTop: 22, fontSize: 26, color: MUTE_D }}>{SITE}/{HANDLE}</p>
+          <p style={{ marginTop: 22, fontSize: 26, color: MUTE_D }}>{SITE}</p>
         </div>
-        <Phone src="/mockups/rami-hero.webp" width={330} tilt={-2} />
+        <PhoneExample src="/mockups/rami-hero.webp" width={330} tilt={-2} />
       </div>
     </Frame>
   )
